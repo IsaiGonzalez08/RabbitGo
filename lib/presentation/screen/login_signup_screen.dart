@@ -120,7 +120,6 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                //mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
                     'Aún no tienes una cuenta?',
