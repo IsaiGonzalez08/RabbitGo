@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
+import 'package:rabbit_go/presentation/screen/signup_screen.dart';
 
 class MyLoginSignPage extends StatefulWidget {
   const MyLoginSignPage({Key? key, required this.title}) : super(key: key);
@@ -132,7 +133,13 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                   const SizedBox(width: 2),
                   Flexible(
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MySignUpPage()),
+                          );
+                      },
                       child: const Text(
                         'Crea una cuenta ahora.',
                         style: TextStyle(

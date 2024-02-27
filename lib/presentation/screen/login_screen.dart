@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/screen/signup_screen.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({Key? key}) : super(key: key);
@@ -164,7 +165,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyLoginPage()),
+                                builder: (context) => const MySignUpPage()),
                           );
                         },
                         child: const Text(

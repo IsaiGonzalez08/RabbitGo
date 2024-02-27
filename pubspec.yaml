@@ -58,6 +58,7 @@ flutter:
     - assets/images/Google.png
     - assets/images/LeftArrow.png
     - assets/images/LoginLogo.png
+    - assets/images/MarkYes.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
