@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 
 class MySignUpPage extends StatefulWidget {
@@ -187,7 +188,13 @@ class _MySignPageState extends State<MySignUpPage> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomeScreen()),
+                          );
+                    },
                     child: const Text(
                       'Comenzar',
                       style: TextStyle(

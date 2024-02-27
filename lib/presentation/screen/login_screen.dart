@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/signup_screen.dart';
 
@@ -135,7 +136,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomeScreen()),
+                          );
+                    },
                     child: const Text(
                       'Comenzar',
                       style: TextStyle(
