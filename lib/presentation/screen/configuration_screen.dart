@@ -50,7 +50,10 @@ class MyConfigurationPage extends StatelessWidget {
               SizedBox(
                 width: 120,
               ),
-              CustomButton(),
+              CustomButton(
+                textButton: 'Gratis',
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              )
             ],
           ),
           const SizedBox(

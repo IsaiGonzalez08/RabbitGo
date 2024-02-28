@@ -32,20 +32,11 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-      lowerBound: 0.2,
-      upperBound: 1.0,
-    )..repeat(reverse: true);
-
+    // Inicia un temporizador para controlar la duración de la pantalla de carga
     Timer(const Duration(seconds: 3), () {
       // Navega a la primera vista después de que se complete el temporizador
       Navigator.of(context).pushReplacement(
@@ -63,18 +54,8 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: const Color(0xFF01142B),
       body: Center(
-        child: AnimatedOpacity(
-          opacity: _controller.value,
-          duration: const Duration(milliseconds: 500),
-          child: Image.asset('assets/images/LogoRabbitGo1.png'),
-        ),
+        child: Image.asset('assets/images/LogoRabbitGo1.png'),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

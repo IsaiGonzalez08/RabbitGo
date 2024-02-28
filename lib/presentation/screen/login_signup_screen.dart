@@ -40,12 +40,12 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               ),
               const SizedBox(height: 5),
               const Text(
-                '¿Listo para recorrer la ciudad?, inicia sesión para comenzar.',
+                '¿Listo para recorrer la ciudad?, inicia sesión para \ncomenzar.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF6C6C6C),
-                  fontWeight: FontWeight.w300,
-                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
                 ),
               ),
               const SizedBox(height: 10),
@@ -123,11 +123,11 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Aún no tienes una cuenta?',
+                    '¿Aún no tienes una cuenta?,',
                     style: TextStyle(
                       color: Color(0xFF6C6C6C),
                       fontWeight: FontWeight.w400,
-                      fontSize: 10,
+                      fontSize: 11,
                     ),
                   ),
                   const SizedBox(width: 2),
@@ -135,17 +135,17 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MySignUpPage()),
-                          );
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MySignUpPage()),
+                        );
                       },
                       child: const Text(
                         'Crea una cuenta ahora.',
                         style: TextStyle(
                           color: Color(0xFF01142B),
                           fontWeight: FontWeight.w800,
-                          fontSize: 10,
+                          fontSize: 11,
                         ),
                       ),
                     ),
