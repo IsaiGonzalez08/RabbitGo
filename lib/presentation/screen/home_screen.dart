@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 class MyHomeScreen extends StatelessWidget {
@@ -51,7 +52,6 @@ class MyHomeScreen extends StatelessWidget {
                 ),
               ),
               Positioned(
-                // También usamos Positioned para posicionar el Row en la parte inferior del Stack
                 bottom: 0,
                 left: 0,
                 right: 0,
@@ -150,8 +150,7 @@ class MyHomeScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const MyLoginSignPage(
-                                                title: 'LoginSingPage'),
+                                            const MyConfigurationPage(),
                                       ),
                                     );
                                   },
