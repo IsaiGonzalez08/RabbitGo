@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rabbit_go/presentation/screen/home_screen.dart';
-import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyConfigurationPage extends StatelessWidget {
   const MyConfigurationPage({super.key});
@@ -26,10 +26,10 @@ class MyConfigurationPage extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          Row(
+          const Row(
             children: [
-              const Padding(padding: EdgeInsets.only(left: 20)),
-              const Column(
+              Padding(padding: EdgeInsets.only(left: 20)),
+              Column(
                 children: [
                   Text(
                     'Victor Villava',
@@ -47,29 +47,10 @@ class MyConfigurationPage extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(
+              SizedBox(
                 width: 120,
               ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF01142B),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    )),
-                child: const Text(
-                  'Gratis',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    backgroundColor: Color(0xFF01142B),
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
+              CustomButton(),
             ],
           ),
           const SizedBox(
@@ -130,120 +111,12 @@ class MyConfigurationPage extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: 180,
+            height: 210.8,
           ),
-          Row(
+          const Row(
             children: [
               Expanded(
-                child: Container(
-                  height: 69,
-                  color: const Color(0xFFFFFFFF),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyHomeScreen(),
-                                ),
-                              );
-                            },
-                            icon: Image.asset('assets/images/homewhite.png'),
-                          ),
-                          const Text(
-                            'Home',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF979797),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 30),
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyLoginSignPage(
-                                      title: 'LoginSingPage'),
-                                ),
-                              );
-                            },
-                            icon: Image.asset('assets/images/love.png'),
-                          ),
-                          const Text(
-                            'Favoritos',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF979797),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 30),
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MyLoginSignPage(
-                                      title: 'LoginSingPage'),
-                                ),
-                              );
-                            },
-                            icon: Image.asset('assets/images/marker.png'),
-                          ),
-                          const Text(
-                            'Marcar',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF979797),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 30),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MyConfigurationPage(),
-                                ),
-                              );
-                            },
-                            child: Image.asset('assets/images/perfil.png'),
-                          ),
-                          
-                          const Text(
-                            'Perfil',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF979797),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                child: TapBar(),
               ),
             ],
           ),
