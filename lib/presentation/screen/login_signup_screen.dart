@@ -60,7 +60,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MyLoginPage()),
+                        builder: (context) => const MyLoginScreen()),
                   );
                 },
               ),
@@ -126,7 +126,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MySignUpPage()),
+                              builder: (context) => const MySignUpScreen()),
                         );
                       },
                       child: const Text(

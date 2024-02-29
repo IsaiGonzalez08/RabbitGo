@@ -100,7 +100,7 @@ class TapBar extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const MyConfigurationPage(),
+                            builder: (context) => const MyConfigurationScreen(),
                           ),
                         );
                       },

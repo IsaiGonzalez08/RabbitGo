@@ -3,15 +3,15 @@ import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/signup_screen.dart';
 
-class MyLoginPage extends StatefulWidget {
-  const MyLoginPage({Key? key}) : super(key: key);
+class MyLoginScreen extends StatefulWidget {
+  const MyLoginScreen({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _MyLoginPageState createState() => _MyLoginPageState();
+  _MyLoginScreenState createState() => _MyLoginScreenState();
 }
 
-class _MyLoginPageState extends State<MyLoginPage> {
+class _MyLoginScreenState extends State<MyLoginScreen> {
   bool _isChecked = false;
 
   @override
@@ -172,7 +172,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MySignUpPage()),
+                                builder: (context) => const MySignUpScreen()),
                           );
                         },
                         child: const Text(

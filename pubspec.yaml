@@ -69,6 +69,8 @@ flutter:
     - assets/images/Forward.png
     - assets/images/homewhite.png
     - assets/images/perfil.png
+    - assets/images/ForwardProfile.png
+    - assets/images/UserProfile.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

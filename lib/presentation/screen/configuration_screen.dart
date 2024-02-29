@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
-class MyConfigurationPage extends StatelessWidget {
-  const MyConfigurationPage({super.key});
+class MyConfigurationScreen extends StatelessWidget {
+  const MyConfigurationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,15 @@ class MyConfigurationPage extends StatelessWidget {
               const SizedBox(
                 width: 210,
               ),
-              Image.asset('assets/images/Forward.png')
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyProfileScreen()),
+                    );
+                  },
+                  child: Image.asset('assets/images/Forward.png'))
             ],
           ),
           const SizedBox(
