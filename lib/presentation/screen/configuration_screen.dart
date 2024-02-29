@@ -52,7 +52,9 @@ class MyConfigurationPage extends StatelessWidget {
               ),
               CustomButton(
                 textButton: 'Gratis',
+                fontSize: 12,
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                fontWeight: FontWeight.w800,
               )
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/screen/signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MyLoginSignPage extends StatefulWidget {
   const MyLoginSignPage({Key? key, required this.title}) : super(key: key);
@@ -49,30 +50,19 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Container(
-                width: 235,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF01142B),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyLoginPage()),
-                    );
-                  },
-                  child: const Text(
-                    'Tengo una cuenta',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
+              CustomButton(
+                textButton: 'Tengo una cuenta',
+                fontSize: 12,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 75, vertical: 10),
+                fontWeight: FontWeight.w600,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyLoginPage()),
+                  );
+                },
               ),
               const SizedBox(height: 5),
               const Text(
@@ -85,35 +75,34 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 ),
               ),
               const SizedBox(height: 5),
-              SizedBox(
-                width: 235,
-                height: 38,
-                child: TextButton.icon(
-                  onPressed: () {
-                    // Acción al presionar el botón
-                  },
-                  icon: Image.asset(
-                    'assets/images/Google.png',
-                    width: 20,
-                    height: 20,
-                  ),
-                  label: const Text(
-                    'Continuar con Google',
-                    style: TextStyle(
-                      color: Color(0xFF9F9F9F),
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.blue,
-                    backgroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side:
-                          const BorderSide(color: Color(0xFFEBEBEB), width: 2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Material(
+                  shape: Border.all(color: const Color(0xFFEBEBEB), width: 2),
+                  color: const Color(0xFFFDFEFF),
+                  child: InkWell(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 10),
+                      child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/Google.png'),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Continuar con Google',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF9F9F9F),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ]),
                     ),
                   ),
                 ),
