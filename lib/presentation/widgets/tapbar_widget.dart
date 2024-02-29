@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
+import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 class TapBar extends StatelessWidget {
@@ -25,8 +26,7 @@ class TapBar extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const MyLoginSignPage(title: 'LoginSingPage'),
+                            builder: (context) => const MyHomeScreen(),
                           ),
                         );
                       },
@@ -46,15 +46,7 @@ class TapBar extends StatelessWidget {
                 Column(
                   children: [
                     InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const MyLoginSignPage(title: 'LoginSingPage'),
-                          ),
-                        );
-                      },
+                      onTap: () {},
                       child: Image.asset('assets/images/love.png'),
                     ),
                     const Text(
@@ -71,15 +63,7 @@ class TapBar extends StatelessWidget {
                 Column(
                   children: [
                     InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const MyLoginSignPage(title: 'LoginSingPage'),
-                          ),
-                        );
-                      },
+                      onTap: () {},
                       child: Image.asset('assets/images/marker.png'),
                     ),
                     const Text(
