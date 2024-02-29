@@ -11,8 +11,8 @@ class TapBar extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            padding: const EdgeInsets.only(top: 5),
-            height: 50,
+            padding: const EdgeInsets.only(top: 10),
+            height: 60,
             color: const Color(0xFFFFFFFF),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

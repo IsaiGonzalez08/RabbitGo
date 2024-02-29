@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rabbit_go/presentation/screen/login_screen.dart';
-import 'package:rabbit_go/presentation/screen/signup_screen.dart';
+import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MySuscriptionScreen extends StatelessWidget {
@@ -12,7 +11,6 @@ class MySuscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(top: 100),
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
@@ -21,12 +19,36 @@ class MySuscriptionScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/Logo.png'),
-              const Text(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 20),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyConfigurationScreen(),
+                    ),
+                  );
+                },
+                child: Image.asset('assets/images/LeftArrow.png'),
+              ),
+            ),
+            const SizedBox(
+              height: 100,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 126),
+              child: Image.asset(
+                'assets/images/Logo.png',
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 24),
+              child: const Text(
                 'Únete a la versión \nPremium, para disfrutar de \nlo mejor de RabbitGo.',
                 textAlign: TextAlign.start,
                 style: TextStyle(
@@ -35,8 +57,11 @@ class MySuscriptionScreen extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              const SizedBox(height: 10),
-              const Text(
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.only(left: 24),
+              child: const Text(
                 "Inicia hoy tu suscripción por \$20.00 y descubre los \ndiferentes beneficios que RabbitGo te ofrece.",
                 textAlign: TextAlign.start,
                 style: TextStyle(
@@ -47,19 +72,56 @@ class MySuscriptionScreen extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 5),
-              const Column(
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 24),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
+                  Text(
+                    "Sin auncios",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w900),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Más funcionalidades",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w900),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Guardar rutas favoritas",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w900),
+                  ),
                 ],
               ),
-              const CustomButton(
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 24),
+              child: const CustomButton(
                   textButton: 'Continuar-Total \$20.00',
                   padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
                   fontSize: 12,
-                  fontWeight: FontWeight.w600)
-            ],
-          ),
+                  fontWeight: FontWeight.w600),
+            )
+          ],
         ),
       ),
     );

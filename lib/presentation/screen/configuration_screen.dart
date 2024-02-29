@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
@@ -119,7 +120,13 @@ class MyConfigurationScreen extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MyGeneralScreen()),
+              );
+            },
             child: Row(
               children: [
                 const Padding(
@@ -140,7 +147,7 @@ class MyConfigurationScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 60.8,
+            height: 50.8,
           ),
           InkWell(
             onTap: () {
