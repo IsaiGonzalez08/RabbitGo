@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
-import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 class TapBar extends StatelessWidget {
   const TapBar({super.key});

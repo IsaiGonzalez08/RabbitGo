@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
+import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
@@ -91,7 +92,13 @@ class MyConfigurationScreen extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MySuscriptionScreen()),
+              );
+            },
             child: Row(
               children: [
                 const Padding(
