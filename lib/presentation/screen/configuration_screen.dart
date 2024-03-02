@@ -147,7 +147,7 @@ class MyConfigurationScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 50.8,
+            height: 163.8,
           ),
           InkWell(
             onTap: () {

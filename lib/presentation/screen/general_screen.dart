@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
+import 'package:rabbit_go/presentation/widgets/switch_widget.dart';
 
 class MyGeneralScreen extends StatelessWidget {
   const MyGeneralScreen({super.key});
@@ -49,37 +50,37 @@ class MyGeneralScreen extends StatelessWidget {
               )),
           Container(
             padding: const EdgeInsets.only(left: 20, top: 10),
-            child: Row(
+            child: const Row(
               children: [
-                const Text(
+                Text(
                   'Activar notificaciones de la app',
                   style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF949494),
                       fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(
-                  width: 60,
+                SizedBox(
+                  width: 50,
                 ),
-                Image.asset('assets/images/Switch.png')
+                SwitchExample()
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.only(left: 20, top: 15),
-            child: Row(
+            child: const Row(
               children: [
-                const Text(
+                 Text(
                   'Mandar al correo notificaciones',
                   style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF949494),
                       fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 60,
                 ),
-                Image.asset('assets/images/Switch.png'),
+                SwitchExample(),
               ],
             ),
           ),
