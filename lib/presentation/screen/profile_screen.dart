@@ -214,11 +214,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const CustomButton(
-                  textButton: 'Actualizar',
-                  padding: EdgeInsets.symmetric(horizontal: 110, vertical: 10),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600)
+              const CustomButton(textButton: 'Actualizar', width: 100, height: 50, fontSize: 12, fontWeight: FontWeight.w600)
             ],
           ),
         ),

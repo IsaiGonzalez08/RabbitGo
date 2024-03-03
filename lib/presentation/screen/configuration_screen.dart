@@ -54,12 +54,7 @@ class MyConfigurationScreen extends StatelessWidget {
               SizedBox(
                 width: 120,
               ),
-              CustomButton(
-                textButton: 'Gratis',
-                fontSize: 12,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                fontWeight: FontWeight.w800,
-              )
+              CustomButton(textButton: 'Gratis', width: 30, height: 30, fontSize: 12, fontWeight: FontWeight.w800)
             ],
           ),
           const SizedBox(

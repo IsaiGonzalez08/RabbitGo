@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
-import 'package:rabbit_go/presentation/screen/signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MyLoginSignPage extends StatefulWidget {
@@ -52,16 +52,15 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               const SizedBox(height: 10),
               CustomButton(
                 textButton: 'Tengo una cuenta',
+                width: 320,
+                height: 40,
                 fontSize: 14,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 75, vertical: 10),
                 fontWeight: FontWeight.w600,
-                onTap: () {
+                onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MyLoginScreen()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyLoginScreen()));
                 },
               ),
               const SizedBox(height: 5),
@@ -84,7 +83,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                     onTap: () {},
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 10),
+                          horizontal: 81, vertical: 10),
                       child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -108,39 +107,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 ),
               ),
               const SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    '¿Aún no tienes una cuenta?,',
-                    style: TextStyle(
-                      color: Color(0xFF6C6C6C),
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  Flexible(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MySignUpScreen()),
-                        );
-                      },
-                      child: const Text(
-                        'Crea una cuenta ahora.',
-                        style: TextStyle(
-                          color: Color(0xFF01142B),
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              )
+              const MyCreateAccountWidget()
             ],
           ),
         ),

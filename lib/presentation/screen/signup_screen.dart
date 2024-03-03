@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
+import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MySignUpScreen extends StatefulWidget {
   const MySignUpScreen({super.key});
@@ -61,111 +62,16 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     height: 5,
                   ),
                   const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: 320.0,
-                      height: 50.0,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 22.0, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: 'Nombre',
-                          hintStyle: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFFB8B8B8),
-                              fontWeight: FontWeight.w500),
-                          filled: true,
-                          fillColor: const Color(0xFFEDEDED),
-                        ),
-                      ),
-                    ),
-                  ),
+                  const MyTextFieldWidget(text: 'Nombre'),
                   const SizedBox(
                     height: 5,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: 320.0,
-                      height: 50.0,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 22.0, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: 'Correo Electrónico',
-                          hintStyle: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFFB8B8B8),
-                              fontWeight: FontWeight.w500),
-                          filled: true,
-                          fillColor: const Color(0xFFEDEDED),
-                        ),
-                      ),
-                    ),
-                  ),
+                  const MyTextFieldWidget(text: 'Correo Eletcrónico'),
+                  const MyTextFieldWidget(text: 'Contraseña'),
                   const SizedBox(
                     height: 5,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: 320.0,
-                      height: 50.0,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 22.0, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: 'Contraseña',
-                          hintStyle: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFFB8B8B8),
-                              fontWeight: FontWeight.w500),
-                          filled: true,
-                          fillColor: const Color(0xFFEDEDED),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      width: 320.0,
-                      height: 50.0,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 22.0, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: 'Confirmar Contraseña',
-                          hintStyle: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFFB8B8B8),
-                              fontWeight: FontWeight.w500),
-                          filled: true,
-                          fillColor: const Color(0xFFEDEDED),
-                        ),
-                      ),
-                    ),
-                  ),
+                  const MyTextFieldWidget(text: 'Confirmar contraseña'),
                   const SizedBox(
                     height: 5,
                   ),

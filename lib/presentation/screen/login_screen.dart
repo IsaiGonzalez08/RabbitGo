@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
+import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
@@ -68,57 +70,11 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: SizedBox(
-                    width: 320.0,
-                    height: 50.0,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 22.0, horizontal: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Correo Electrónico',
-                        hintStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFB8B8B8),
-                            fontWeight: FontWeight.w500),
-                        filled: true,
-                        fillColor: const Color(0xFFEDEDED),
-                      ),
-                    ),
-                  ),
-                ),
+                const MyTextFieldWidget(text: 'Correo Electrónico'),
                 const SizedBox(
                   height: 5,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: SizedBox(
-                    width: 320.0,
-                    height: 50.0,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 22.0, horizontal: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Contraseña',
-                        hintStyle: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFFB8B8B8),
-                            fontWeight: FontWeight.w500),
-                        filled: true,
-                        fillColor: const Color(0xFFEDEDED),
-                      ),
-                    ),
-                  ),
-                ),
+                const MyTextFieldWidget(text: 'Contraseña'),
                 Row(
                   children: [
                     const Padding(padding: EdgeInsets.only(left: 10)),
@@ -168,38 +124,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 120),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '¿Aún no tienes una cuenta?,',
-                      style: TextStyle(
-                        color: Color(0xFF6C6C6C),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Flexible(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MySignUpScreen()),
-                          );
-                        },
-                        child: const Text(
-                          'Crea una cuenta ahora.',
-                          style: TextStyle(
-                            color: Color(0xFF01142B),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )
+                const MyCreateAccountWidget()
               ],
             ),
           ),

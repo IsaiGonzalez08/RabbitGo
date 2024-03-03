@@ -114,13 +114,13 @@ class MySuscriptionScreen extends StatelessWidget {
               height: 20,
             ),
             Container(
-              padding: const EdgeInsets.only(left: 24),
-              child: const CustomButton(
-                  textButton: 'Continuar-Total \$20.00',
-                  padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600),
-            )
+                padding: const EdgeInsets.only(left: 24),
+                child: const CustomButton(
+                    textButton: 'Continuar-Total \$20.00',
+                    width: 200,
+                    height: 50,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600))
           ],
         ),
       ),
