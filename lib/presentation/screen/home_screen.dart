@@ -22,7 +22,7 @@ class MyHomeScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 50, top: 25),
+                padding: const EdgeInsets.only(left: 40, top: 45),
                 child: SizedBox(
                   width: 280.0,
                   height: 40.0,

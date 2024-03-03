@@ -178,6 +178,9 @@ class MyConfigurationScreen extends StatelessWidget {
                   ],
                 )),
           ),
+          const SizedBox(
+            height: 79.5,
+          ),
           const Row(
             children: [
               Expanded(

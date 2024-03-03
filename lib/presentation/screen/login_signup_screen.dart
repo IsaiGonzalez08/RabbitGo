@@ -35,8 +35,8 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 '¡Bienvenido!',
                 style: TextStyle(
                   color: Color(0xFF01142B),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32,
                 ),
               ),
               const SizedBox(height: 5),
@@ -46,13 +46,13 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 style: TextStyle(
                   color: Color(0xFF6C6C6C),
                   fontWeight: FontWeight.w500,
-                  fontSize: 11,
+                  fontSize: 12,
                 ),
               ),
               const SizedBox(height: 10),
               CustomButton(
                 textButton: 'Tengo una cuenta',
-                fontSize: 12,
+                fontSize: 14,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 75, vertical: 10),
                 fontWeight: FontWeight.w600,
@@ -97,7 +97,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                             const Text(
                               'Continuar con Google',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Color(0xFF9F9F9F),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -107,7 +107,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -116,7 +116,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                     style: TextStyle(
                       color: Color(0xFF6C6C6C),
                       fontWeight: FontWeight.w400,
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(width: 2),
@@ -134,7 +134,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                         style: TextStyle(
                           color: Color(0xFF01142B),
                           fontWeight: FontWeight.w800,
-                          fontSize: 11,
+                          fontSize: 12,
                         ),
                       ),
                     ),

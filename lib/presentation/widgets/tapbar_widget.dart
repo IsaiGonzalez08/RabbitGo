@@ -36,12 +36,12 @@ class TapBar extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF979797),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 40),
                 Column(
                   children: [
                     InkWell(
@@ -53,12 +53,12 @@ class TapBar extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF979797),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 40),
                 Column(
                   children: [
                     InkWell(
@@ -70,12 +70,12 @@ class TapBar extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF979797),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 40),
                 Column(
                   children: [
                     InkWell(
@@ -94,7 +94,7 @@ class TapBar extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF979797),
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                   ],

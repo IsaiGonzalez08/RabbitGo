@@ -21,6 +21,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
       home: Scaffold(
           appBar: AppBar(
             title: IconButton(
+              padding: const EdgeInsets.only(top: 20),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -36,26 +37,35 @@ class _MySignScreenState extends State<MySignUpScreen> {
             child: Center(
               child: Column(
                 children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
                   const Text(
                     'Ingresa tus datos',
                     style: TextStyle(
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         color: Color(0xFF01142B),
-                        fontSize: 22),
+                        fontSize: 24),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   const Text(
                     'Recuerda colocar tus datos correctamente.',
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF979797),
-                        fontSize: 11),
+                        fontSize: 12),
+                  ),
+                  const SizedBox(
+                    height: 5,
                   ),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: SizedBox(
-                      width: 280.0,
-                      height: 45.0,
+                      width: 320.0,
+                      height: 50.0,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -66,20 +76,23 @@ class _MySignScreenState extends State<MySignUpScreen> {
                           ),
                           hintText: 'Nombre',
                           hintStyle: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFFB8B8B8),
-                          ),
+                              fontSize: 12,
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500),
                           filled: true,
                           fillColor: const Color(0xFFEDEDED),
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: SizedBox(
-                      width: 280.0,
-                      height: 45.0,
+                      width: 320.0,
+                      height: 50.0,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -90,20 +103,23 @@ class _MySignScreenState extends State<MySignUpScreen> {
                           ),
                           hintText: 'Correo Electrónico',
                           hintStyle: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFFB8B8B8),
-                          ),
+                              fontSize: 12,
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500),
                           filled: true,
                           fillColor: const Color(0xFFEDEDED),
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: SizedBox(
-                      width: 280.0,
-                      height: 45.0,
+                      width: 320.0,
+                      height: 50.0,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -114,20 +130,23 @@ class _MySignScreenState extends State<MySignUpScreen> {
                           ),
                           hintText: 'Contraseña',
                           hintStyle: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFFB8B8B8),
-                          ),
+                              fontSize: 12,
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500),
                           filled: true,
                           fillColor: const Color(0xFFEDEDED),
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: SizedBox(
-                      width: 280.0,
-                      height: 45.0,
+                      width: 320.0,
+                      height: 50.0,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -138,14 +157,17 @@ class _MySignScreenState extends State<MySignUpScreen> {
                           ),
                           hintText: 'Confirmar Contraseña',
                           hintStyle: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFFB8B8B8),
-                          ),
+                              fontSize: 12,
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500),
                           filled: true,
                           fillColor: const Color(0xFFEDEDED),
                         ),
                       ),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 5,
                   ),
                   Row(
                     children: [
@@ -166,6 +188,9 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       ))
                     ],
                   ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Row(
                     children: [
                       const Padding(padding: EdgeInsets.only(left: 20)),
@@ -181,10 +206,10 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   Container(
-                    width: 235,
-                    height: 35,
+                    width: 320,
+                    height: 40,
                     decoration: BoxDecoration(
                       color: const Color(0xFF01142B),
                       borderRadius: BorderRadius.circular(5),
@@ -202,7 +227,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 14,
                         ),
                       ),
                     ),
