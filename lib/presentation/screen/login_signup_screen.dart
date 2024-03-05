@@ -17,7 +17,6 @@ class _MyLoginPage extends State<MyLoginSignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(top: 210),
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
@@ -26,90 +25,91 @@ class _MyLoginPage extends State<MyLoginSignPage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                '¡Bienvenido!',
-                style: TextStyle(
-                  color: Color(0xFF01142B),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 129,
+            ),
+            const Text(
+              '¡Bienvenido!',
+              style: TextStyle(
+                color: Color(0xFF01142B),
+                fontWeight: FontWeight.w700,
+                fontSize: 32,
               ),
-              const SizedBox(height: 5),
-              const Text(
-                '¿Listo para recorrer la ciudad?, inicia sesión para \ncomenzar.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF6C6C6C),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              '¿Listo para recorrer la ciudad?, inicia sesión para \ncomenzar.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF6C6C6C),
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
               ),
-              const SizedBox(height: 10),
-              CustomButton(
-                textButton: 'Tengo una cuenta',
-                width: 320,
-                height: 40,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyLoginScreen()));
-                },
+            ),
+            const SizedBox(height: 10),
+            CustomButton(
+              textButton: 'Tengo una cuenta',
+              width: 320,
+              height: 40,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyLoginScreen()));
+              },
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'ó',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF979797),
+                fontWeight: FontWeight.w300,
+                fontSize: 12,
               ),
-              const SizedBox(height: 5),
-              const Text(
-                'ó',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF979797),
-                  fontWeight: FontWeight.w300,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 5),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Material(
-                  shape: Border.all(color: const Color(0xFFEBEBEB), width: 2),
-                  color: const Color(0xFFFDFEFF),
-                  child: InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 81, vertical: 10),
-                      child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/Google.png'),
-                            const SizedBox(
-                              width: 10,
+            ),
+            const SizedBox(height: 5),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Material(
+                shape: Border.all(color: const Color(0xFFEBEBEB), width: 2),
+                color: const Color(0xFFFDFEFF),
+                child: InkWell(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 81, vertical: 10),
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/Google.png'),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'Continuar con Google',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF9F9F9F),
+                              fontWeight: FontWeight.w600,
                             ),
-                            const Text(
-                              'Continuar con Google',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF9F9F9F),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ]),
-                    ),
+                          ),
+                        ]),
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
-              const MyCreateAccountWidget()
-            ],
-          ),
+            ),
+            const SizedBox(height: 25),
+            const MyCreateAccountWidget(),
+          ],
         ),
       ),
     );

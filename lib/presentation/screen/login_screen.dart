@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
-import 'package:rabbit_go/presentation/screen/signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MyLoginScreen extends StatefulWidget {
@@ -40,9 +40,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         body: SingleChildScrollView(
           child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 35,
                 ),
                 Image.asset(
                   'assets/images/LoginLogo.png',
@@ -69,15 +70,17 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     fontSize: 12,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 const MyTextFieldWidget(text: 'Correo Electrónico'),
                 const SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
                 const MyTextFieldWidget(text: 'Contraseña'),
                 Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 10)),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Checkbox(
                       tristate: true,
                       value: _isChecked,
@@ -87,41 +90,28 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                         });
                       },
                     ),
-                    const Flexible(
-                        child: Text(
+                    const Text(
                       'Mostrar contraseña',
                       style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFF979797),
                           fontWeight: FontWeight.w400),
-                    ))
+                    )
                   ],
                 ),
                 const SizedBox(height: 40),
-                Container(
+                CustomButton(
+                  textButton: 'Comenzar',
                   width: 320,
                   height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF01142B),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  onPressed: () {
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MyHomeScreen()),
-                      );
-                    },
-                    child: const Text(
-                      'Comenzar',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
+                            builder: (context) => const MyHomeScreen()));
+                  },
                 ),
                 const SizedBox(height: 120),
                 const MyCreateAccountWidget()

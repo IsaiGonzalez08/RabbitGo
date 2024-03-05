@@ -59,17 +59,20 @@ class _MySignScreenState extends State<MySignUpScreen> {
                         fontSize: 12),
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   const SizedBox(height: 10),
                   const MyTextFieldWidget(text: 'Nombre'),
                   const SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   const MyTextFieldWidget(text: 'Correo Eletcrónico'),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   const MyTextFieldWidget(text: 'Contraseña'),
                   const SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   const MyTextFieldWidget(text: 'Confirmar contraseña'),
                   const SizedBox(
@@ -107,7 +110,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Color(0xFFC7C7C7),
-                          fontSize: 10,
+                          fontSize: 11,
                         ),
                       )
                     ],

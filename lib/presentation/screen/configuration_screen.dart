@@ -3,6 +3,7 @@ import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
+import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
@@ -16,170 +17,132 @@ class MyConfigurationScreen extends StatelessWidget {
       title: 'Material App',
       home: Scaffold(
           body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Padding(padding: EdgeInsets.only(top: 30)),
-          const Center(
-            child: Text(
-              'Configuración',
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFB5B5B5),
-                  fontSize: 12),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          const Row(
-            children: [
-              Padding(padding: EdgeInsets.only(left: 20)),
-              Column(
-                children: [
-                  Text(
-                    'Victor Villava',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF737373),
-                        fontSize: 16),
-                  ),
-                  Text(
-                    'Prueba@gmail.com',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF737373),
-                        fontSize: 10),
-                  )
-                ],
-              ),
-              SizedBox(
-                width: 120,
-              ),
-              CustomButton(textButton: 'Gratis', width: 30, height: 30, fontSize: 12, fontWeight: FontWeight.w800)
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MyProfileScreen()),
-              );
-            },
-            child: Row(
+          SingleChildScrollView(
+            child: Column(
               children: [
-                const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 40, horizontal: 10)),
+                const SizedBox(
+                  height: 50,
+                ),
                 const Text(
-                  'Perfil',
+                  'Configuración',
                   style: TextStyle(
-                      fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B6B6B)),
+                      color: Color(0xFFB5B5B5),
+                      fontSize: 14),
                 ),
                 const SizedBox(
-                  width: 210,
+                  height: 20,
                 ),
-                Image.asset('assets/images/Forward.png')
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MySuscriptionScreen()),
-              );
-            },
-            child: Row(
-              children: [
-                const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 40, horizontal: 10)),
-                const Text(
-                  'Suscripción',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B6B6B)),
-                ),
-                const SizedBox(
-                  width: 170,
-                ),
-                Image.asset('assets/images/Forward.png')
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MyGeneralScreen()),
-              );
-            },
-            child: Row(
-              children: [
-                const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 40, horizontal: 10)),
-                const Text(
-                  'General',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B6B6B)),
-                ),
-                const SizedBox(
-                  width: 195,
-                ),
-                Image.asset('assets/images/Forward.png')
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 163.8,
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MyLoginSignPage(
-                          title: 'hola',
-                        )),
-              );
-            },
-            child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: Row(
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text(
-                      'Cerrar sesión',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFFFF7878),
-                          fontWeight: FontWeight.w400),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Victor Villava',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF737373),
+                              fontSize: 18),
+                        ),
+                        Text(
+                          'Prueba@gmail.com',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF737373),
+                              fontSize: 14),
+                        )
+                      ],
                     ),
-                    const SizedBox(
-                      width: 171,
+                    SizedBox(
+                      width: 10,
                     ),
-                    Image.asset('assets/images/Logout.png')
+                    CustomButton(
+                        textButton: 'Gratis',
+                        width: 68,
+                        height: 30,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800)
                   ],
-                )),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MyButtonConfigurationWidget(
+                  text: 'Perfil',
+                  space: 100,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MyProfileScreen()));
+                  },
+                ),
+                MyButtonConfigurationWidget(
+                  space: 55,
+                  text: 'Subscripción',
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MySuscriptionScreen()));
+                  },
+                ),
+                MyButtonConfigurationWidget(
+                  space: 90,
+                  text: 'General',
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MyGeneralScreen()));
+                  },
+                ),
+              ],
+            ),
           ),
-          const SizedBox(
-            height: 79.5,
-          ),
-          const Row(
+          Column(
             children: [
-              Expanded(
-                child: TapBar(),
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyLoginSignPage(
+                                title: 'hola',
+                              )),
+                    );
+                  },
+                  child: SizedBox(
+                    height: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Cerrar sesión',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFFFF7878),
+                              fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(
+                          width: 180,
+                        ),
+                        Image.asset('assets/images/Logout.png'),
+                        const Padding(padding: EdgeInsets.only(right: 10))
+                      ],
+                    ),
+                  )),
+              const Row(
+                children: [
+                  Expanded(
+                    child: TapBar(),
+                  ),
+                ],
               ),
             ],
           ),

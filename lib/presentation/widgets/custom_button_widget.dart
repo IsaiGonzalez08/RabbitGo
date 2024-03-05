@@ -27,11 +27,12 @@ class CustomButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextButton(
-        onPressed:
-          onPressed,
+        onPressed: onPressed,
         child: Text(
           textButton,
+          textAlign: TextAlign.center,
           style: TextStyle(
+            height: 0,
             color: Colors.white,
             fontWeight: fontWeight,
             fontSize: fontSize,
