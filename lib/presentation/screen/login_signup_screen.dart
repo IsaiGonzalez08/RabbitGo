@@ -17,8 +17,6 @@ class _MyLoginPage extends State<MyLoginSignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/bg-bienvenida.png'),

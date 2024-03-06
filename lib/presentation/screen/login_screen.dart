@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
@@ -14,7 +15,6 @@ class MyLoginScreen extends StatefulWidget {
 }
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
-  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,29 +76,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   height: 10,
                 ),
                 const MyTextFieldWidget(text: 'Contraseña'),
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Checkbox(
-                      tristate: true,
-                      value: _isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _isChecked = value ?? false;
-                        });
-                      },
-                    ),
-                    const Text(
-                      'Mostrar contraseña',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF979797),
-                          fontWeight: FontWeight.w400),
-                    )
-                  ],
-                ),
+                const MyCheckboxWidget(),
                 const SizedBox(height: 40),
                 CustomButton(
                   textButton: 'Comenzar',

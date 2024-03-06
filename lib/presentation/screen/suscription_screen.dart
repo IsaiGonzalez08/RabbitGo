@@ -3,124 +3,125 @@ import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MySuscriptionScreen extends StatelessWidget {
-  const MySuscriptionScreen({
-    Key? key,
-  }) : super(key: key);
+  const MySuscriptionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
         decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/bg-bienvenida.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+            image: DecorationImage(
+                alignment: Alignment(
+                  10.0,
+                  -1.1,
+                ),
+                image: AssetImage('assets/images/bg-bienvenida.png'),
+                fit: BoxFit.cover)),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-              padding: const EdgeInsets.only(left: 20),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
+            InkWell(
+              onTap: () {
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MyConfigurationScreen(),
+                        builder: (context) => const MyConfigurationScreen()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 30, top: 20),
+                child: Row(
+                  children: [
+                    Image.asset('assets/images/ForwardProfile.png'),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Column(
+              children: [
+                Image.asset('assets/images/Logo.png'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: const TextSpan(
+                        text:
+                            'Únete a la versión\nPremium, para disfrutar de\nlo mejor de',
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Color(0XFF01142B),
+                            fontWeight: FontWeight.w600),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: ' Rabbit',
+                              style: TextStyle(fontWeight: FontWeight.w400)),
+                          TextSpan(text: 'Go.'),
+                        ],
+                      ),
                     ),
-                  );
-                },
-                child: Image.asset('assets/images/LeftArrow.png'),
-              ),
-            ),
-            const SizedBox(
-              height: 100,
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 126),
-              child: Image.asset(
-                'assets/images/Logo.png',
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 24),
-              child: const Text(
-                'Únete a la versión \nPremium, para disfrutar de \nlo mejor de RabbitGo.',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Color(0xFF01142B),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      'Inicia hoy tu suscripción por \$20.00 y descubre los \ndiferentes beneficios que RabbitGo te ofrece.',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          '• Sin anuncios',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF01142B),
+                              fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          '• Más funcionalidades',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF01142B),
+                              fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          '• Guardar rutas favoritas',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF01142B),
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.only(left: 24),
-              child: const Text(
-                "Inicia hoy tu suscripción por \$20.00 y descubre los \ndiferentes beneficios que RabbitGo te ofrece.",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Color(
-                    0xFF000000,
-                  ),
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 24),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Sin auncios",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w900),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Más funcionalidades",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w900),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Guardar rutas favoritas",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 24),
-                child: const CustomButton(
-                    textButton: 'Continuar-Total \$20.00',
-                    width: 200,
-                    height: 50,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600))
+            const CustomButton(
+                textButton: 'Continuar - Total \$20.00',
+                width: 320,
+                height: 40,
+                fontSize: 14,
+                fontWeight: FontWeight.w600)
           ],
         ),
       ),

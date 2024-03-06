@@ -8,174 +8,185 @@ class MyGeneralScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Material App',
-      home: Scaffold(
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Padding(padding: EdgeInsets.only(top: 40)),
-          Row(
+        debugShowCheckedModeBanner: false,
+        title: 'Material App',
+        home: Scaffold(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                width: 20,
+                height: 50,
               ),
-              InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyConfigurationScreen()),
-                    );
-                  },
-                  child: Image.asset('assets/images/ForwardProfile.png')),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Padding(padding: EdgeInsets.only(left: 30)),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyConfigurationScreen(),
+                        ),
+                      );
+                    },
+                    child: Image.asset('assets/images/ForwardProfile.png'),
+                  ),
+                  const SizedBox(
+                    width: 100,
+                  ),
+                  const Text(
+                    'General',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFFB5B5B5),
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
               const SizedBox(
-                width: 100,
+                height: 50,
               ),
-              const Text(
-                'General',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFFB5B5B5),
-                    fontWeight: FontWeight.w600),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 30),
+                    child: Text(
+                      'Notificaciones',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF6B6B6B),
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Activar notificaciones de la app',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF949494),
+                            fontWeight: FontWeight.w400),
+                      ),
+                      MySwitchWidget()
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Mandar al correo notificaciones',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF949494),
+                            fontWeight: FontWeight.w400),
+                      ),
+                      MySwitchWidget()
+                    ],
+                  ),
+                ],
               ),
+              const SizedBox(
+                height: 30,
+              ),
+              const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Text(
+                        'Tema',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF6B6B6B),
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          'Activar modo oscuro',
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF949494),
+                              fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(),
+                        MySwitchWidget()
+                      ],
+                    ),
+                  ]),
+              const SizedBox(
+                height: 30,
+              ),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 30),
+                  child: Text(
+                    'Ayuda y Soporte',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF6B6B6B),
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Padding(padding: EdgeInsets.only(left: 30, top: 40)),
+                    const Text(
+                      'Política de privacidad',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF949494),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(
+                      width: 135,
+                    ),
+                    Image.asset('assets/images/Forward.png')
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Padding(padding: EdgeInsets.only(left: 30, top: 40)),
+                    const Text(
+                      'Términos del servicio',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF949494),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(
+                      width: 137,
+                    ),
+                    Image.asset('assets/images/Forward.png')
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Padding(padding: EdgeInsets.only(left: 30, top: 40)),
+                    const Text(
+                      'Ajuste de privacidad',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF949494),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(
+                      width: 138,
+                    ),
+                    Image.asset('assets/images/Forward.png')
+                  ],
+                ),
+              ]),
             ],
           ),
-          Container(
-              padding: const EdgeInsets.only(left: 20, top: 40),
-              child: const Text(
-                'Notificaciones',
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B6B6B),
-                    fontWeight: FontWeight.w600),
-              )),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 10),
-            child: const Row(
-              children: [
-                Text(
-                  'Activar notificaciones de la app',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  width: 50,
-                ),
-                SwitchExample()
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 15),
-            child: const Row(
-              children: [
-                 Text(
-                  'Mandar al correo notificaciones',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  width: 60,
-                ),
-                SwitchExample(),
-              ],
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.only(left: 20, top: 40),
-              child: const Text(
-                'Tema',
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B6B6B),
-                    fontWeight: FontWeight.w600),
-              )),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 15),
-            child: Row(
-              children: [
-                const Text(
-                  'Activar modo oscuro',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  width: 120,
-                ),
-                Image.asset('assets/images/Switch.png'),
-              ],
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.only(left: 20, top: 40),
-              child: const Text(
-                'Ayuda y soporte',
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B6B6B),
-                    fontWeight: FontWeight.w600),
-              )),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 15),
-            child: Row(
-              children: [
-                const Text(
-                  'Activar modo oscuro',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  width: 130,
-                ),
-                Image.asset('assets/images/Forward.png'),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 15),
-            child: Row(
-              children: [
-                const Text(
-                  'Términos del servicio',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  width: 125,
-                ),
-                Image.asset('assets/images/Forward.png'),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 15),
-            child: Row(
-              children: [
-                const Text(
-                  'Ajuste de privacidad',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  width: 130,
-                ),
-                Image.asset('assets/images/Forward.png'),
-              ],
-            ),
-          ),
-        ]),
-      ),
-    );
+        ));
   }
 }
