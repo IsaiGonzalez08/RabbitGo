@@ -23,29 +23,39 @@ class MyHomeScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 40, top: 45),
-                child: SizedBox(
-                  width: 280.0,
-                  height: 40.0,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 18.0,
-                        horizontal: 15.0,
+                child: Container(
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    )
+                  ]),
+                  child: SizedBox(
+                    width: 280.0,
+                    height: 40.0,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 18.0,
+                          horizontal: 15.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: 'Buscar ruta',
+                        hintStyle: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFFE0E0E0),
+                            fontWeight: FontWeight.w500),
+                        filled: true,
+                        fillColor: const Color(0xFFFFFFFF),
+                        prefixIcon: Image.asset(
+                          'assets/images/search.png',
+                        ), // Icono dentro del campo de texto
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: 'Buscar ruta',
-                      hintStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE0E0E0),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFFFFFFF),
-                      prefixIcon: Image.asset(
-                        'assets/images/search.png',
-                      ), // Icono dentro del campo de texto
                     ),
                   ),
                 ),

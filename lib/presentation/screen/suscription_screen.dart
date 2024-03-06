@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
@@ -41,7 +42,7 @@ class MySuscriptionScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                Image.asset('assets/images/Logo.png'),
+                SvgPicture.asset('assets/images/Logo.svg'),
                 const SizedBox(
                   height: 10,
                 ),

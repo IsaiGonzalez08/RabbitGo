@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 
@@ -29,7 +30,7 @@ class TapBar extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Image.asset('assets/images/home.png'),
+                      child: SvgPicture.asset('assets/images/home.svg'),
                     ),
                     const Text(
                       'Home',
@@ -45,9 +46,8 @@ class TapBar extends StatelessWidget {
                 Column(
                   children: [
                     InkWell(
-                      onTap: () {},
-                      child: Image.asset('assets/images/love.png'),
-                    ),
+                        onTap: () {},
+                        child: SvgPicture.asset('assets/images/love.svg')),
                     const Text(
                       'Favoritos',
                       style: TextStyle(
@@ -63,7 +63,7 @@ class TapBar extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {},
-                      child: Image.asset('assets/images/marker.png'),
+                      child: SvgPicture.asset('assets/images/marker.svg'),
                     ),
                     const Text(
                       'Marcar',
@@ -87,7 +87,7 @@ class TapBar extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Image.asset('assets/images/profile.png'),
+                      child: SvgPicture.asset('assets/images/profile.svg'),
                     ),
                     const Text(
                       'Perfil',

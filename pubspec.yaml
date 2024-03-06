@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.22.0
+  flutter_svg: ^2.0.10+1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -58,22 +58,22 @@ flutter:
     - assets/images/Fondo-bienvenida.png
     - assets/images/Google.png
     - assets/images/LeftArrow.png
-    - assets/images/LoginLogo.png
+    - assets/images/LoginLogo.svg
     - assets/images/MarkYes.png
     - assets/images/LogoRabbitGo1.png
     - assets/images/bg-home.png
     - assets/images/search.png
-    - assets/images/home.png
-    - assets/images/love.png
-    - assets/images/marker.png
-    - assets/images/profile.png
+    - assets/images/home.svg
+    - assets/images/love.svg
+    - assets/images/marker.svg
+    - assets/images/profile.svg
     - assets/images/Forward.png
-    - assets/images/homewhite.png
+    - assets/images/homewhite.svg
     - assets/images/perfil.png
     - assets/images/ForwardProfile.png
     - assets/images/UserProfile.png
     - assets/images/Logout.png
-    - assets/images/Logo.png
+    - assets/images/Logo.svg
     - assets/images/Switch.png
 
   # The following line ensures that the Material Icons font is

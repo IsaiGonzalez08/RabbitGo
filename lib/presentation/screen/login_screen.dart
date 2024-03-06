@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
@@ -15,7 +16,6 @@ class MyLoginScreen extends StatefulWidget {
 }
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,10 +45,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                 const SizedBox(
                   height: 35,
                 ),
-                Image.asset(
-                  'assets/images/LoginLogo.png',
-                  width: 90,
-                  height: 90,
+                SvgPicture.asset(
+                  'assets/images/LoginLogo.svg',
+                  width: 100,
+                  height: 100,
                 ),
                 const SizedBox(height: 15),
                 const Text(
