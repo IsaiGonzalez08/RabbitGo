@@ -4,9 +4,7 @@ import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MyLoginSignPage extends StatefulWidget {
-  const MyLoginSignPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyLoginSignPage({Key? key,}) : super(key: key);
 
   @override
   State<MyLoginSignPage> createState() => _MyLoginPage();

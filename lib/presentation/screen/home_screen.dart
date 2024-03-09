@@ -1,68 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
-class MyHomeScreen extends StatelessWidget {
-  const MyHomeScreen({Key? key}) : super(key: key);
+class MyHomeScreen extends StatefulWidget {
+  const MyHomeScreen({super.key});
 
+  @override
+  State<MyHomeScreen> createState() => _MyHomeScreenState();
+}
+
+class _MyHomeScreenState extends State<MyHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
       home: Scaffold(
-        body: Center(
-          child: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/bg-home.png'),
-                    fit: BoxFit.cover,
-                  ),
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg-home.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40, top: 45),
-                child: Container(
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    )
-                  ]),
-                  child: SizedBox(
-                    width: 280.0,
-                    height: 40.0,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 18.0,
-                          horizontal: 15.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Buscar ruta',
-                        hintStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFE0E0E0),
-                            fontWeight: FontWeight.w500),
-                        filled: true,
-                        fillColor: const Color(0xFFFFFFFF),
-                        prefixIcon: Image.asset(
-                          'assets/images/search.png',
-                        ), // Icono dentro del campo de texto
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.1,
+                  vertical: MediaQuery.of(context).size.height * 0.06),
+              child: Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  )
+                ]),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  height: 40.0,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 18.0,
+                        horizontal: 15.0,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: 'Buscar ruta',
+                      hintStyle: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFE0E0E0),
+                          fontWeight: FontWeight.w500),
+                      filled: true,
+                      fillColor: const Color(0xFFFFFFFF),
+                      prefixIcon: Image.asset(
+                        'assets/images/search.png',
                       ),
                     ),
                   ),
                 ),
               ),
-              const Positioned(bottom: 0, left: 0, right: 0, child: TapBar()),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

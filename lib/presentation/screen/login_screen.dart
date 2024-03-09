@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MyLoginScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      const MyLoginSignPage(title: 'LoginSingPage'),
+                      const MyLoginSignPage(),
                 ),
               );
             },
@@ -88,7 +88,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MyHomeScreen()));
+                            builder: (context) => const MyTapBarWidget()));
                   },
                 ),
                 const SizedBox(height: 120),

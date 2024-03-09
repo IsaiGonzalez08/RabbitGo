@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MySignUpScreen extends StatefulWidget {
@@ -13,7 +13,6 @@ class MySignUpScreen extends StatefulWidget {
 }
 
 class _MySignScreenState extends State<MySignUpScreen> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -110,7 +109,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MyHomeScreen()),
+                              builder: (context) => const MyTapBarWidget()),
                         );
                       },
                       child: const Text(
