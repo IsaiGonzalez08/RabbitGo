@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
-import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 void main() {
   runApp(const MyApp());

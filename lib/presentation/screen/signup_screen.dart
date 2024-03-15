@@ -61,19 +61,39 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     height: 10,
                   ),
                   const SizedBox(height: 10),
-                  const MyTextFieldWidget(text: 'Nombre'),
+                  MyTextFieldWidget(
+                    text: 'Nombre',
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const MyTextFieldWidget(text: 'Correo Eletcrónico'),
+                  MyTextFieldWidget(
+                    text: 'Correo Eletcrónico',
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const MyTextFieldWidget(text: 'Contraseña'),
+                  MyTextFieldWidget(
+                    text: 'Contraseña',
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const MyTextFieldWidget(text: 'Confirmar contraseña'),
+                  MyTextFieldWidget(
+                    text: 'Confirmar contraseña',
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
                   const SizedBox(
                     height: 5,
                   ),

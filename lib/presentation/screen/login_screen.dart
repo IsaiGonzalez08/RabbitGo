@@ -6,6 +6,7 @@ import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
+import 'package:email_validator/email_validator.dart';
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
@@ -16,84 +17,121 @@ class MyLoginScreen extends StatefulWidget {
 }
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor ingrese un email';
+    } 
+    if (!EmailValidator.validate(value)) {
+      return 'Por favor ingrese un email correcto';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Por favor ingrese una contraseña";
+    } else if (value.length < 6) {
+      return "La contraseña debe tener al menos 6 caracteres";
+    } else if (value.length > 15) {
+      return "La contraseña no puede ser mayor a 15 caracteres";
+    } else {
+      return null;
+    }
+  }
+
+  void SubmitForm() {
+    if (_formKey.currentState!.validate()) {
+      print('Formulario validado');
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const MyTapBarWidget()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: IconButton(
-            padding: const EdgeInsets.only(top: 20),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const MyLoginSignPage(),
-                ),
-              );
-            },
-            icon: Image.asset('assets/images/LeftArrow.png'),
+      home: Form(
+        key: _formKey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: IconButton(
+              padding: const EdgeInsets.only(top: 20),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyLoginSignPage(),
+                  ),
+                );
+              },
+              icon: Image.asset('assets/images/LeftArrow.png'),
+            ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 35,
-                ),
-                SvgPicture.asset(
-                  'assets/images/LoginLogo.svg',
-                  width: 100,
-                  height: 100,
-                ),
-                const SizedBox(height: 15),
-                const Text(
-                  '¡Bienvenido de vuelta!',
-                  style: TextStyle(
-                    color: Color(0xFF01142B),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 35,
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/LoginLogo.svg',
+                    width: 100,
+                    height: 100,
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    '¡Bienvenido de vuelta!',
+                    style: TextStyle(
+                      color: Color(0xFF01142B),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Text(
+                    'Ingresa tus datos para poder entrar.',
+                    style: TextStyle(
+                      color: Color(0xFF979797),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  MyTextFieldWidget(
+                    text: 'Correo Electrónico',
+                    validator: validateEmail,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MyTextFieldWidget(
+                    text: 'Contraseña',
+                    validator: validatePassword,
+                  ),
+                  const MyCheckboxWidget(),
+                  const SizedBox(height: 40),
+                  CustomButton(
+                    textButton: 'Comenzar',
+                    width: 320,
+                    height: 40,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    fontSize: 24,
+                    onPressed: () {
+                      SubmitForm();
+                    },
                   ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                const Text(
-                  'Ingresa tus datos para poder entrar.',
-                  style: TextStyle(
-                    color: Color(0xFF979797),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const MyTextFieldWidget(text: 'Correo Electrónico'),
-                const SizedBox(
-                  height: 10,
-                ),
-                const MyTextFieldWidget(text: 'Contraseña'),
-                const MyCheckboxWidget(),
-                const SizedBox(height: 40),
-                CustomButton(
-                  textButton: 'Comenzar',
-                  width: 320,
-                  height: 40,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyTapBarWidget()));
-                  },
-                ),
-                const SizedBox(height: 120),
-                const MyCreateAccountWidget()
-              ],
+                  const SizedBox(height: 120),
+                  const MyCreateAccountWidget()
+                ],
+              ),
             ),
           ),
         ),

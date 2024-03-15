@@ -52,80 +52,100 @@ class MyProfileScreen extends StatelessWidget {
                   height: 20,
                 ),
                 Image.asset('assets/images/UserProfile.png'),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    Text(
+                    const Text(
                       'Nombre',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9A9A9A),
                           fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    MyTextFieldWidget(text: 'Nombre'),
+                    MyTextFieldWidget(
+                      text: 'Nombre',
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
                   ],
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    Text(
+                    const Text(
                       'Correo Electrónico',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9A9A9A),
                           fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    MyTextFieldWidget(text: 'Correo Electrónico'),
+                    MyTextFieldWidget(
+                      text: 'Correo Electrónico',
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
                   ],
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    Text(
+                    const Text(
                       'Contraseña',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9A9A9A),
                           fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    MyTextFieldWidget(text: 'Contraseña'),
+                    MyTextFieldWidget(
+                      text: 'Contraseña',
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
                   ],
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    Text(
+                    const Text(
                       'Confirmar Contraseña',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9A9A9A),
                           fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    MyTextFieldWidget(text: 'Confirmar Contraseña'),
+                    MyTextFieldWidget(
+                      text: 'Confirmar Contraseña',
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
                   ],
                 ),
                 const MyCheckboxWidget()

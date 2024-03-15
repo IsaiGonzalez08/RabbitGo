@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
+
+
 class MyTextFieldWidget extends StatelessWidget {
-  const MyTextFieldWidget({Key? key, required this.text}) : super(key: key);
+  const MyTextFieldWidget({Key? key, required this.text, required this.validator}) : super(key: key);
   final String text;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 320.0,
       height: 50.0,
-      child: TextField(
+      child: TextFormField(
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 22.0, horizontal: 15),
@@ -25,6 +28,7 @@ class MyTextFieldWidget extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xFFEDEDED),
         ),
+        validator: validator,
       ),
     );
   }
