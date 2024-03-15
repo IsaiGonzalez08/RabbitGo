@@ -3,8 +3,8 @@
         android:label="rabbit_go"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyBbpxfRXnIHrMtUaX5ptq7NkeDVn8Ak3w4"/>
+        <meta-data android:name="com.google.android.geo.AIzaSyBw5uIpXsmZhnBAA9A1c_QJ2kYTJBuuCAQ"
+               android:value="AIzaSyBw5uIpXsmZhnBAA9A1c_QJ2kYTJBuuCAQ"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

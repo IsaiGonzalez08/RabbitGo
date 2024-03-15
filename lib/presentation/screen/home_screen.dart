@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyHomeScreen extends StatefulWidget {
-  const MyHomeScreen({super.key});
+  const MyHomeScreen({Key? key}) : super(key: key);
 
   @override
   State<MyHomeScreen> createState() => _MyHomeScreenState();
