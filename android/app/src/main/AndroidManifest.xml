@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="rabbit_go"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.google.android.geo.AIzaSyBw5uIpXsmZhnBAA9A1c_QJ2kYTJBuuCAQ"
-               android:value="AIzaSyBw5uIpXsmZhnBAA9A1c_QJ2kYTJBuuCAQ"/>
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyAspY0_cBfR7TFe9F3IFhZ1WoAnV1PWTcU"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

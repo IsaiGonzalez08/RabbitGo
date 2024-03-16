@@ -9,14 +9,6 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  late GoogleMapController mapController;
-
-  final LatLng _center = const LatLng(45.521563, -122.677433);
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,9 +17,12 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       home: Scaffold(
         body: Stack(
           children: [
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(target: _center, zoom: 11),
+            const GoogleMap(
+              compassEnabled: false,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(16.75973, -93.11308),
+                zoom: 13,
+              ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(
