@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/infraestructure/controllers/request_permission_controller.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/screen/request_permission_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -19,10 +23,15 @@ class MyLoginScreen extends StatefulWidget {
 class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  // ignore: unused_field
+  String? _email;
+  // ignore: unused_field
+  String? _password;
+
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
-    } 
+    }
     if (!EmailValidator.validate(value)) {
       return 'Por favor ingrese un email correcto';
     }
@@ -41,11 +50,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void SubmitForm() {
+  void submitForm() {
     if (_formKey.currentState!.validate()) {
-      print('Formulario validado');
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const MyTapBarWidget()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MyRequestPermissionScreen()),
+      );
     }
   }
 
@@ -54,24 +65,24 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: Form(
-        key: _formKey,
-        child: Scaffold(
-          appBar: AppBar(
-            title: IconButton(
-              padding: const EdgeInsets.only(top: 20),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyLoginSignPage(),
-                  ),
-                );
-              },
-              icon: Image.asset('assets/images/LeftArrow.png'),
-            ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: IconButton(
+            padding: const EdgeInsets.only(top: 20),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyLoginSignPage(),
+                ),
+              );
+            },
+            icon: Image.asset('assets/images/LeftArrow.png'),
           ),
-          body: SingleChildScrollView(
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -108,6 +119,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   MyTextFieldWidget(
                     text: 'Correo Electrónico',
                     validator: validateEmail,
+                    onSaved: (value) => _email = value,
                   ),
                   const SizedBox(
                     height: 10,
@@ -115,6 +127,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   MyTextFieldWidget(
                     text: 'Contraseña',
                     validator: validatePassword,
+                    onSaved: (value) => _password = value,
                   ),
                   const MyCheckboxWidget(),
                   const SizedBox(height: 40),
@@ -125,7 +138,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     onPressed: () {
-                      SubmitForm();
+                      _formKey.currentState!.save();
+                      submitForm();
                     },
                   ),
                   const SizedBox(height: 120),

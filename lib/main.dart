@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/routes/pages.dart';
+import 'package:rabbit_go/routes/routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      initialRoute: Routes.SPLASH,
+      routes: appRoutes(),
     );
   }
 }
@@ -40,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
       // Navega a la primera vista después de que se complete el temporizador
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const MyLoginSignPage(), // Reemplaza la pantalla de carga con la primera vista
+          builder: (context) =>
+              const MyLoginSignPage(), // Reemplaza la pantalla de carga con la primera vista
         ),
       );
     });

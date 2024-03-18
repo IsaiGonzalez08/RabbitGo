@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
-
-
 class MyTextFieldWidget extends StatelessWidget {
-  const MyTextFieldWidget({Key? key, required this.text, required this.validator}) : super(key: key);
+  const MyTextFieldWidget({
+    Key? key,
+    required this.text,
+    required this.validator,
+    this.onSaved,
+  }) : super(key: key);
   final String text;
   final String? Function(String?)? validator;
+  final void Function(String?)? onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +33,7 @@ class MyTextFieldWidget extends StatelessWidget {
           fillColor: const Color(0xFFEDEDED),
         ),
         validator: validator,
+        onSaved: onSaved,
       ),
     );
   }
