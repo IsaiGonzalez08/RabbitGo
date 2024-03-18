@@ -1,14 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:rabbit_go/infraestructure/controllers/request_permission_controller.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/request_permission_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
-import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
 

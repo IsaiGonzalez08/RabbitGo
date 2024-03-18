@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rabbit_go/infraestructure/controllers/request_permission_controller.dart';
-import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/routes/routes.dart';
 
 class MyRequestPermissionScreen extends StatefulWidget {

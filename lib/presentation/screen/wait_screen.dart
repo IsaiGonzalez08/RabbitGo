@@ -15,7 +15,7 @@ class _MyWaitScreenState extends State<MyWaitScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.checkPermission();
     });
     _controller.addListener(() {
