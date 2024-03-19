@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -9,6 +10,20 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return const MyAlertWidget();
+          },
+        );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

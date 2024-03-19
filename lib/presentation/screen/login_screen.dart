@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
-import 'package:rabbit_go/presentation/screen/request_permission_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
 
@@ -18,6 +18,9 @@ class MyLoginScreen extends StatefulWidget {
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   // ignore: unused_field
   String? _email;
@@ -50,8 +53,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     if (_formKey.currentState!.validate()) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => const MyRequestPermissionScreen()),
+        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
       );
     }
   }
@@ -113,14 +115,18 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   MyTextFieldWidget(
+                    width: 320,
                     text: 'Correo Electrónico',
                     validator: validateEmail,
                     onSaved: (value) => _email = value,
+                    controllerTextField: _emailController,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   MyTextFieldWidget(
+                    width: 320,
+                    controllerTextField: _passwordController,
                     text: 'Contraseña',
                     validator: validatePassword,
                     onSaved: (value) => _password = value,

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-class MyTextFieldWidget extends StatelessWidget {
-  const MyTextFieldWidget({
+class MyPasswordTextFieldWidget extends StatelessWidget {
+  const MyPasswordTextFieldWidget({
     Key? key,
     required this.text,
+    required this.passwordErrorText,
     required this.width,
     required this.controllerTextField,
     required this.validator,
     this.onSaved,
-  }) : super(key: key);
+  }): super(key: key);
   final String text;
+  final String? passwordErrorText;
   final double width;
   final String? Function(String?)? validator;
   final TextEditingController controllerTextField;
@@ -22,6 +24,7 @@ class MyTextFieldWidget extends StatelessWidget {
       height: 50.0,
       child: TextFormField(
         decoration: InputDecoration(
+          errorText: passwordErrorText,
           contentPadding:
               const EdgeInsets.symmetric(vertical: 22.0, horizontal: 15),
           border: OutlineInputBorder(
