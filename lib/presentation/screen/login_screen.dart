@@ -19,8 +19,8 @@ class MyLoginScreen extends StatefulWidget {
 class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   // ignore: unused_field
   String? _email;

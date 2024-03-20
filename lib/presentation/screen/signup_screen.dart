@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:rabbit_go/presentation/widgets/widget_password_textfiedl.dart';
+import 'package:dio/dio.dart';
+import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
 
 class MySignUpScreen extends StatefulWidget {
   const MySignUpScreen({super.key});
@@ -58,6 +56,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
   }
 
   Future<void> _createUser() async {
+    Dio dio = Dio();
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         setState(() {
@@ -66,16 +65,22 @@ class _MySignScreenState extends State<MySignUpScreen> {
         });
       } else {
         try {
-          Uri url = Uri.parse('http://127.0.0.1:8080/user');
+          String url = ('http://rabbitgo.sytes.net/user');
 
-          Map<String, String> userData = {
-            'username': _usernameController.text,
-            'lastname': _lastnameController.text,
+          final userData = {
+            'name': 'isai',
+            'lastname': '_lastnameController.text',
             'email': _emailController.text,
             'password': _passwordController.text,
           };
-          var response = await http.post(url, body: jsonEncode(userData));
-          if (response.statusCode == 200) {
+
+          print(userData);
+
+          final response = await dio.post(url, data: userData);
+
+          print('Ya se envio');
+
+          if (response.statusCode == 201) {
             print('Usuario creado exitosamente.');
             navigateLoginScreen();
           } else {

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
@@ -6,8 +7,39 @@ import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
-class MyConfigurationScreen extends StatelessWidget {
+class MyConfigurationScreen extends StatefulWidget {
   const MyConfigurationScreen({super.key});
+
+  @override
+  State<MyConfigurationScreen> createState() => _MyConfigurationScreenState();
+}
+
+class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
+  String? _name;
+  String? _lastname;
+  String? _userEmail;
+
+  void getDataUser() async {
+    try {
+      Dio dio = Dio();
+      Response response = await dio.get('http://192.168.1.74:8080/user/g5e8r2');
+      if (response.statusCode == 200) {
+        setState(() {
+          final Map<String, dynamic> userData = response.data;
+          _name = userData['name'].toString();
+          _lastname = userData['lastname'].toString();
+          _userEmail = userData['email'].toString();
+          print(_name);
+          print(_lastname);
+          print(_userEmail);
+        });
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,32 +67,32 @@ class MyConfigurationScreen extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Victor Villava',
-                            style: TextStyle(
+                            '$_name $_lastname',
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF737373),
                                 fontSize: 18),
                           ),
                           Text(
-                            'Prueba@gmail.com',
-                            style: TextStyle(
+                            _userEmail ?? '',
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF737373),
                                 fontSize: 14),
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
-                      CustomButton(
+                      const CustomButton(
                           textButton: 'Gratis',
                           width: 68,
                           height: 30,
