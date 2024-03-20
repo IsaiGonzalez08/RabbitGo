@@ -68,8 +68,8 @@ class _MySignScreenState extends State<MySignUpScreen> {
           String url = ('http://rabbitgo.sytes.net/user');
 
           final userData = {
-            'name': 'isai',
-            'lastname': '_lastnameController.text',
+            'name': _usernameController,
+            'lastname': _lastnameController,
             'email': _emailController.text,
             'password': _passwordController.text,
           };

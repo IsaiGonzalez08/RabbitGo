@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
@@ -7,6 +9,7 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
@@ -22,11 +25,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // ignore: unused_field
-  String? _email;
-  // ignore: unused_field
-  String? _password;
-
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
@@ -35,6 +33,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
       return 'Por favor ingrese un email correcto';
     }
     return null;
+  }
+
+  void navigateTapBar() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+    );
   }
 
   String? validatePassword(String? value) {
@@ -49,12 +54,35 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void submitForm() {
+  Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
-      );
+      try {
+        String url = 'http://rabbitgo.sytes.net/user/login';
+
+        final userData = {
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        };
+
+        print(userData);
+
+        final response = await http.post(
+          Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(userData),
+        );
+
+        if (response.statusCode == 200) {
+          print('Login Ok');
+          navigateTapBar();
+        } else {
+          print('Error en el login, Código de estado: ${response.statusCode}');
+        }
+      } catch (error) {
+        print('Error al conectar con el servidor: $error');
+      }
     }
   }
 
@@ -117,9 +145,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   MyTextFieldWidget(
                     width: 320,
                     text: 'Correo Electrónico',
-                    validator: validateEmail,
-                    onSaved: (value) => _email = value,
                     controllerTextField: _emailController,
+                    validator: (value) {
+                      return validateEmail(value);
+                    },
                   ),
                   const SizedBox(
                     height: 10,
@@ -128,8 +157,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     width: 320,
                     controllerTextField: _passwordController,
                     text: 'Contraseña',
-                    validator: validatePassword,
-                    onSaved: (value) => _password = value,
+                    validator: (value) {
+                      return validatePassword(value);
+                    },
                   ),
                   const MyCheckboxWidget(),
                   const SizedBox(height: 40),
@@ -141,7 +171,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     fontWeight: FontWeight.w600,
                     onPressed: () {
                       _formKey.currentState!.save();
-                      submitForm();
+                      _loginUser();
                     },
                   ),
                   const SizedBox(height: 120),
