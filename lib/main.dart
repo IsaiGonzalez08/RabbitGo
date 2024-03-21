@@ -1,9 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserData(),
+      child: const  MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

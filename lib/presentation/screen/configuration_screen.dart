@@ -1,11 +1,14 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:http/http.dart' as http;
 
 class MyConfigurationScreen extends StatefulWidget {
   const MyConfigurationScreen({super.key});
@@ -17,27 +20,42 @@ class MyConfigurationScreen extends StatefulWidget {
 class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   String? _name;
   String? _lastname;
-  String? _userEmail;
+  String? _email;
+  String? userId;
+  String? token;
 
-  void getDataUser() async {
+  @override
+  void initState() {
+    super.initState();
+    userId = Provider.of<UserData>(context, listen: false).userId;
+    token = Provider.of<UserData>(context, listen: false).token;
+    print(userId);
+    _getDataUser();
+  }
+
+  Future<void> _getDataUser() async {
     try {
-      Dio dio = Dio();
-      Response response = await dio.get('http://192.168.1.74:8080/user/g5e8r2');
+      String url = 'http://rabbitgo.sytes.net/user/$userId';
+
+      final response =
+          await http.get(Uri.parse(url), headers: {'Authorization': token!});
+
       if (response.statusCode == 200) {
+        print('Data Ok');
+        final responseData = jsonDecode(response.body);
         setState(() {
-          final Map<String, dynamic> userData = response.data;
-          _name = userData['name'].toString();
-          _lastname = userData['lastname'].toString();
-          _userEmail = userData['email'].toString();
+          _name = responseData['data']['name'];
+          _lastname = responseData['data']['lastname'];
+          _email = responseData['data']['email'];
           print(_name);
           print(_lastname);
-          print(_userEmail);
+          print(_email);
         });
       } else {
-        print('Error: ${response.statusCode}');
+        print('Error en el get, Código de estado: ${response.statusCode}');
       }
-    } catch (e) {
-      print('Error: $e');
+    } catch (error) {
+      print('Error al conectar con el servidor: $error');
     }
   }
 
@@ -81,7 +99,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                                 fontSize: 18),
                           ),
                           Text(
-                            _userEmail ?? '',
+                            _email ?? '',
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF737373),

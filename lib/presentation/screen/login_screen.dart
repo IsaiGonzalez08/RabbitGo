@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
@@ -9,6 +10,7 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class MyLoginScreen extends StatefulWidget {
@@ -35,11 +37,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return null;
   }
 
-  void navigateTapBar(String userId) {
+  void navigateTapBar() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => MyTapBarWidget(userId: userId)),
+      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
     );
   }
 
@@ -54,6 +55,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
       return null;
     }
   }
+
+  
 
   Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
@@ -76,8 +79,12 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         if (response.statusCode == 200) {
           print('Login Ok');
           final responseData = jsonDecode(response.body);
-          final userId = responseData['uuid'];
-          navigateTapBar(userId);
+          final uuid = responseData['data']['uuid'];
+          final token = responseData['data']['token'];
+          Provider.of<UserData>(context, listen: false).setUserId(
+            uuid, token
+          );
+          navigateTapBar();
         } else {
           print('Error en el login, Código de estado: ${response.statusCode}');
         }
