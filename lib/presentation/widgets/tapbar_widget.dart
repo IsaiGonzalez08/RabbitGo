@@ -4,7 +4,9 @@ import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 
 class MyTapBarWidget extends StatefulWidget {
-  const MyTapBarWidget({super.key});
+  const MyTapBarWidget({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
 
   @override
   State<MyTapBarWidget> createState() => _MyTapBarWidgetState();

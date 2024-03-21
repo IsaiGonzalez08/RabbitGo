@@ -35,10 +35,11 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return null;
   }
 
-  void navigateTapBar() {
+  void navigateTapBar(String userId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+      MaterialPageRoute(
+          builder: (context) => MyTapBarWidget(userId: userId)),
     );
   }
 
@@ -64,8 +65,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           'password': _passwordController.text,
         };
 
-        print(userData);
-
         final response = await http.post(
           Uri.parse(url),
           headers: <String, String>{
@@ -76,7 +75,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
         if (response.statusCode == 200) {
           print('Login Ok');
-          navigateTapBar();
+          final responseData = jsonDecode(response.body);
+          final userId = responseData['uuid'];
+          navigateTapBar(userId);
         } else {
           print('Error en el login, Código de estado: ${response.statusCode}');
         }
