@@ -29,7 +29,6 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
     super.initState();
     userId = Provider.of<UserData>(context, listen: false).userId;
     token = Provider.of<UserData>(context, listen: false).token;
-    print(userId);
     _getDataUser();
   }
 
@@ -41,15 +40,11 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
           await http.get(Uri.parse(url), headers: {'Authorization': token!});
 
       if (response.statusCode == 200) {
-        print('Data Ok');
         final responseData = jsonDecode(response.body);
         setState(() {
           _name = responseData['data']['name'];
           _lastname = responseData['data']['lastname'];
           _email = responseData['data']['email'];
-          print(_name);
-          print(_lastname);
-          print(_email);
         });
       } else {
         print('Error en el get, Código de estado: ${response.statusCode}');

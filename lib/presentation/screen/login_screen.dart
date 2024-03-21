@@ -27,6 +27,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  String? uuid;
+  String? token;
+
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
@@ -56,7 +59,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  
+  void provider(String uuid, String token) {
+    Provider.of<UserData>(context, listen: false).setUserId(uuid, token);
+  }
 
   Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
@@ -77,13 +82,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         );
 
         if (response.statusCode == 200) {
-          print('Login Ok');
           final responseData = jsonDecode(response.body);
           final uuid = responseData['data']['uuid'];
           final token = responseData['data']['token'];
-          Provider.of<UserData>(context, listen: false).setUserId(
-            uuid, token
-          );
+          provider(uuid, token);
           navigateTapBar();
         } else {
           print('Error en el login, Código de estado: ${response.statusCode}');
