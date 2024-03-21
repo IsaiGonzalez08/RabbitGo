@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 
@@ -13,7 +16,9 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
   late WaitController _waitController;
-  
+  late HomeController _homeController;
+  String? token;
+
   Future<void> _checkAndShowAlert() async {
     bool isLocationPermissionGranted = await _waitController.checkPermission();
 
@@ -29,12 +34,20 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
     _waitController = WaitController(Permission.location);
+    _homeController = HomeController();
     _checkAndShowAlert();
+    token = Provider.of<UserData>(context, listen: false).token;
+    _homeController.getMarkers(token);
+    addMarkers();
+  }
+
+  Future<void> addMarkers() async {
+    _homeController.addMarker(16.75973, -93.11308, "marker1");
+    _homeController.addMarker(16.76973, -93.12308, "marker2");
   }
 
   @override
@@ -45,9 +58,13 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       home: Scaffold(
         body: Stack(
           children: [
-            const GoogleMap(
+            GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                _homeController.onMapCreated(controller);
+              },
+              markers: _homeController.markers,
               compassEnabled: false,
-              initialCameraPosition: CameraPosition(
+              initialCameraPosition: const CameraPosition(
                 target: LatLng(16.75973, -93.11308),
                 zoom: 13,
               ),
