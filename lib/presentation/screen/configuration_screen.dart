@@ -47,7 +47,6 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
           _email = responseData['data']['email'];
         });
       } else {
-        print('Error en el get, Código de estado: ${response.statusCode}');
       }
     } catch (error) {
       print('Error al conectar con el servidor: $error');

@@ -14,7 +14,6 @@ class HomeController {
   }
 
   void addMarker(double latitude, double longitude, String markerId) async {
-    print('Adding marker with lat: $latitude, lng: $longitude, markerId: $markerId');
     final MarkerId id = MarkerId(markerId);
     final Marker marker = Marker(
       markerId: id,
@@ -36,13 +35,9 @@ class HomeController {
           final double lat = item['latitude'];
           final double lng = item['longitude'];
           final String markerId = item['uuid'];
-          print(lat);
-          print(lng);
-          print(markerId);
           addMarker(lat, lng, markerId);
         }
       } else {
-        print('Error en el login, Código de estado: ${response.statusCode}');
       }
     } catch (error) {
       print('Error al conectar con el servidor: $error');

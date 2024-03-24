@@ -47,10 +47,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           final response = await dio.put(url, data: userData);
 
           if (response.statusCode == 201) {
-            print('Usuario creado exitosamente.');
           } else {
-            print(
-                'Error al crear el usuario. Código de estado: ${response.statusCode}');
           }
         } catch (error) {
           print('Error al conectar con el servidor: $error');

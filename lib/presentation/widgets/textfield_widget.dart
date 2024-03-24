@@ -19,11 +19,10 @@ class MyTextFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 50.0,
       child: TextFormField(
         decoration: InputDecoration(
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 22.0, horizontal: 15),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5.0),
             borderSide: BorderSide.none,

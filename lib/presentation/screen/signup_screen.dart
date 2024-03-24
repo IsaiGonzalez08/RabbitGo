@@ -74,18 +74,12 @@ class _MySignScreenState extends State<MySignUpScreen> {
             'password': _passwordController.text,
           };
 
-          print(userData);
-
           final response = await dio.post(url, data: userData);
 
-          print('Ya se envio');
-
           if (response.statusCode == 201) {
-            print('Usuario creado exitosamente.');
+          
             navigateLoginScreen();
           } else {
-            print(
-                'Error al crear el usuario. Código de estado: ${response.statusCode}');
           }
         } catch (error) {
           print('Error al conectar con el servidor: $error');
@@ -189,9 +183,10 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    MyTextFieldWidget(
+                    MyPasswordTextFieldWidget(
                       width: 320,
                       text: 'Contraseña',
+                      passwordErrorText: _passwordErrorText,
                       controllerTextField: _passwordController,
                       validator: (value) {
                         return validatePassword(value);

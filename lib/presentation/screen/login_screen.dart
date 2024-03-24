@@ -29,6 +29,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
   String? uuid;
   String? token;
+  bool _isEmailInValid = false;
+  bool _isPasswordInValid = false;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -36,6 +38,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
     if (!EmailValidator.validate(value)) {
       return 'Por favor ingrese un email correcto';
+    }
+    if (_isEmailInValid) {
+      return "El email no existe";
     }
     return null;
   }
@@ -54,6 +59,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
       return "La contraseña debe tener al menos 6 caracteres";
     } else if (value.length > 15) {
       return "La contraseña no puede ser mayor a 15 caracteres";
+    } else if (_isPasswordInValid) {
+      return "La contraseña no existe";
     } else {
       return null;
     }
@@ -87,8 +94,16 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           final token = responseData['data']['token'];
           provider(uuid, token);
           navigateTapBar();
-        } else {
-          print('Error en el login, Código de estado: ${response.statusCode}');
+          setState(() {
+            _isEmailInValid = false;
+            _isPasswordInValid = false;
+          });
+        } else if (response.statusCode == 400) {
+          setState(() {
+            _isEmailInValid = true;
+            _isPasswordInValid = true;
+          });
+          _formKey.currentState?.validate();
         }
       } catch (error) {
         print('Error al conectar con el servidor: $error');
