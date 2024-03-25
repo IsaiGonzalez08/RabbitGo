@@ -23,16 +23,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  String? _passwordErrorText;
+   bool _showPassword = false; 
+
 
   Future<void> _updateUser() async {
     Dio dio = Dio();
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
-        setState(() {
-          _passwordErrorText = 'Las contraseñas no coinciden';
-          return;
-        });
       } else {
         try {
           String url = ('http://localhost:8080/user');
@@ -207,12 +204,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                         MyPasswordTextFieldWidget(
                           width: 320,
-                          passwordErrorText: _passwordErrorText,
                           controllerTextField: _passwordController,
                           text: 'Contraseña',
                           validator: (value) {
                             return null;
                           },
+                        obscureText: _showPassword,
                         ),
                       ],
                     ),
@@ -232,17 +229,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         const SizedBox(
                           height: 5,
                         ),
-                        MyTextFieldWidget(
+                        MyPasswordTextFieldWidget(
                           width: 320,
                           controllerTextField: _confirmPasswordController,
                           text: 'Confirmar Contraseña',
                           validator: (value) {
                             return null;
                           },
+                          obscureText: _showPassword,
                         ),
                       ],
                     ),
-                    const MyCheckboxWidget()
+                    MyCheckboxWidget(
+                    value: _showPassword,
+                    onChanged: (value) {
+                    setState(() {
+                      _showPassword = value ?? false;                    
+                    });
+                  },
+                  ),
                   ],
                 ),
                 const Column(

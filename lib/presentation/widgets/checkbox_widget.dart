@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 
-class MyCheckboxWidget extends StatefulWidget {
-  const MyCheckboxWidget({super.key});
+class MyCheckboxWidget extends StatelessWidget {
+  const MyCheckboxWidget({super.key, this.onChanged, this.value});
 
-  @override
-  State<MyCheckboxWidget> createState() => _MyCheckboxWidgetState();
-}
-
-class _MyCheckboxWidgetState extends State<MyCheckboxWidget> {
-  bool _isChecked = false;
+  final void Function(bool?)? onChanged;
+  final bool? value;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Padding(padding: EdgeInsets.only(left: 10)),
-        Checkbox(
-          value: _isChecked,
-          onChanged: (bool? value) {
-            setState(() {
-              _isChecked = value ?? false;
-            });
-          },
-        ),
+        Padding(padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.01)),
+        Transform.scale(
+          scale: 0.75, // Ajusta el tamaño del checkbox
+          child: Checkbox(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ), // Ajusta el espacio entre el checkbox y el texto
         const Flexible(
-            child: Text(
-          'Mostrar contraseña',
-          style: TextStyle(fontSize: 11, color: Color(0xFF979797)),
-        ))
+          child: Text(
+            'Ocultar contraseña',
+            style: TextStyle(
+                fontSize: 12,
+                color: Color(0xFF979797)), // Ajusta el tamaño del texto
+          ),
+        ),
       ],
     );
   }

@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
-import 'package:dio/dio.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
+import 'package:http/http.dart' as http;
 
 class MySignUpScreen extends StatefulWidget {
   const MySignUpScreen({super.key});
@@ -24,7 +26,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  String? _passwordErrorText;
+  bool _showPassword = true;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -56,31 +58,31 @@ class _MySignScreenState extends State<MySignUpScreen> {
   }
 
   Future<void> _createUser() async {
-    Dio dio = Dio();
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
-        setState(() {
-          _passwordErrorText = 'Las contraseñas no coinciden';
-          return;
-        });
+        return;
       } else {
         try {
           String url = ('http://rabbitgo.sytes.net/user');
 
           final userData = {
-            'name': _usernameController,
-            'lastname': _lastnameController,
+            'name': _usernameController.text,
+            'lastname': _lastnameController.text,
             'email': _emailController.text,
             'password': _passwordController.text,
           };
 
-          final response = await dio.post(url, data: userData);
+          final response = await http.post(
+            Uri.parse(url),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            }, 
+            body: jsonEncode(userData),
+          );
 
           if (response.statusCode == 201) {
-          
             navigateLoginScreen();
-          } else {
-          }
+          } else {}
         } catch (error) {
           print('Error al conectar con el servidor: $error');
         }
@@ -91,24 +93,12 @@ class _MySignScreenState extends State<MySignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Material App',
-      home: Scaffold(
-          appBar: AppBar(
-            title: IconButton(
-              padding: const EdgeInsets.only(top: 20),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyLoginScreen(),
-                  ),
-                );
-              },
-              icon: Image.asset('assets/images/LeftArrow.png'),
-            ),
-          ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          appBar: AppBar(),
           body: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -186,11 +176,11 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     MyPasswordTextFieldWidget(
                       width: 320,
                       text: 'Contraseña',
-                      passwordErrorText: _passwordErrorText,
                       controllerTextField: _passwordController,
                       validator: (value) {
                         return validatePassword(value);
                       },
+                      obscureText: _showPassword,
                     ),
                     const SizedBox(
                       height: 10,
@@ -198,16 +188,23 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     MyPasswordTextFieldWidget(
                       width: 320,
                       controllerTextField: _confirmPasswordController,
-                      passwordErrorText: _passwordErrorText,
                       text: 'Confirmar contraseña',
                       validator: (value) {
                         return validatePassword(value);
                       },
+                      obscureText: _showPassword,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
-                    const MyCheckboxWidget(),
+                    MyCheckboxWidget(
+                      value: _showPassword,
+                      onChanged: (value) {
+                        setState(() {
+                          _showPassword = value ?? true;
+                        });
+                      },
+                    ),
                     const SizedBox(
                       height: 5,
                     ),

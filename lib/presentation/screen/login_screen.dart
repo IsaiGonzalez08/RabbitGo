@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
-import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
@@ -31,6 +30,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   String? token;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
+  bool _showPassword = true; 
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -113,23 +113,12 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Material App',
-      home: Scaffold(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
         appBar: AppBar(
-          title: IconButton(
-            padding: const EdgeInsets.only(top: 20),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyLoginSignPage(),
-                ),
-              );
-            },
-            icon: Image.asset('assets/images/LeftArrow.png'),
-          ),
         ),
         body: SingleChildScrollView(
           child: Form(
@@ -178,15 +167,23 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  MyTextFieldWidget(
+                  MyPasswordTextFieldWidget(
                     width: 320,
                     controllerTextField: _passwordController,
                     text: 'Contraseña',
                     validator: (value) {
                       return validatePassword(value);
                     },
+                    obscureText: _showPassword,
                   ),
-                  const MyCheckboxWidget(),
+                  MyCheckboxWidget(
+                    value: _showPassword,
+                    onChanged: (value) {
+                    setState(() {
+                      _showPassword = value ?? true;                    
+                    });
+                  },
+                  ),
                   const SizedBox(height: 40),
                   CustomButton(
                     textButton: 'Comenzar',

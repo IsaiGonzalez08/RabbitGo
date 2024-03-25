@@ -4,29 +4,27 @@ class MyPasswordTextFieldWidget extends StatelessWidget {
   const MyPasswordTextFieldWidget({
     Key? key,
     required this.text,
-    required this.passwordErrorText,
     required this.width,
     required this.controllerTextField,
     required this.validator,
+    required this.obscureText,
     this.onSaved,
-  }): super(key: key);
+  }) : super(key: key);
   final String text;
-  final String? passwordErrorText;
   final double width;
   final String? Function(String?)? validator;
   final TextEditingController controllerTextField;
   final void Function(String?)? onSaved;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 50.0,
       child: TextFormField(
         decoration: InputDecoration(
-          errorText: passwordErrorText,
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 22.0, horizontal: 15),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5.0),
             borderSide: BorderSide.none,
@@ -42,6 +40,7 @@ class MyPasswordTextFieldWidget extends StatelessWidget {
         validator: validator,
         onSaved: onSaved,
         controller: controllerTextField,
+        obscureText: obscureText,
       ),
     );
   }
