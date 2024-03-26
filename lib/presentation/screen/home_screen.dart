@@ -23,6 +23,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   late HomeController _homeController;
   String? token;
   Iterable markers = [];
+  LatLng? userLocation;
 
   Future<void> _checkAndShowAlert() async {
     bool isLocationPermissionGranted = await _waitController.checkPermission();
@@ -48,7 +49,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     token = Provider.of<UserData>(context, listen: false).token;
     getMarkers(token);
   }
-  
 
   getMarkers(String? token) async {
     try {
@@ -65,8 +65,8 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
         Iterable generatedMarkers = data.map((item) {
           String markerId = item['uuid'];
-          double latitude = item["longitude"];
-          double longitude = item["latitude"];
+          double latitude = item["latitude"];
+          double longitude = item["longitude"];
           LatLng latLngMarker = LatLng(latitude, longitude);
           return Marker(
               markerId: MarkerId(markerId), position: latLngMarker, icon: icon);
@@ -90,8 +90,16 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         body: Stack(
           children: [
             GoogleMap(
-              onMapCreated: (GoogleMapController controller) {
+              onMapCreated: (GoogleMapController controller) async {
                 _homeController.onMapCreated(controller);
+                LatLng? location = await _homeController.getUserLocation();
+                if (location != null) {
+                  setState(() {
+                    userLocation = location;
+                  });
+                  controller
+                      .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
+                }
               },
               markers: Set.from(
                 markers,
@@ -99,7 +107,12 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               compassEnabled: false,
               initialCameraPosition: const CameraPosition(
                 target: LatLng(16.75973, -93.11308),
-                zoom: 13,
+                zoom: 14,
+              ),
+              myLocationButtonEnabled: true,
+              myLocationEnabled: true,
+              padding: const EdgeInsets.only(
+                top: 100.0,
               ),
             ),
             Padding(
