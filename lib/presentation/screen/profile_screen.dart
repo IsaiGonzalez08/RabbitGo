@@ -61,7 +61,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     token = Provider.of<UserData>(context, listen: false).token;
   }
 
-  void navigateLoginScreen() {
+  void navigateConfigurationScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const MyConfigurationScreen()),
@@ -91,7 +91,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               body: jsonEncode(userData));
 
           if (response.statusCode == 200) {
-            navigateLoginScreen();
+            navigateConfigurationScreen();
           } else {
             print('error en la petición: ${response.statusCode}');
           }
@@ -154,7 +154,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   height: 30,
                   textButton: 'Cancelar',
                   onPressed: () {
-                    _updateUser();
+                    Navigator.pop(context);
                   },
                 ),
               ],

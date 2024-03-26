@@ -46,11 +46,80 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
           _lastname = responseData['data']['lastname'];
           _email = responseData['data']['email'];
         });
-      } else {
-      }
+      } else {}
     } catch (error) {
       print('Error al conectar con el servidor: $error');
     }
+  }
+
+  void navigateLoginSignScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+    );
+  }
+
+  void _showConfirmDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusDirectional.circular(10.0)),
+          backgroundColor: const Color(0xFFFFFFFF),
+          title: const Center(
+            child: Text(
+              textAlign: TextAlign.center,
+              "¿Estas seguro que desear cerrar\n sesión?",
+              style: TextStyle(
+                  color: Color(0xFF777777),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
+            ),
+          ),
+          content: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                textAlign: TextAlign.center,
+                "Al cerrar sesión tu información será guardada\npero la próxima vez que quieras entrar\nnecesitaras iniciar sesión nuevamente.",
+                style: TextStyle(
+                    color: Color(0xFFACACAC),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400),
+              ),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomButton(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  width: 105,
+                  height: 30,
+                  textButton: 'Cerrar Sesión',
+                  onPressed: () {
+                    navigateLoginSignScreen();
+                  },
+                ),
+                CustomButton(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  width: 105,
+                  height: 30,
+                  textButton: 'Cancelar',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -153,11 +222,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
               children: [
                 InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyLoginSignPage()),
-                      );
+                      _showConfirmDialog();
                     },
                     child: SizedBox(
                       height: 80,
