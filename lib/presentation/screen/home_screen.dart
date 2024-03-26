@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -5,7 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
+import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   late WaitController _waitController;
   late HomeController _homeController;
   String? token;
+  Iterable markers = [];
 
   Future<void> _checkAndShowAlert() async {
     bool isLocationPermissionGranted = await _waitController.checkPermission();
@@ -41,13 +46,39 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     _homeController = HomeController();
     _checkAndShowAlert();
     token = Provider.of<UserData>(context, listen: false).token;
-    _homeController.getMarkers(token);
-    addMarkers();
+    getMarkers(token);
   }
+  
 
-  Future<void> addMarkers() async {
-    _homeController.addMarker(16.75973, -93.11308, "marker1");
-    _homeController.addMarker(16.76973, -93.12308, "marker2");
+  getMarkers(String? token) async {
+    try {
+      String url = 'http://rabbitgo.sytes.net/bus/stop/';
+
+      final icon = BitmapDescriptor.fromBytes(
+          await assetToBytes('assets/images/MapMarker.png'));
+
+      final response =
+          await http.get(Uri.parse(url), headers: {'Authorization': token!});
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body)['data'];
+
+        Iterable generatedMarkers = data.map((item) {
+          String markerId = item['uuid'];
+          double latitude = item["longitude"];
+          double longitude = item["latitude"];
+          LatLng latLngMarker = LatLng(latitude, longitude);
+          return Marker(
+              markerId: MarkerId(markerId), position: latLngMarker, icon: icon);
+        });
+
+        setState(() {
+          markers = generatedMarkers;
+        });
+      } else {}
+    } catch (error) {
+      print('Error con el servidor: $error');
+    }
   }
 
   @override
@@ -62,7 +93,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               onMapCreated: (GoogleMapController controller) {
                 _homeController.onMapCreated(controller);
               },
-              markers: _homeController.markers,
+              markers: Set.from(
+                markers,
+              ),
               compassEnabled: false,
               initialCameraPosition: const CameraPosition(
                 target: LatLng(16.75973, -93.11308),
