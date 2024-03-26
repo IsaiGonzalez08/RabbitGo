@@ -76,7 +76,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
             Uri.parse(url),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
-            }, 
+            },
             body: jsonEncode(userData),
           );
 
@@ -160,7 +160,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       ],
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     MyTextFieldWidget(
                       controllerTextField: _emailController,
@@ -171,7 +171,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       },
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     MyPasswordTextFieldWidget(
                       width: 320,
@@ -183,7 +183,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       obscureText: _showPassword,
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     MyPasswordTextFieldWidget(
                       width: 320,
