@@ -191,8 +191,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 50,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right:
+                                    MediaQuery.of(context).size.width * 0.06),
+                          ),
                           InkWell(
                             onTap: () {
                               Navigator.push(
@@ -206,6 +211,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             child:
                                 Image.asset('assets/images/ForwardProfile.png'),
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right:
+                                    MediaQuery.of(context).size.width * 0.34),
+                          ),
                           const Text(
                             'Perfil',
                             style: TextStyle(
@@ -213,10 +223,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Color(0xFFB5B5B5),
                                 fontWeight: FontWeight.w600),
                           ),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.04))
                         ],
                       ),
                       const SizedBox(
@@ -225,6 +231,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       Image.asset('assets/images/UserProfile.png'),
                       const SizedBox(
                         height: 15,
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -376,23 +385,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      CustomButton(
-                        textButton: 'Actualizar',
-                        width: 320,
-                        height: 40,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        onPressed: () {
-                          _formKey.currentState!.save();
-                          _showSuccessDialog();
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      )
-                    ],
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  CustomButton(
+                    textButton: 'Actualizar',
+                    width: 320,
+                    height: 40,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    onPressed: () {
+                      _formKey.currentState!.save();
+                      _showSuccessDialog();
+                    },
                   ),
                 ],
               ),

@@ -28,7 +28,7 @@ class MyCheckboxWidget extends StatelessWidget {
         ),
         Padding(
             padding: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.40)),
+                right: MediaQuery.of(context).size.width * 0.58)),
       ],
     );
   }

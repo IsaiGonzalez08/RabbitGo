@@ -29,7 +29,10 @@ class MyGeneralScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 30)),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.1),
+                    ),
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -41,8 +44,9 @@ class MyGeneralScreen extends StatelessWidget {
                       },
                       child: Image.asset('assets/images/ForwardProfile.png'),
                     ),
-                    const SizedBox(
-                      width: 100,
+                    Padding(
+                      padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.28),
                     ),
                     const Text(
                       'General',
@@ -56,12 +60,13 @@ class MyGeneralScreen extends StatelessWidget {
                 const SizedBox(
                   height: 50,
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 30),
-                      child: Text(
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.1),
+                      child: const Text(
                         'Notificaciones',
                         style: TextStyle(
                             fontSize: 16,
@@ -70,29 +75,37 @@ class MyGeneralScreen extends StatelessWidget {
                       ),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Activar notificaciones de la app',
                           style: TextStyle(
                               fontSize: 14,
                               color: Color(0xFF949494),
                               fontWeight: FontWeight.w400),
                         ),
-                        MySwitchWidget()
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left:
+                                    MediaQuery.of(context).size.width * 0.14)),
+                        const MySwitchWidget()
                       ],
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Mandar al correo notificaciones',
                           style: TextStyle(
                               fontSize: 14,
                               color: Color(0xFF949494),
                               fontWeight: FontWeight.w400),
                         ),
-                        MySwitchWidget()
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left:
+                                    MediaQuery.of(context).size.width * 0.14)),
+                        const MySwitchWidget()
                       ],
                     ),
                   ],
@@ -101,9 +114,10 @@ class MyGeneralScreen extends StatelessWidget {
                   height: 30,
                 ),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 30),
-                    child: Text(
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.1),
+                    child: const Text(
                       'Tema',
                       style: TextStyle(
                           fontSize: 16,
@@ -112,7 +126,7 @@ class MyGeneralScreen extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'Activar modo oscuro',
@@ -121,7 +135,10 @@ class MyGeneralScreen extends StatelessWidget {
                             color: Color(0xFF949494),
                             fontWeight: FontWeight.w400),
                       ),
-                      const SizedBox(),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.3),
+                      ),
                       Transform.scale(
                         scale: 0.6,
                         child: Switch(
@@ -145,9 +162,10 @@ class MyGeneralScreen extends StatelessWidget {
                   height: 30,
                 ),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 30),
-                    child: Text(
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.1),
+                    child: const Text(
                       'Ayuda y Soporte',
                       style: TextStyle(
                           fontSize: 16,
@@ -155,11 +173,16 @@ class MyGeneralScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Padding(
-                          padding: EdgeInsets.only(left: 30, top: 40)),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.1),
+                      ),
                       const Text(
                         'Política de privacidad',
                         style: TextStyle(
@@ -167,17 +190,23 @@ class MyGeneralScreen extends StatelessWidget {
                             color: Color(0xFF949494),
                             fontWeight: FontWeight.w400),
                       ),
-                      const SizedBox(
-                        width: 135,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.34),
                       ),
                       Image.asset('assets/images/Forward.png')
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Padding(
-                          padding: EdgeInsets.only(left: 30, top: 40)),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.1),
+                      ),
                       const Text(
                         'Términos del servicio',
                         style: TextStyle(
@@ -185,17 +214,23 @@ class MyGeneralScreen extends StatelessWidget {
                             color: Color(0xFF949494),
                             fontWeight: FontWeight.w400),
                       ),
-                      const SizedBox(
-                        width: 137,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.345),
                       ),
                       Image.asset('assets/images/Forward.png')
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Padding(
-                          padding: EdgeInsets.only(left: 30, top: 40)),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.1),
+                      ),
                       const Text(
                         'Ajuste de privacidad',
                         style: TextStyle(
@@ -203,8 +238,9 @@ class MyGeneralScreen extends StatelessWidget {
                             color: Color(0xFF949494),
                             fontWeight: FontWeight.w400),
                       ),
-                      const SizedBox(
-                        width: 138,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.35),
                       ),
                       Image.asset('assets/images/Forward.png')
                     ],
