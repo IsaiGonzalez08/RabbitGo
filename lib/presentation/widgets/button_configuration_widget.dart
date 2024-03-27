@@ -21,15 +21,14 @@ class MyButtonConfigurationWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
+              textAlign: TextAlign.start,
               text,
               style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF6B6B6B)),
             ),
-            SizedBox(
-              width: space,
-            ),
+            const SizedBox(),
             Image.asset('assets/images/Forward.png')
           ],
         ),

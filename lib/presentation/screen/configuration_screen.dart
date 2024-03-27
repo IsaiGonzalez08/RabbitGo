@@ -227,7 +227,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                     child: SizedBox(
                       height: 80,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           const Text(
                             'Cerrar sesión',
@@ -236,11 +236,8 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                                 color: Color(0xFFFF7878),
                                 fontWeight: FontWeight.w500),
                           ),
-                          const SizedBox(
-                            width: 180,
-                          ),
+                          const SizedBox(),
                           Image.asset('assets/images/Logout.png'),
-                          const Padding(padding: EdgeInsets.only(right: 10))
                         ],
                       ),
                     )),

@@ -13,7 +13,7 @@ class _MySwitchWidgetState extends State<MySwitchWidget> {
   @override
   Widget build(BuildContext context) {
     return Transform.scale(
-      scale: 0.6, // Puedes ajustar este valor según tus necesidades
+      scale: 0.6,
       child: Switch(
         value: light,
         activeColor: const Color(0xFFFFFFFF),

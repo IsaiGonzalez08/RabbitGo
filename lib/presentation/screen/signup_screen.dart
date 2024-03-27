@@ -209,8 +209,8 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       height: 5,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Padding(padding: EdgeInsets.only(left: 20)),
                         Image.asset('assets/images/MarkYes.png'),
                         const SizedBox(width: 5),
                         const Text(

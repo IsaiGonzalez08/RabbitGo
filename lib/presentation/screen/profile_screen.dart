@@ -170,6 +170,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF01142B)),
+        useMaterial3: true,
+      ),
       home: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -179,7 +183,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Form(
               key: _formKey,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     children: [
@@ -187,9 +191,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 50,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Padding(padding: EdgeInsets.only(left: 20)),
                           InkWell(
                             onTap: () {
                               Navigator.push(
@@ -203,9 +206,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             child:
                                 Image.asset('assets/images/ForwardProfile.png'),
                           ),
-                          const SizedBox(
-                            width: 125,
-                          ),
                           const Text(
                             'Perfil',
                             style: TextStyle(
@@ -213,6 +213,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Color(0xFFB5B5B5),
                                 fontWeight: FontWeight.w600),
                           ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.04))
                         ],
                       ),
                       const SizedBox(

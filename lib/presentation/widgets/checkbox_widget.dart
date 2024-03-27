@@ -9,8 +9,8 @@ class MyCheckboxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.01)),
         Transform.scale(
           scale: 0.75, // Ajusta el tamaño del checkbox
           child: Checkbox(
@@ -26,6 +26,9 @@ class MyCheckboxWidget extends StatelessWidget {
                 color: Color(0xFF979797)), // Ajusta el tamaño del texto
           ),
         ),
+        Padding(
+            padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.40)),
       ],
     );
   }

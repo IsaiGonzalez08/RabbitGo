@@ -30,7 +30,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   String? token;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
-  bool _showPassword = true; 
+  bool _showPassword = true;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -118,14 +118,14 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-        ),
+        appBar: AppBar(),
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(
                     height: 35,
@@ -179,10 +179,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   MyCheckboxWidget(
                     value: _showPassword,
                     onChanged: (value) {
-                    setState(() {
-                      _showPassword = value ?? true;                    
-                    });
-                  },
+                      setState(() {
+                        _showPassword = value ?? true;
+                      });
+                    },
                   ),
                   const SizedBox(height: 40),
                   CustomButton(

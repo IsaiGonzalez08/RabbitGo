@@ -2,30 +2,38 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/helpers/themes.dart';
+import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => UserData(),
-      child: const  MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(lightTheme),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme:
+                  ColorScheme.fromSeed(seedColor: const Color(0xFF01142B)),
+              useMaterial3: true,
+            ),
+            home: const SplashScreen(),
+          );
+        },
       ),
-      home: const SplashScreen(),
     );
   }
 }
@@ -42,13 +50,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicia un temporizador para controlar la duración de la pantalla de carga
     Timer(const Duration(seconds: 3), () {
-      // Navega a la primera vista después de que se complete el temporizador
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) =>
-              const MyLoginSignPage(), // Reemplaza la pantalla de carga con la primera vista
+          builder: (context) => const MyLoginSignPage(),
         ),
       );
     });
