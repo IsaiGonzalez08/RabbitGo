@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/search_route_controller.dart';
@@ -16,44 +15,45 @@ class MySearchRouteScreen extends StatelessWidget {
           centerTitle: true,
           automaticallyImplyLeading: false,
           iconTheme: const IconThemeData(color: Color(0xFF979797)),
-          toolbarHeight: MediaQuery.of(context).size.height * 0.12,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.106,
           title: Container(
+            width: MediaQuery.of(context).size.width * 0.88,
+            height: MediaQuery.of(context).size.height * 0.06,
             decoration: BoxDecoration(boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.3),
                 spreadRadius: 2,
                 blurRadius: 5,
                 offset: const Offset(0, 3),
               )
             ]),
             child: Builder(builder: (context) {
-              return CupertinoTextField(
-                  onChanged:
-                      context.read<SearchRouteController>().onQueryChanged,
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.015,
-                      horizontal: MediaQuery.of(context).size.width * 0.01),
-                  prefix: Row(
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.03)),
-                      Image.asset('assets/images/search.png'),
-                    ],
+              return TextField(
+                onChanged: context.read<SearchRouteController>().onQueryChanged,
+                textAlignVertical: TextAlignVertical.center,
+                cursorHeight: 25.0,
+                cursorColor: const Color(0xFF01142B),
+                style: const TextStyle(
+                    color: Color(0xFF01142B), fontWeight: FontWeight.w500),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    borderSide: BorderSide.none,
                   ),
-                  placeholder: 'Buscar ruta',
-                  placeholderStyle: const TextStyle(
-                      color: Color(
-                        0xFFE0E0E0,
-                      ),
-                      fontSize: 12));
+                  hintText: 'Buscar ruta',
+                  hintStyle: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFFE0E0E0),
+                      fontWeight: FontWeight.w500),
+                  filled: true,
+                  fillColor: const Color(0xFFFFFFFF),
+                  prefixIcon: Image.asset(
+                    'assets/images/search.png',
+                  ), // Icono dentro del campo de texto
+                ),
+              );
             }),
           ),
-          actions: [
-            Padding(
-                padding: EdgeInsets.only(
-                    right: MediaQuery.of(context).size.width * 0.03))
-          ],
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,

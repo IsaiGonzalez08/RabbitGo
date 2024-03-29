@@ -13,9 +13,9 @@ class SearchRouteController extends ChangeNotifier {
     _debouncer?.cancel();
     _debouncer = Timer(const Duration(milliseconds: 400), () {
       if (_query.length >= 3) {
-        print('Call API');
+        throw('Call API');
       } else {
-        print('Cancel call API');
+        throw('Cancel call API');
       }
     });
   }

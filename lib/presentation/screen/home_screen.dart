@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,6 +18,7 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
   late WaitController _waitController;
   late HomeController _homeController;
   String? token;
@@ -50,6 +50,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     getMarkers(token);
   }
 
+  void _handleSubmitted(String value) {
+    throw('Texto ingresado: $value');
+  }
+
   getMarkers(String? token) async {
     try {
       if (token == null) {
@@ -79,9 +83,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         setState(() {
           markers = generatedMarkers;
         });
-      } else {
-        // Manejar el caso en el que la solicitud no fue exitosa
-      }
+      } else {}
     } catch (error) {
       throw Exception('Error con el servidor: $error');
     }
@@ -128,43 +130,44 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               ),
             ),
             Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.06,
-                    top: MediaQuery.of(context).size.height * 0.06),
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.06,
+                    vertical: MediaQuery.of(context).size.height * 0.06),
                 child: Container(
-                  width: 320,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: const Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        )
-                      ]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.03)),
-                      Image.asset('assets/images/search.png'),
-                      const SizedBox(
-                        width: 5,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    )
+                  ]),
+                  child: TextField(
+                    controller: _searchController,
+                    onSubmitted: _handleSubmitted,
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorHeight: 25.0,
+                    cursorColor: const Color(0xFF01142B),
+                    style: const TextStyle(
+                        color: Color(0xFF01142B), fontWeight: FontWeight.w500),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: BorderSide.none,
                       ),
-                      const Text(
-                        'Buscar dirección',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFFE0E0E0),
-                          fontWeight: FontWeight.w500,
+                      hintText: 'Buscar ruta',
+                      hintStyle: const TextStyle(
                           fontSize: 12,
-                        ),
-                      ),
-                    ],
+                          color: Color(0xFFE0E0E0),
+                          fontWeight: FontWeight.w500),
+                      filled: true,
+                      fillColor: const Color(0xFFFFFFFF),
+                      prefixIcon: Image.asset(
+                        'assets/images/search.png',
+                      ), // Icono dentro del campo de texto
+                    ),
                   ),
                 )),
           ],
