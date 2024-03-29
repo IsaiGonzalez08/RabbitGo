@@ -3,7 +3,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
-import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
@@ -28,7 +27,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       TextEditingController();
 
   bool _showPassword = true;
-
   String? userId;
   String? token;
 
@@ -61,13 +59,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     token = Provider.of<UserData>(context, listen: false).token;
   }
 
-  void navigateConfigurationScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyConfigurationScreen()),
-    );
-  }
-
   Future<void> _updateUser() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
@@ -91,7 +82,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               body: jsonEncode(userData));
 
           if (response.statusCode == 200) {
-            navigateConfigurationScreen();
+            _usernameController.clear();
+            _lastnameController.clear();
+            _emailController.clear();
+            _passwordController.clear();
+            _confirmPasswordController.clear();
           } else {
             print('error en la petición: ${response.statusCode}');
           }
@@ -145,6 +140,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   textButton: 'Actualizar',
                   onPressed: () {
                     _updateUser();
+                    Navigator.pop(context);
                   },
                 ),
                 CustomButton(
@@ -167,142 +163,39 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Material App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF01142B)),
-        useMaterial3: true,
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Color(0xFF979797)),
+        title: const Text(
+          'Perfil',
+          style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFFB5B5B5),
+              fontWeight: FontWeight.w600),
+        ),
       ),
-      home: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
                 children: [
-                  Column(
+                  Image.asset('assets/images/UserProfile.png'),
+                  const SizedBox(
+                    height: 35,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                right:
-                                    MediaQuery.of(context).size.width * 0.06),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MyConfigurationScreen(),
-                                ),
-                              );
-                            },
-                            child:
-                                Image.asset('assets/images/ForwardProfile.png'),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                right:
-                                    MediaQuery.of(context).size.width * 0.34),
-                          ),
-                          const Text(
-                            'Perfil',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFFB5B5B5),
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Image.asset('assets/images/UserProfile.png'),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Nombre(s)',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF9A9A9A),
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              MyTextFieldWidget(
-                                width: 155,
-                                controllerTextField: _usernameController,
-                                text: 'Nombre(s)',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Por favor ingresa un nombre de usuario';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Apellidos',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF9A9A9A),
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              MyTextFieldWidget(
-                                width: 155,
-                                controllerTextField: _lastnameController,
-                                text: 'Apellidos',
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Por favor ingresa un apellido';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
                           const Text(
-                            'Correo Electrónico',
+                            'Nombre(s)',
                             style: TextStyle(
                                 fontSize: 14,
                                 color: Color(0xFF9A9A9A),
@@ -312,23 +205,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             height: 5,
                           ),
                           MyTextFieldWidget(
-                            width: 320,
-                            controllerTextField: _emailController,
-                            text: 'Correo Electrónico',
+                            width: 155,
+                            controllerTextField: _usernameController,
+                            text: 'Nombre(s)',
                             validator: (value) {
-                              return validateEmail(value);
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor ingresa un nombre de usuario';
+                              }
+                              return null;
                             },
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
                           const Text(
-                            'Contraseña',
+                            'Apellidos',
                             style: TextStyle(
                                 fontSize: 14,
                                 color: Color(0xFF9A9A9A),
@@ -337,71 +233,126 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           const SizedBox(
                             height: 5,
                           ),
-                          MyPasswordTextFieldWidget(
-                            width: 320,
-                            controllerTextField: _passwordController,
-                            text: 'Contraseña',
+                          MyTextFieldWidget(
+                            width: 155,
+                            controllerTextField: _lastnameController,
+                            text: 'Apellidos',
                             validator: (value) {
-                              return validatePassword(value);
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor ingresa un apellido';
+                              }
+                              return null;
                             },
-                            obscureText: _showPassword,
                           ),
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'Confirmar Contraseña',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF9A9A9A),
-                                fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          MyPasswordTextFieldWidget(
-                            width: 320,
-                            controllerTextField: _confirmPasswordController,
-                            text: 'Confirmar Contraseña',
-                            validator: (value) {
-                              return validatePassword(value);
-                            },
-                            obscureText: _showPassword,
-                          ),
-                        ],
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 15,
                       ),
-                      MyCheckboxWidget(
-                        value: _showPassword,
-                        onChanged: (value) {
-                          setState(() {
-                            _showPassword = value ?? true;
-                          });
+                      const Text(
+                        'Correo Electrónico',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF9A9A9A),
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      MyTextFieldWidget(
+                        width: 320,
+                        controllerTextField: _emailController,
+                        text: 'Correo Electrónico',
+                        validator: (value) {
+                          return validateEmail(value);
                         },
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 60,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Text(
+                        'Contraseña',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF9A9A9A),
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      MyPasswordTextFieldWidget(
+                        width: 320,
+                        controllerTextField: _passwordController,
+                        text: 'Contraseña',
+                        validator: (value) {
+                          return validatePassword(value);
+                        },
+                        obscureText: _showPassword,
+                      ),
+                    ],
                   ),
-                  CustomButton(
-                    textButton: 'Actualizar',
-                    width: 320,
-                    height: 40,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    onPressed: () {
-                      _formKey.currentState!.save();
-                      _showSuccessDialog();
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Text(
+                        'Confirmar Contraseña',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF9A9A9A),
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      MyPasswordTextFieldWidget(
+                        width: 320,
+                        controllerTextField: _confirmPasswordController,
+                        text: 'Confirmar Contraseña',
+                        validator: (value) {
+                          return validatePassword(value);
+                        },
+                        obscureText: _showPassword,
+                      ),
+                    ],
+                  ),
+                  MyCheckboxWidget(
+                    value: _showPassword,
+                    onChanged: (value) {
+                      setState(() {
+                        _showPassword = value ?? true;
+                      });
                     },
                   ),
                 ],
               ),
-            ),
+              const SizedBox(
+                height: 60,
+              ),
+              CustomButton(
+                textButton: 'Actualizar',
+                width: 320,
+                height: 40,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                onPressed: () {
+                  _formKey.currentState!.save();
+                  _showSuccessDialog();
+                },
+              ),
+            ],
           ),
         ),
       ),

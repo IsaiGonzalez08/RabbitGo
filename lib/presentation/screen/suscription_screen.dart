@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MySuscriptionScreen extends StatelessWidget {
@@ -23,10 +22,7 @@ class MySuscriptionScreen extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MyConfigurationScreen()));
+                Navigator.pop(context);
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 30, top: 20),

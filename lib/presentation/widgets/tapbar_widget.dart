@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
+import 'package:rabbit_go/presentation/screen/search_route_screen.dart';
 
 class MyTapBarWidget extends StatefulWidget {
   const MyTapBarWidget({Key? key}) : super(key: key);
@@ -12,7 +13,11 @@ class MyTapBarWidget extends StatefulWidget {
 
 class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   int _currentIndex = 0;
-  List<Widget> body = const [MyHomeScreen(), MyConfigurationScreen()];
+  List<Widget> body = const [
+    MyHomeScreen(),
+    MySearchRouteScreen(),
+    MyConfigurationScreen()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,11 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
               label: 'Home',
               activeIcon: SvgPicture.asset('assets/images/home.svg'),
               icon: SvgPicture.asset('assets/images/homewhite.svg')),
+          BottomNavigationBarItem(
+            label: 'Rutas',
+            activeIcon: SvgPicture.asset('assets/images/love.svg'),
+            icon: SvgPicture.asset('assets/images/love.svg'),
+          ),
           BottomNavigationBarItem(
               label: 'Perfil',
               activeIcon: SvgPicture.asset('assets/images/profile2.svg'),

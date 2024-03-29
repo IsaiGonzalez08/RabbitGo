@@ -91,13 +91,18 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         body: Stack(
           children: [
             GoogleMap(
+              mapToolbarEnabled: false,
               onMapCreated: (GoogleMapController controller) async {
                 _homeController.onMapCreated(controller);
                 LatLng? location = await _homeController.getUserLocation();
                 if (location != null) {
-                  setState(() {
-                    userLocation = location;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      userLocation = location;
+                    });
+                    controller.animateCamera(
+                        CameraUpdate.newLatLngZoom(location, 14));
+                  }
                   controller
                       .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
                 }
@@ -117,49 +122,45 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.1,
-                  vertical: MediaQuery.of(context).size.height * 0.06),
-              child: InkWell(
-                onTap: () {},
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.06,
+                    top: MediaQuery.of(context).size.height * 0.06),
                 child: Container(
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    )
-                  ]),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: 40.0,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 18.0,
-                          horizontal: 15.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Buscar ruta',
-                        hintStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFE0E0E0),
-                            fontWeight: FontWeight.w500),
-                        filled: true,
-                        fillColor: const Color(0xFFFFFFFF),
-                        prefixIcon: Image.asset(
-                          'assets/images/search.png',
+                  width: 320,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        )
+                      ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.03)),
+                      Image.asset('assets/images/search.png'),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Text(
+                        'Buscar dirección',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFFE0E0E0),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ),
-            ),
+                )),
           ],
         ),
       ),
