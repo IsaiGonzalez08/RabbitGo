@@ -55,7 +55,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserData>(context, listen: false).userId;
+    userId = Provider.of<UserData>(context, listen: false).uuid;
     token = Provider.of<UserData>(context, listen: false).token;
   }
 

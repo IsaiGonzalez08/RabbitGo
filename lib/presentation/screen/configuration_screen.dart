@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
@@ -8,7 +7,6 @@ import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
-import 'package:http/http.dart' as http;
 
 class MyConfigurationScreen extends StatefulWidget {
   const MyConfigurationScreen({super.key});
@@ -27,29 +25,9 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserData>(context, listen: false).userId;
-    token = Provider.of<UserData>(context, listen: false).token;
-    _getDataUser();
-  }
-
-  Future<void> _getDataUser() async {
-    try {
-      String url = 'http://rabbitgo.sytes.net/user/$userId';
-
-      final response =
-          await http.get(Uri.parse(url), headers: {'Authorization': token!});
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        setState(() {
-          _name = responseData['data']['name'];
-          _lastname = responseData['data']['lastname'];
-          _email = responseData['data']['email'];
-        });
-      } else {}
-    } catch (error) {
-      throw('Error al conectar con el servidor: $error');
-    }
+    _name = Provider.of<UserData>(context, listen: false).name;
+    _lastname = Provider.of<UserData>(context, listen: false).lastname;
+    _email = Provider.of<UserData>(context, listen: false).email;
   }
 
   void navigateLoginSignScreen() {

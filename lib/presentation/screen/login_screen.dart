@@ -66,8 +66,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(String uuid, String token) {
-    Provider.of<UserData>(context, listen: false).setUserId(uuid, token);
+  void provider(
+      String uuid, String token, String name, String lastname, String email) {
+    Provider.of<UserData>(context, listen: false)
+        .setDataUser(uuid, token, name, lastname, email);
   }
 
   Future<void> _loginUser() async {
@@ -92,7 +94,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           final responseData = jsonDecode(response.body);
           final uuid = responseData['data']['uuid'];
           final token = responseData['data']['token'];
-          provider(uuid, token);
+          final name = responseData['data']['name'];
+          final lastname = responseData['data']['lastname'];
+          final email = responseData['data']['email'];
+          provider(uuid, token, name, lastname, email);
           navigateTapBar();
           setState(() {
             _isEmailInValid = false;
@@ -106,7 +111,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           _formKey.currentState?.validate();
         }
       } catch (error) {
-        throw('Error al conectar con el servidor: $error');
+        throw ('Error al conectar con el servidor: $error');
       }
     }
   }

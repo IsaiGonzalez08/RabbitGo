@@ -52,13 +52,17 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   getMarkers(String? token) async {
     try {
+      if (token == null) {
+        throw Exception('El token es nulo');
+      }
+
       String url = 'http://rabbitgo.sytes.net/bus/stop/';
 
       final icon = BitmapDescriptor.fromBytes(
           await assetToBytes('assets/images/MapMarker.png'));
 
       final response =
-          await http.get(Uri.parse(url), headers: {'Authorization': token!});
+          await http.get(Uri.parse(url), headers: {'Authorization': token});
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body)['data'];
@@ -75,9 +79,11 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         setState(() {
           markers = generatedMarkers;
         });
-      } else {}
+      } else {
+        // Manejar el caso en el que la solicitud no fue exitosa
+      }
     } catch (error) {
-      throw('Error con el servidor: $error');
+      throw Exception('Error con el servidor: $error');
     }
   }
 

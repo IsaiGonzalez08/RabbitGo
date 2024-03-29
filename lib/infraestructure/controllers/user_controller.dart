@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 
 class UserData extends ChangeNotifier {
-  String? userId;
+  String? uuid;
   String? token;
+  String? name;
+  String? lastname;
+  String? email;
 
-  void setUserId(String? id, String? userToken) {
-    userId = id;
-    token = userToken;
+  void setDataUser(
+    String? userUuid,
+    String? usertoken,
+    String? username,
+    String? userLastname,
+    String? userEmail,
+  ) {
+    uuid = userUuid;
+    token = usertoken;
+    name = username;
+    lastname = userLastname;
+    email = userEmail;
     notifyListeners();
   }
 }
