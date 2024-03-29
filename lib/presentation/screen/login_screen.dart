@@ -106,7 +106,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           _formKey.currentState?.validate();
         }
       } catch (error) {
-        print('Error al conectar con el servidor: $error');
+        throw('Error al conectar con el servidor: $error');
       }
     }
   }

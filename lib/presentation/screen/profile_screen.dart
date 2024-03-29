@@ -88,10 +88,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             _passwordController.clear();
             _confirmPasswordController.clear();
           } else {
-            print('error en la petición: ${response.statusCode}');
+            throw('error en la petición: ${response.statusCode}');
           }
         } catch (error) {
-          print('Error al conectar con el servidor: $error');
+          throw('Error al conectar con el servidor: $error');
         }
       }
       return;

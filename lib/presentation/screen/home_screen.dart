@@ -77,7 +77,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         });
       } else {}
     } catch (error) {
-      print('Error con el servidor: $error');
+      throw('Error con el servidor: $error');
     }
   }
 

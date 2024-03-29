@@ -48,7 +48,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
         });
       } else {}
     } catch (error) {
-      print('Error al conectar con el servidor: $error');
+      throw('Error al conectar con el servidor: $error');
     }
   }
 
