@@ -78,6 +78,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                   width: 105,
                   height: 30,
                   textButton: 'Cerrar Sesión',
+                  color: const Color(0xFF01142B),
                   onPressed: () {
                     navigateLoginSignScreen();
                   },
@@ -88,6 +89,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                   width: 105,
                   height: 30,
                   textButton: 'Cancelar',
+                  color: const Color(0xFFB6B6B6),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -156,6 +158,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                           width: 68,
                           height: 30,
                           fontSize: 14,
+                          color: Color(0xFF01142B),
                           fontWeight: FontWeight.w800)
                     ],
                   ),

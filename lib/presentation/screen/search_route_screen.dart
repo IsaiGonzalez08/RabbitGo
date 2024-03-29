@@ -62,11 +62,13 @@ class MySearchRouteScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CustomButton(
-                    textButton: 'Comenzar',
-                    width: 320,
-                    height: 40,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
+                  textButton: 'Comenzar',
+                  width: 320,
+                  height: 40,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF01142B),
+                ),
                 Padding(
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).size.height * 0.1))

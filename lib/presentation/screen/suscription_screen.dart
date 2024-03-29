@@ -114,11 +114,13 @@ class MySuscriptionScreen extends StatelessWidget {
               ],
             ),
             const CustomButton(
-                textButton: 'Continuar - Total \$20.00',
-                width: 320,
-                height: 40,
-                fontSize: 14,
-                fontWeight: FontWeight.w600)
+              textButton: 'Continuar - Total \$20.00',
+              width: 320,
+              height: 40,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF01142B),
+            )
           ],
         ),
       ),

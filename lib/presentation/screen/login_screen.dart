@@ -196,6 +196,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     height: 40,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    color: const Color(0xFF01142B),
                     onPressed: () {
                       _formKey.currentState!.save();
                       _loginUser();

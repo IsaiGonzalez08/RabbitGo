@@ -88,10 +88,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             _passwordController.clear();
             _confirmPasswordController.clear();
           } else {
-            throw('error en la petición: ${response.statusCode}');
+            throw ('error en la petición: ${response.statusCode}');
           }
         } catch (error) {
-          throw('Error al conectar con el servidor: $error');
+          throw ('Error al conectar con el servidor: $error');
         }
       }
       return;
@@ -138,6 +138,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   width: 105,
                   height: 30,
                   textButton: 'Actualizar',
+                  color: const Color(0xFF01142B),
                   onPressed: () {
                     _updateUser();
                     Navigator.pop(context);
@@ -149,6 +150,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   width: 105,
                   height: 30,
                   textButton: 'Cancelar',
+                  color: const Color(0xFFB6B6B6),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -347,6 +349,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 height: 40,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
+                color: const Color(0xFF01142B),
                 onPressed: () {
                   _formKey.currentState!.save();
                   _showSuccessDialog();

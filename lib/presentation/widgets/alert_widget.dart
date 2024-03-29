@@ -80,7 +80,8 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
               width: 20,
               height: 35,
               fontSize: 16,
-              fontWeight: FontWeight.w600),
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF01142B),),
           const SizedBox(
             height: 10,
           ),

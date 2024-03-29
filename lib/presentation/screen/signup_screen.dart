@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +85,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
             navigateLoginScreen();
           } else {}
         } catch (error) {
-          throw('Error al conectar con el servidor: $error');
+          throw ('Error al conectar con el servidor: $error');
         }
       }
       return;
@@ -224,27 +225,17 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       ],
                     ),
                     const SizedBox(height: 25),
-                    Container(
+                    CustomButton(
+                      textButton: "Comenzar",
                       width: 320,
                       height: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF01142B),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          _createUser();
-                        },
-                        child: const Text(
-                          'Comenzar',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF01142B),
+                      onPressed: () {
+                        _createUser();
+                      },
+                    )
                   ],
                 ),
               ),
