@@ -135,8 +135,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 CustomButton(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  width: 105,
-                  height: 30,
+                  width: MediaQuery.of(context).size.width * 0.27,
+                  height: 40,
                   textButton: 'Actualizar',
                   color: const Color(0xFF01142B),
                   onPressed: () {
@@ -147,8 +147,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 CustomButton(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  width: 105,
-                  height: 30,
+                  width: MediaQuery.of(context).size.width * 0.27,
+                  height: 40,
                   textButton: 'Cancelar',
                   color: const Color(0xFFB6B6B6),
                   onPressed: () {
@@ -207,7 +207,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             height: 5,
                           ),
                           MyTextFieldWidget(
-                            width: 155,
+                            width: MediaQuery.of(context).size.width * 0.438,
                             controllerTextField: _usernameController,
                             text: 'Nombre(s)',
                             validator: (value) {
@@ -236,7 +236,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             height: 5,
                           ),
                           MyTextFieldWidget(
-                            width: 155,
+                            width: MediaQuery.of(context).size.width * 0.438,
                             controllerTextField: _lastnameController,
                             text: 'Apellidos',
                             validator: (value) {
@@ -267,7 +267,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _emailController,
                         text: 'Correo Electrónico',
                         validator: (value) {
@@ -293,7 +293,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyPasswordTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _passwordController,
                         text: 'Contraseña',
                         validator: (value) {
@@ -320,7 +320,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyPasswordTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _confirmPasswordController,
                         text: 'Confirmar Contraseña',
                         validator: (value) {
@@ -345,7 +345,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               CustomButton(
                 textButton: 'Actualizar',
-                width: 320,
+                width: MediaQuery.of(context).size.width * 0.9,
                 height: 40,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,

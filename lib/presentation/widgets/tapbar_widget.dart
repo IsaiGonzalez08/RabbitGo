@@ -26,6 +26,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
           setState(() {

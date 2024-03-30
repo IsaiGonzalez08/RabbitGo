@@ -51,7 +51,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   }
 
   void _handleSubmitted(String value) {
-    throw('Texto ingresado: $value');
+    throw ('Texto ingresado: $value');
   }
 
   getMarkers(String? token) async {
@@ -131,17 +131,17 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
             ),
             Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.06,
-                    vertical: MediaQuery.of(context).size.height * 0.06),
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.height * 0.08),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height * 0.06,
+                  height: 40,
                   decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: const Offset(0, 3),
+                      offset: const Offset(0, 1),
                     )
                   ]),
                   child: TextField(

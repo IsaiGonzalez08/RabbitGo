@@ -34,7 +34,6 @@ class CustomButton extends StatelessWidget {
           textButton,
           textAlign: TextAlign.center,
           style: TextStyle(
-            height: 0,
             color: Colors.white,
             fontWeight: fontWeight,
             fontSize: fontSize,

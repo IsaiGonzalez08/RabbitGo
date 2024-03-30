@@ -4,7 +4,9 @@ import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MyLoginSignPage extends StatefulWidget {
-  const MyLoginSignPage({Key? key,}) : super(key: key);
+  const MyLoginSignPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MyLoginSignPage> createState() => _MyLoginPage();
@@ -25,9 +27,9 @@ class _MyLoginPage extends State<MyLoginSignPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 129,
-            ),
+            Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.1)),
             const Text(
               '¡Bienvenido!',
               style: TextStyle(
@@ -49,7 +51,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
             const SizedBox(height: 10),
             CustomButton(
               textButton: 'Tengo una cuenta',
-              width: 320,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: 40,
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -72,35 +74,35 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               ),
             ),
             const SizedBox(height: 5),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Material(
-                shape: Border.all(color: const Color(0xFFEBEBEB), width: 2),
-                color: const Color(0xFFFDFEFF),
-                child: InkWell(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 81, vertical: 10),
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/images/Google.png'),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            'Continuar con Google',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF9F9F9F),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ]),
-                  ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: const Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: const Color(0xFFEBEBEB),
+                    width: 2,
+                  )),
+              child: TextButton(
+                onPressed: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset('assets/images/Google.png'),
+                    const Text(
+                      'Continuar con Google',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF9F9F9F),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.035))
+                  ],
                 ),
               ),
             ),

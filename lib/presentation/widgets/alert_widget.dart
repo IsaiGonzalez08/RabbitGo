@@ -35,7 +35,7 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+      padding: const EdgeInsets.only(top: 0, left: 30, right: 30),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28.0),
         image: const DecorationImage(
@@ -72,18 +72,16 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
             height: 20,
           ),
           CustomButton(
-              onPressed: () {
-                _controller.request();
-                Navigator.pop(context);
-              },
-              textButton: 'Activar',
-              width: 20,
-              height: 35,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF01142B),),
-          const SizedBox(
-            height: 10,
+            onPressed: () {
+              _controller.request();
+              Navigator.pop(context);
+            },
+            textButton: 'Activar',
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 40,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF01142B),
           ),
           TextButton(
             onPressed: () {

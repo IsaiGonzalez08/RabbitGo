@@ -15,16 +15,16 @@ class MySearchRouteScreen extends StatelessWidget {
           centerTitle: true,
           automaticallyImplyLeading: false,
           iconTheme: const IconThemeData(color: Color(0xFF979797)),
-          toolbarHeight: MediaQuery.of(context).size.height * 0.106,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.14,
           title: Container(
-            width: MediaQuery.of(context).size.width * 0.88,
-            height: MediaQuery.of(context).size.height * 0.06,
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 40,
             decoration: BoxDecoration(boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 2,
                 blurRadius: 5,
-                offset: const Offset(0, 3),
+                offset: const Offset(0, 1),
               )
             ]),
             child: Builder(builder: (context) {
@@ -61,19 +61,19 @@ class MySearchRouteScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CustomButton(
+                CustomButton(
                   textButton: 'Comenzar',
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   height: 40,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF01142B),
+                  color: const Color(0xFF01142B),
                 ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height * 0.1))
               ],
             ),
+            const SizedBox(
+              height: 15,
+            )
           ],
         ),
       ),
