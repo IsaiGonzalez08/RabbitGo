@@ -1,6 +1,6 @@
-import 'package:rabbit_go/domain/api/search_api.dart';
+import 'package:rabbit_go/domain/api/search_place_api.dart';
 import 'package:rabbit_go/domain/models/place.dart';
-import 'package:rabbit_go/domain/repository/search_repository.dart';
+import 'package:rabbit_go/domain/repository/search_place_repository.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final SearchAPI _searchAPI;

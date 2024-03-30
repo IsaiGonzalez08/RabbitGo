@@ -1,19 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/data/repositories_impl/search_repository_impl.dart';
-import 'package:rabbit_go/domain/api/search_api.dart';
-import 'package:rabbit_go/infraestructure/controllers/search_place_controller.dart';
+import 'package:rabbit_go/data/repositories_impl/find_route_repository_impl.dart';
+import 'package:rabbit_go/domain/api/find_route_api.dart';
+import 'package:rabbit_go/infraestructure/controllers/find_route_controller.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
-class MySearchRouteScreen extends StatelessWidget {
-  const MySearchRouteScreen({super.key});
+class MyFindRouteScreen extends StatelessWidget {
+  const MyFindRouteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SearchPlaceController(SearchRepositoryImpl(
-        SearchAPI(Dio()),
+      create: (_) => FindRouteController(FindRouteRepositoryImpl(
+        FindRouteAPI(Dio(), Provider.of<UserData>(context, listen: false)),
       )),
       child: Scaffold(
         appBar: AppBar(
@@ -34,7 +35,7 @@ class MySearchRouteScreen extends StatelessWidget {
             ]),
             child: Builder(builder: (context) {
               return TextField(
-                onChanged: context.read<SearchPlaceController>().onQueryChanged,
+                onChanged: context.read<FindRouteController>().queryChanged,
                 textAlignVertical: TextAlignVertical.center,
                 cursorHeight: 25.0,
                 cursorColor: const Color(0xFF01142B),
