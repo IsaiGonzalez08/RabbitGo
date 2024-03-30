@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/search_route_controller.dart';
+import 'package:rabbit_go/data/repositories_impl/search_repository_impl.dart';
+import 'package:rabbit_go/domain/api/search_api.dart';
+import 'package:rabbit_go/infraestructure/controllers/search_place_controller.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MySearchRouteScreen extends StatelessWidget {
@@ -9,7 +12,9 @@ class MySearchRouteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SearchRouteController(),
+      create: (_) => SearchPlaceController(SearchRepositoryImpl(
+        SearchAPI(Dio()),
+      )),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -29,7 +34,7 @@ class MySearchRouteScreen extends StatelessWidget {
             ]),
             child: Builder(builder: (context) {
               return TextField(
-                onChanged: context.read<SearchRouteController>().onQueryChanged,
+                onChanged: context.read<SearchPlaceController>().onQueryChanged,
                 textAlignVertical: TextAlignVertical.center,
                 cursorHeight: 25.0,
                 cursorColor: const Color(0xFF01142B),
