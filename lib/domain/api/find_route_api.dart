@@ -9,9 +9,9 @@ class FindRouteAPI {
   final UserData _userController;
   FindRouteAPI(this._dio, this._userController);
   CancelToken? _cancelToken;
-  final _controller = StreamController<List<Route>?>.broadcast();
+  final _controller = StreamController<List<Routes>?>.broadcast();
 
-  Stream<List<Route>?> get onResults => _controller.stream;
+  Stream<List<Routes>?> get onResults => _controller.stream;
 
   void find(String query) async {
     try {
@@ -28,7 +28,7 @@ class FindRouteAPI {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = response.data['data'];
-        Route route = Route.fromJson(responseData);
+        Routes route = Routes.fromJson(responseData);
         _controller.sink.add([route]);
       } else {
         _controller.sink.add(null);

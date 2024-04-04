@@ -9,11 +9,11 @@ class FindRouteController extends ChangeNotifier {
   String _query = '';
   late StreamSubscription _subscription;
 
-  List<Route>? _routes = [];
-  List<Route>? get routes => _routes;
+  List<Routes>? _routes = [];
+  List<Routes>? get routes => _routes;
 
-  Route? _origin;
-  Route? get origin => _origin;
+  Routes? _origin;
+  Routes? get origin => _origin;
 
   FindRouteController(this._findRouteRepository) {
     _subscription = _findRouteRepository.onResults.listen(

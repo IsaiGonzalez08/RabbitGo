@@ -23,5 +23,5 @@ class FindRouteRepositoryImpl implements FindRouteRepository {
   }
 
   @override
-  Stream<List<Route>?> get onResults => _findRouteAPI.onResults;
+  Stream<List<Routes>?> get onResults => _findRouteAPI.onResults;
 }
