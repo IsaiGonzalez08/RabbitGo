@@ -3,32 +3,26 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/route.dart';
-import 'package:rabbit_go/infraestructure/controllers/bus_stops_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:http/http.dart' as http;
 
 class MyAlertMarker extends StatefulWidget {
-  const MyAlertMarker({super.key});
+  final String? markerId;
+  const MyAlertMarker({Key? key, required this.markerId}) : super(key: key);
 
   @override
   State<MyAlertMarker> createState() => _MyAlertMarkerState();
 }
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
-  String? busStopId;
+  late String? markerId;
   String? token;
+  late Future<List<Routes>> futureRoutes;
 
-  @override
-  void initState() {
-    super.initState();
-    busStopId = Provider.of<BusStopController>(context, listen: false).id;
-    token = Provider.of<UserData>(context, listen: false).token;
-  }
-
-  _getBusRoute(String? busStopID) async {
+  Future<List<Routes>> _getBusRoute(String? markerId) async {
     try {
-      String url = ('http://rabbitgo.sytes.net/bus/route/at/$busStopID');
+      String url = ('http://rabbitgo.sytes.net/bus/route/at/$markerId');
 
       final response = await http.get(
         Uri.parse(url),
@@ -40,7 +34,11 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
         if (jsonResponse.containsKey('data')) {
           List<dynamic> routeJson = jsonResponse['data'];
-          
+          List<Routes> routes =
+              routeJson.map((route) => Routes.fromJson(route)).toList();
+          return routes;
+        } else {
+          throw Exception('Response does not contain "data"');
         }
       } else {
         throw ('error en la petición: ${response.statusCode}');
@@ -48,6 +46,14 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    markerId = widget.markerId;
+    token = Provider.of<UserData>(context, listen: false).token;
+    futureRoutes = _getBusRoute(markerId);
   }
 
   @override
@@ -75,39 +81,94 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                 ],
               ),
             ),
-            InkWell(
-                child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.06),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset('assets/images/Bus.png'),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ruta 100',
-                            textAlign: TextAlign.start,
+            FutureBuilder<List<Routes>>(
+              future: futureRoutes,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    children: snapshot.data!.map((route) {
+                      return InkWell(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              right: MediaQuery.of(context).size.width * 0.07,
+                              left: MediaQuery.of(context).size.width * 0.07),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: const Color(0xFFE0E0E0),
+                            width: 1,
+                          )),
+                          height: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset('assets/images/Bus.png'),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        route.name,
+                                        style: const TextStyle(
+                                            color: Color(0xFF8D8D8D),
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Text(
+                                        '${route.startTime}-${route.endTime}',
+                                        style: const TextStyle(
+                                            color: Color(0xFFE0E0E0),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                width: 50,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Costo ',
+                                        style: TextStyle(
+                                            color: Color(0xFFAEAEAE),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Text(
+                                        '\$${route.price}',
+                                        style: const TextStyle(
+                                            color: Color(0xFFAEAEAE),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
                           ),
-                          Text('10:00-10:00')
-                        ],
-                      )
-                    ],
-                  ),
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text('Costo'), Text('\$10.00')],
-                  )
-                ],
-              ),
-            )),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                return const CircularProgressIndicator();
+              },
+            ),
           ],
         ),
         Padding(

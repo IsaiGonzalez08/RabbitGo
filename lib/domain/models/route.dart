@@ -1,5 +1,5 @@
 class Routes {
-  final String uuid, name, startTime, endTime;
+  final String uuid, name, startTime, endTime, busStopId;
   final int price;
 
   Routes(
@@ -7,7 +7,8 @@ class Routes {
       required this.name,
       required this.startTime,
       required this.endTime,
-      required this.price});
+      required this.price,
+      required this.busStopId});
 
   factory Routes.fromJson(Map<String, dynamic> json) {
     return Routes(
@@ -15,6 +16,7 @@ class Routes {
         name: json['name'],
         startTime: json['startTime'],
         endTime: json['endTime'],
-        price: json['price']);
+        price: json['price'],
+        busStopId: json['busStopId']);
   }
 }

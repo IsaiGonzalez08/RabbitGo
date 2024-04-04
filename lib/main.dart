@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
-import 'package:rabbit_go/infraestructure/controllers/bus_stops_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
@@ -15,8 +14,7 @@ void main() {
         ChangeNotifierProvider<UserData>(create: (context) => UserData()),
         ChangeNotifierProvider<RouteCoordinatesModel>(
           create: (_) => RouteCoordinatesModel(),
-        ),
-        ChangeNotifierProvider<BusStopController>(create: (context) => BusStopController())
+        )
       ],
       child: const MyApp(),
     ),
