@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 
-Future<Uint8List> assetToBytes(String path, {int width = 60}) async {
+Future<Uint8List> assetToBytes(String path, {int width = 45}) async {
   final byteData = await rootBundle.load(path);
   final bytes = byteData.buffer.asUint8List();
   final codec = await ui.instantiateImageCodec(bytes, targetWidth: width);

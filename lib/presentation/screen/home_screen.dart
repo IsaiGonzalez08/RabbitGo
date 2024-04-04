@@ -6,12 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rabbit_go/data/repositories_impl/search_place_repository_impl.dart';
 import 'package:rabbit_go/domain/api/search_place_api.dart';
+import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
 import 'package:rabbit_go/domain/models/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/search_place_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
+import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
@@ -25,6 +27,7 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
+  late Polyline _polyline;
   final TextEditingController _searchController = TextEditingController();
   late WaitController _waitController;
   late HomeController _homeController;
@@ -34,18 +37,17 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   LatLng? userLocation;
   CancelToken? _cancelToken;
 
-  _showMarkerAlert() {
-    AnimationController controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
+  List<Color> gradientColors = [
+    const Color(0xFFA3CCFD),
+    const Color(0xFF01142B),
+  ];
 
+  _showMarkerAlert() {
     showBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return const MyAlertMarker();
         },
-        transitionAnimationController: controller,
         constraints: const BoxConstraints(
             minWidth: 0.0,
             maxWidth: double.infinity,
@@ -146,6 +148,14 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     _checkAndShowAlert();
     token = Provider.of<UserData>(context, listen: false).token;
     getMarkers(token);
+    List<LatLng>? coordinates =
+        Provider.of<RouteCoordinatesModel>(context, listen: false).coordinates;
+    _polyline = GradientPolyline(
+      polylineId: const PolylineId('route'),
+      points: coordinates!,
+      gradientColors: gradientColors,
+      width: 3,
+    );
   }
 
   @override
@@ -171,6 +181,9 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                 controller
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
+            },
+            polylines: {
+              _polyline,
             },
             markers: Set.from({...markers, ...hereMarkers}),
             compassEnabled: false,

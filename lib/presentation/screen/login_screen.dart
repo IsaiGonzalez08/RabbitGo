@@ -66,10 +66,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(
-      String uuid, String token, String name, String lastname, String email) {
-    Provider.of<UserData>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email);
+  void provider(String uuid, String token, String name, String lastname, String email) {
+    Provider.of<UserData>(context, listen: false).setDataUser(uuid, token, name, lastname, email);
   }
 
   Future<void> _loginUser() async {
