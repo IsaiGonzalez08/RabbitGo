@@ -8,6 +8,7 @@ import 'package:rabbit_go/data/repositories_impl/search_place_repository_impl.da
 import 'package:rabbit_go/domain/api/search_place_api.dart';
 import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
 import 'package:rabbit_go/domain/models/place.dart';
+import 'package:rabbit_go/infraestructure/controllers/bus_stops_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/search_place_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
@@ -42,7 +43,12 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     const Color(0xFF01142B),
   ];
 
-  _showMarkerAlert() {
+  void providerBusStopID(String? busStopId) {
+    Provider.of<BusStopController>(context, listen: false)
+        .setDataBusStops(busStopId);
+  }
+
+  _showDialogBusStops() {
     showBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -55,7 +61,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             maxHeight: 500));
   }
 
-  getMarkers(String? token) async {
+  getBusStops(String? token) async {
     try {
       if (token == null) {
         throw Exception('El token es nulo');
@@ -72,9 +78,10 @@ class _MyHomeScreenState extends State<MyHomeScreen>
           double latitude = item["latitude"];
           double longitude = item["longitude"];
           LatLng latLngMarker = LatLng(latitude, longitude);
+          providerBusStopID(markerId);
           return Marker(
               onTap: () {
-                _showMarkerAlert();
+                _showDialogBusStops();
               },
               markerId: MarkerId(markerId),
               position: latLngMarker,
@@ -89,7 +96,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  getItemsHereAPI(String query) async {
+  getPlacesFromHereAPI(String query) async {
     Dio dio = Dio();
     try {
       _cancelToken = CancelToken();
@@ -126,7 +133,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  Future<void> _checkAndShowAlert() async {
+  Future<void> _showAlertPermissionsLocation() async {
     bool isLocationPermissionGranted = await _waitController.checkPermission();
     if (!isLocationPermissionGranted) {
       Future.delayed(const Duration(seconds: 3), () {
@@ -145,9 +152,9 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     super.initState();
     _waitController = WaitController(Permission.location);
     _homeController = HomeController();
-    _checkAndShowAlert();
+    _showAlertPermissionsLocation();
     token = Provider.of<UserData>(context, listen: false).token;
-    getMarkers(token);
+    getBusStops(token);
     List<LatLng>? coordinates =
         Provider.of<RouteCoordinatesModel>(context, listen: false).coordinates;
     _polyline = GradientPolyline(
@@ -215,7 +222,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                 child: Builder(builder: (context) {
                   return TextField(
                     controller: _searchController,
-                    onSubmitted: (value) => getItemsHereAPI(value),
+                    onSubmitted: (value) => getPlacesFromHereAPI(value),
                     textAlignVertical: TextAlignVertical.center,
                     cursorHeight: 25.0,
                     cursorColor: const Color(0xFF01142B),
