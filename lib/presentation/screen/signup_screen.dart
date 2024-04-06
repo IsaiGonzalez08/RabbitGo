@@ -64,7 +64,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
         return;
       } else {
         try {
-          String url = ('http://rabbitgo.sytes.net/user');
+          String url = ('https://rabbitgo.sytes.net/user');
 
           final userData = {
             'name': _usernameController.text,

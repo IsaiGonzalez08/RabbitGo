@@ -40,7 +40,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   Future<List<Routes>> _getBusRoute(String? markerId) async {
     try {
 
-      String url = ('http://rabbitgo.sytes.net/bus/route/at/$markerId');
+      String url = ('https://rabbitgo.sytes.net/bus/route/at/$markerId');
 
       final response = await http.get(
         Uri.parse(url),
@@ -73,7 +73,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
     try {
       listCordinates?.clear();
 
-      String url = ('http://rabbitgo.sytes.net/path/route/$routeId');
+      String url = ('https://rabbitgo.sytes.net/path/route/$routeId');
 
       final response = await http.get(
         Uri.parse(url),

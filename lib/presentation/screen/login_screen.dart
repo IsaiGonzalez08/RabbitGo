@@ -73,7 +73,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
       try {
-        String url = 'http://rabbitgo.sytes.net/user/login';
+        String url = 'https://rabbitgo.sytes.net/user/login';
 
         final userData = {
           'email': _emailController.text,

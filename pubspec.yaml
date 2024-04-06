@@ -89,6 +89,7 @@ flutter:
     - assets/images/OkStatus.png
     - assets/images/Img-alert.png
     - assets/images/Bus.png
+    - assets/images/Route.svg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

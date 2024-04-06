@@ -40,8 +40,8 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
               icon: SvgPicture.asset('assets/images/homewhite.svg')),
           BottomNavigationBarItem(
             label: 'Rutas',
-            activeIcon: SvgPicture.asset('assets/images/love.svg'),
-            icon: SvgPicture.asset('assets/images/love.svg'),
+            activeIcon: SvgPicture.asset('assets/images/Route.svg'),
+            icon: SvgPicture.asset('assets/images/Route.svg'),
           ),
           BottomNavigationBarItem(
               label: 'Perfil',

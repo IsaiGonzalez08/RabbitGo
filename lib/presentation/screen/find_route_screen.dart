@@ -35,7 +35,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
 
   getRouteCoordinates(String id) async {
     try {
-      String url = 'http://rabbitgo.sytes.net/path/route/$id';
+      String url = 'https://rabbitgo.sytes.net/path/route/$id';
 
       final response = await http.get(
         Uri.parse(url),

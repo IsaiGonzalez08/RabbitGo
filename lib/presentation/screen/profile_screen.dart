@@ -65,7 +65,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         return;
       } else {
         try {
-          String url = ('http://rabbitgo.sytes.net/user/$userId');
+          String url = ('https://rabbitgo.sytes.net/user/$userId');
 
           final userData = {
             'name': _usernameController.text,

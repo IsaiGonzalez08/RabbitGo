@@ -64,7 +64,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
       final icon = BitmapDescriptor.fromBytes(
           await assetToBytes('assets/images/MapMarker.png'));
       final response = await http.get(
-          Uri.parse('http://rabbitgo.sytes.net/bus/stop/'),
+          Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
           headers: {'Authorization': token});
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body)['data'];

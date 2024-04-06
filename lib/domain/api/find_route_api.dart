@@ -22,7 +22,7 @@ class FindRouteAPI {
       };
       _cancelToken = CancelToken();
       final response = await _dio.get(
-        'http://rabbitgo.sytes.net/bus/route/name/$query',
+        'https://rabbitgo.sytes.net/bus/route/name/$query',
         options: Options(headers: headers),
         cancelToken: _cancelToken,
       );
