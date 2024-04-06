@@ -27,7 +27,8 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
-  late Polyline _polyline;
+  late Polyline polyline;
+  late Polyline polylineFromAlert;
   final TextEditingController _searchController = TextEditingController();
   late WaitController _waitController;
   late HomeController _homeController;
@@ -150,7 +151,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     getBusStops(token);
     List<LatLng>? coordinates =
         Provider.of<RouteCoordinatesModel>(context, listen: false).coordinates;
-    _polyline = GradientPolyline(
+    polyline = GradientPolyline(
       polylineId: const PolylineId('route'),
       points: coordinates!,
       gradientColors: gradientColors,
@@ -182,9 +183,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
             },
-            polylines: {
-              _polyline,
-            },
+            polylines: {polyline},
             markers: Set.from({...markers, ...hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(

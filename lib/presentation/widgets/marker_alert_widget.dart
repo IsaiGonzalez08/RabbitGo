@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/route.dart';
+import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
-import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyAlertMarker extends StatefulWidget {
   final String? markerId;
@@ -19,9 +21,25 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   late String? markerId;
   String? token;
   late Future<List<Routes>> futureRoutes;
+  bool isButtonEnabled = false;
+  late String? routeId;
+  List<LatLng>? listCordinates = [];
+
+  void providerCoordinates(List<LatLng>? coordinates) {
+    Provider.of<RouteCoordinatesModel>(context, listen: false)
+        .setDataCoordinates(coordinates);
+  }
+
+  void navigateMap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+    );
+  }
 
   Future<List<Routes>> _getBusRoute(String? markerId) async {
     try {
+
       String url = ('http://rabbitgo.sytes.net/bus/route/at/$markerId');
 
       final response = await http.get(
@@ -36,12 +54,48 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
           List<dynamic> routeJson = jsonResponse['data'];
           List<Routes> routes =
               routeJson.map((route) => Routes.fromJson(route)).toList();
+          for (var dataRoute in routes) {
+            routeId = dataRoute.uuid;
+          }
           return routes;
         } else {
           throw Exception('Response does not contain "data"');
         }
       } else {
         throw ('error en la petición: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al conectar con el servidor: $error');
+    }
+  }
+
+  _getRoutePath() async {
+    try {
+      listCordinates?.clear();
+
+      String url = ('http://rabbitgo.sytes.net/path/route/$routeId');
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic responseData = json.decode(response.body);
+        if (responseData != null &&
+            responseData['data'] != null &&
+            responseData['data']['path'] != null) {
+          final List<dynamic> data = responseData['data']['path'];
+          listCordinates = data
+              .map(
+                (e) => LatLng(e[0], e[1]),
+              )
+              .toList();
+          providerCoordinates(listCordinates!);
+          navigateMap();
+        } else {
+          throw ('Los datos recibidos de la API no son válidos.');
+        }
       }
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
@@ -88,15 +142,27 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                   return Column(
                     children: snapshot.data!.map((route) {
                       return InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (isButtonEnabled) {
+                              isButtonEnabled = false;
+                            } else {
+                              isButtonEnabled = true;
+                            }
+                          });
+                        },
                         child: Container(
                           padding: EdgeInsets.only(
                               right: MediaQuery.of(context).size.width * 0.07,
                               left: MediaQuery.of(context).size.width * 0.07),
                           decoration: BoxDecoration(
+                              color: isButtonEnabled
+                                  ? const Color(0xFFE0E0E0)
+                                  : const Color(0xFF),
                               border: Border.all(
-                            color: const Color(0xFFE0E0E0),
-                            width: 1,
-                          )),
+                                color: const Color(0xFFE0E0E0),
+                                width: 1,
+                              )),
                           height: 80,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,7 +188,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                                       Text(
                                         '${route.startTime}-${route.endTime}',
                                         style: const TextStyle(
-                                            color: Color(0xFFE0E0E0),
+                                            color: Color(0xFFAEAEAE),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -165,7 +231,6 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
-
                 return const CircularProgressIndicator();
               },
             ),
@@ -174,16 +239,26 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
         Padding(
           padding: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.width * 0.05),
-          child: CustomButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            textButton: 'Comenzar',
+          child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
             height: 40,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF01142B),
+            decoration: BoxDecoration(
+              color: isButtonEnabled
+                  ? const Color(0xFF01142B)
+                  : const Color(0xFFB6B6B6),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: TextButton(
+                onPressed: isButtonEnabled
+                    ? () {
+                        _getRoutePath();
+                      }
+                    : null,
+                child: const Text('Comenzar',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFFFFFFF)))),
           ),
         ),
       ],
