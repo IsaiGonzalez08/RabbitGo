@@ -11,10 +11,6 @@ class MySuscriptionScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-                alignment: Alignment(
-                  10.0,
-                  -1.1,
-                ),
                 image: AssetImage('assets/images/bg-bienvenida.png'),
                 fit: BoxFit.cover)),
         child: Column(
