@@ -105,6 +105,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           setState(() {
             _isEmailInValid = true;
             _isPasswordInValid = true;
+            _emailController.clear();
+            _passwordController.clear();
           });
           _formKey.currentState?.validate();
         }
