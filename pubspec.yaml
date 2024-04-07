@@ -44,6 +44,7 @@ dependencies:
   provider: ^6.1.2
   geolocator: ^11.0.0
   dio: ^5.4.2+1
+  flutter_launcher_icons: ^0.13.1
   
 
 dev_dependencies:
@@ -56,6 +57,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/images/LogoRabbit.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -90,6 +94,7 @@ flutter:
     - assets/images/Img-alert.png
     - assets/images/Bus.png
     - assets/images/Route.svg
+    - assets/images/LogoRabbit.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
