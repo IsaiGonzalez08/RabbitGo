@@ -43,16 +43,20 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           'Authorization': token!,
           'Content-Type': 'application/json; charset=UTF-8',
         },
-      );
+      ); 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body)['data']['path'];
-        listCordinates = data
-            .map(
-              (e) => LatLng(e[0], e[1]),
-            )
-            .toList();
-        providerRouteCoordinates(listCordinates);
-        navigateHome();
+        final dynamic responseData = json.decode(response.body);
+        if (responseData != null && responseData['data'] != null) {
+          final List<dynamic> data = responseData['data'];
+          listCordinates = data.expand((element) {
+            final path = element['path'] as List<dynamic>;
+            return path.map((coord) => LatLng(coord[0], coord[1]));
+          }).toList();
+          providerRouteCoordinates(listCordinates!);
+          navigateHome();
+        } else {
+          throw ('Los datos recibidos de la API no son válidos.');
+        }
       }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {}

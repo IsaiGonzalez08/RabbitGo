@@ -82,15 +82,12 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
-        if (responseData != null &&
-            responseData['data'] != null &&
-            responseData['data']['path'] != null) {
-          final List<dynamic> data = responseData['data']['path'];
-          listCordinates = data
-              .map(
-                (e) => LatLng(e[0], e[1]),
-              )
-              .toList();
+        if (responseData != null && responseData['data'] != null) {
+          final List<dynamic> data = responseData['data'];
+          listCordinates = data.expand((element) {
+            final path = element['path'] as List<dynamic>;
+            return path.map((coord) => LatLng(coord[0], coord[1]));
+          }).toList();
           providerCoordinates(listCordinates!);
           navigateMap();
         } else {
