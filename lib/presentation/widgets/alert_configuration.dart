@@ -45,6 +45,7 @@ class MyAlertConfiguration extends StatelessWidget {
                   height: 35,
                   textButton: 'Cerrar sesión',
                   color: const Color(0xFF01142B),
+                  colorText: const Color(0xFFFFFFFF),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -63,6 +64,7 @@ class MyAlertConfiguration extends StatelessWidget {
                   height: 35,
                   textButton: 'Cancelar',
                   color: const Color(0xFFB6B6B6),
+                  colorText: const Color(0xFFFFFFFF),
                   onPressed: () {
                     Navigator.pop(context);
                   },

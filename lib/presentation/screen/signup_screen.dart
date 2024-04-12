@@ -236,6 +236,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF01142B),
+                      colorText: const Color(0xFFFFFFFF),
                       onPressed: () {
                         _createUser();
                       },

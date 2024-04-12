@@ -9,6 +9,7 @@ class CustomButton extends StatelessWidget {
     required this.fontSize,
     required this.fontWeight,
     required this.color,
+    required this.colorText,
     this.onPressed,
   }) : super(key: key);
   final String textButton;
@@ -17,6 +18,7 @@ class CustomButton extends StatelessWidget {
   final double height;
   final FontWeight fontWeight;
   final Color color;
+  final Color colorText;
   final Function()? onPressed;
 
   @override
@@ -34,7 +36,7 @@ class CustomButton extends StatelessWidget {
           textButton,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white,
+            color: colorText,
             fontWeight: fontWeight,
             fontSize: fontSize,
           ),

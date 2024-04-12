@@ -162,6 +162,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   height: 40,
                   textButton: 'Actualizar',
                   color: const Color(0xFF01142B),
+                  colorText: const Color(0xFFFFFFFF),
                   onPressed: () {
                     _updateUser();
                   },
@@ -173,6 +174,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   height: 40,
                   textButton: 'Cancelar',
                   color: const Color(0xFFB6B6B6),
+                  colorText: const Color(0xFFFFFFFF),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -390,6 +392,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF01142B),
+                colorText: const Color(0xFFFFFFFF),
                 onPressed: () {
                   _formKey.currentState!.save();
                   _showSuccessDialog();

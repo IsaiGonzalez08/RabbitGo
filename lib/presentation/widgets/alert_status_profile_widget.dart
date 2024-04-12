@@ -44,6 +44,7 @@ class MyAlertStatusProfile extends StatelessWidget {
               height: 35,
               textButton: 'Eliminar',
               color: const Color(0xFFAB0000),
+              colorText: const Color(0xFFFFFFFF),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -58,6 +59,7 @@ class MyAlertStatusProfile extends StatelessWidget {
               height: 35,
               textButton: 'Cancelar',
               color: const Color(0xFFB6B6B6),
+              colorText: const Color(0xFFFFFFFF),
               onPressed: () {
                 Navigator.pop(context);
               },

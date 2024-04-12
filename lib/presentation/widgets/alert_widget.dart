@@ -82,6 +82,7 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: const Color(0xFF01142B),
+            colorText: const Color(0xFFFFFFFF),
           ),
           TextButton(
             onPressed: () {

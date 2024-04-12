@@ -94,6 +94,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                           height: 30,
                           fontSize: 12,
                           color: const Color(0xFF01142B),
+                          colorText: const Color(0xFFFFFFFF),
                           fontWeight: FontWeight.w800)
                     ],
                   ),

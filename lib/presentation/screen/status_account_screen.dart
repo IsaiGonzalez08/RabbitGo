@@ -118,7 +118,9 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
                       height: 40,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFFF2F2F2))
+                      color: const Color(0xFFF2F2F2),
+                      colorText: const Color(0xFFFFFFFF),
+                      )
                 ],
               ),
             ],
