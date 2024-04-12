@@ -110,17 +110,17 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
                     height: 50,
                   ),
                   CustomButton(
-                      onPressed: () {
-                        _showConfirmDialog();
-                      },
-                      textButton: 'Eliminar cuenta',
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 40,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFFF2F2F2),
-                      colorText: const Color(0xFFFFFFFF),
-                      )
+                    onPressed: () {
+                      _showConfirmDialog();
+                    },
+                    textButton: 'Eliminar cuenta',
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 40,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFFF2F2F2),
+                    colorText: const Color(0xFFAB0000),
+                  )
                 ],
               ),
             ],
