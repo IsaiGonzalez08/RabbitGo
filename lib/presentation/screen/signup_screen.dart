@@ -64,7 +64,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
         return;
       } else {
         try {
-          String url = ('http://rabbitgo.sytes.net/user');
+          String url = ('https://rabbitgo.sytes.net/user');
 
           final userData = {
             'name': _usernameController.text,
@@ -135,7 +135,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       children: [
                         MyTextFieldWidget(
                           text: 'Nombre(s)',
-                          width: 155,
+                          width: MediaQuery.of(context).size.width * 0.442,
                           controllerTextField: _usernameController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -145,11 +145,11 @@ class _MySignScreenState extends State<MySignUpScreen> {
                           },
                         ),
                         const SizedBox(
-                          width: 10,
+                          width: 8,
                         ),
                         MyTextFieldWidget(
                           text: 'Apellidos',
-                          width: 155,
+                          width: MediaQuery.of(context).size.width * 0.442,
                           controllerTextField: _lastnameController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -165,7 +165,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     ),
                     MyTextFieldWidget(
                       controllerTextField: _emailController,
-                      width: 320,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       text: 'Correo Eletcrónico',
                       validator: (value) {
                         return validateEmail(value);
@@ -175,7 +175,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       height: 15,
                     ),
                     MyPasswordTextFieldWidget(
-                      width: 320,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       text: 'Contraseña',
                       controllerTextField: _passwordController,
                       validator: (value) {
@@ -187,7 +187,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       height: 15,
                     ),
                     MyPasswordTextFieldWidget(
-                      width: 320,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       controllerTextField: _confirmPasswordController,
                       text: 'Confirmar contraseña',
                       validator: (value) {
@@ -210,8 +210,12 @@ class _MySignScreenState extends State<MySignUpScreen> {
                       height: 5,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.03)),
                         Image.asset('assets/images/MarkYes.png'),
                         const SizedBox(width: 5),
                         const Text(
@@ -227,7 +231,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                     const SizedBox(height: 25),
                     CustomButton(
                       textButton: "Comenzar",
-                      width: 320,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       height: 40,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

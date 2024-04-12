@@ -11,10 +11,6 @@ class MySuscriptionScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-                alignment: Alignment(
-                  10.0,
-                  -1.1,
-                ),
                 image: AssetImage('assets/images/bg-bienvenida.png'),
                 fit: BoxFit.cover)),
         child: Column(
@@ -113,13 +109,13 @@ class MySuscriptionScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const CustomButton(
+            CustomButton(
               textButton: 'Continuar - Total \$20.00',
-              width: 320,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: 40,
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF01142B),
+              color: const Color(0xFF01142B),
             )
           ],
         ),

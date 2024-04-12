@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
-import 'package:rabbit_go/presentation/screen/search_route_screen.dart';
+import 'package:rabbit_go/presentation/screen/find_route_screen.dart';
 
 class MyTapBarWidget extends StatefulWidget {
   const MyTapBarWidget({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   int _currentIndex = 0;
   List<Widget> body = const [
     MyHomeScreen(),
-    MySearchRouteScreen(),
+    MyFindRouteScreen(),
     MyConfigurationScreen()
   ];
 
@@ -26,6 +26,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
           setState(() {
@@ -39,8 +40,8 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
               icon: SvgPicture.asset('assets/images/homewhite.svg')),
           BottomNavigationBarItem(
             label: 'Rutas',
-            activeIcon: SvgPicture.asset('assets/images/love.svg'),
-            icon: SvgPicture.asset('assets/images/love.svg'),
+            activeIcon: SvgPicture.asset('assets/images/Route.svg'),
+            icon: SvgPicture.asset('assets/images/Route.svg'),
           ),
           BottomNavigationBarItem(
               label: 'Perfil',

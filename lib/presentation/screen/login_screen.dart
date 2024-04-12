@@ -66,16 +66,14 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(
-      String uuid, String token, String name, String lastname, String email) {
-    Provider.of<UserData>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email);
+  void provider(String uuid, String token, String name, String lastname, String email) {
+    Provider.of<UserData>(context, listen: false).setDataUser(uuid, token, name, lastname, email);
   }
 
   Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
       try {
-        String url = 'http://rabbitgo.sytes.net/user/login';
+        String url = 'https://rabbitgo.sytes.net/user/login';
 
         final userData = {
           'email': _emailController.text,
@@ -107,6 +105,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           setState(() {
             _isEmailInValid = true;
             _isPasswordInValid = true;
+            _emailController.clear();
+            _passwordController.clear();
           });
           _formKey.currentState?.validate();
         }
@@ -132,9 +132,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 35,
-                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.03)),
                   SvgPicture.asset(
                     'assets/images/LoginLogo.svg',
                     width: 100,
@@ -162,7 +162,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   MyTextFieldWidget(
-                    width: 320,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     text: 'Correo Electrónico',
                     controllerTextField: _emailController,
                     validator: (value) {
@@ -173,7 +173,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     height: 10,
                   ),
                   MyPasswordTextFieldWidget(
-                    width: 320,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     controllerTextField: _passwordController,
                     text: 'Contraseña',
                     validator: (value) {
@@ -192,7 +192,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                   const SizedBox(height: 40),
                   CustomButton(
                     textButton: 'Comenzar',
-                    width: 320,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     height: 40,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -202,7 +202,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                       _loginUser();
                     },
                   ),
-                  const SizedBox(height: 120),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.09)),
                   const MyCreateAccountWidget()
                 ],
               ),

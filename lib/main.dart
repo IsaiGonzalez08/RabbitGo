@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
@@ -8,8 +9,13 @@ import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserData(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserData>(create: (context) => UserData()),
+        ChangeNotifierProvider<RouteCoordinatesModel>(
+          create: (_) => RouteCoordinatesModel(),
+        )
+      ],
       child: const MyApp(),
     ),
   );

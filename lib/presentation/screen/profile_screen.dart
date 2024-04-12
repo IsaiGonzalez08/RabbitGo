@@ -29,6 +29,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   bool _showPassword = true;
   String? userId;
   String? token;
+  String? name;
+  String? lastname;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -52,11 +54,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
+  void provider(String uuid, String name, String lastname, String email) {
+    Provider.of<UserData>(context, listen: false)
+        .setDataUser(uuid, token, name, lastname, email);
+  }
+
   @override
   void initState() {
     super.initState();
     userId = Provider.of<UserData>(context, listen: false).uuid;
     token = Provider.of<UserData>(context, listen: false).token;
+    name = Provider.of<UserData>(context, listen: false).name;
+    lastname = Provider.of<UserData>(context, listen: false).lastname;
+  }
+
+  navigateConfiguration() {
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   Future<void> _updateUser() async {
@@ -65,7 +79,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         return;
       } else {
         try {
-          String url = ('http://rabbitgo.sytes.net/user/$userId');
+          String url = ('https://rabbitgo.sytes.net/user/$userId');
 
           final userData = {
             'name': _usernameController.text,
@@ -82,11 +96,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               body: jsonEncode(userData));
 
           if (response.statusCode == 200) {
+            final responseData = jsonDecode(response.body);
             _usernameController.clear();
             _lastnameController.clear();
             _emailController.clear();
             _passwordController.clear();
             _confirmPasswordController.clear();
+            final uuid = responseData['data']['uuid'];
+            final name = responseData['data']['name'];
+            final lastname = responseData['data']['lastname'];
+            final email = responseData['data']['email'];
+            setState(() {
+              provider(uuid, name, lastname, email);
+              navigateConfiguration();
+            });
           } else {
             throw ('error en la petición: ${response.statusCode}');
           }
@@ -135,20 +158,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 CustomButton(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  width: 105,
-                  height: 30,
+                  width: MediaQuery.of(context).size.width * 0.27,
+                  height: 40,
                   textButton: 'Actualizar',
                   color: const Color(0xFF01142B),
                   onPressed: () {
                     _updateUser();
-                    Navigator.pop(context);
                   },
                 ),
                 CustomButton(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  width: 105,
-                  height: 30,
+                  width: MediaQuery.of(context).size.width * 0.27,
+                  height: 40,
                   textButton: 'Cancelar',
                   color: const Color(0xFFB6B6B6),
                   onPressed: () {
@@ -161,6 +183,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         );
       },
     );
+  }
+
+  String getInitials(String firstName, String lastName) {
+    String firstInitial = firstName.isNotEmpty ? firstName[0] : '';
+    String lastInitial = lastName.isNotEmpty ? lastName[0] : '';
+    return '$firstInitial$lastInitial';
   }
 
   @override
@@ -186,7 +214,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               Column(
                 children: [
-                  Image.asset('assets/images/UserProfile.png'),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: const Color(0xFF01142B),
+                    child: Consumer<UserData>(
+                      builder: (context, userData, child) {
+                        String initials = getInitials(
+                            userData.name ?? '', userData.lastname ?? '');
+                        return Text(initials,
+                            style: const TextStyle(
+                                fontSize: 36, color: Color(0xFFFFFFFF)));
+                      },
+                    ),
+                  ),
                   const SizedBox(
                     height: 35,
                   ),
@@ -207,7 +247,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             height: 5,
                           ),
                           MyTextFieldWidget(
-                            width: 155,
+                            width: MediaQuery.of(context).size.width * 0.438,
                             controllerTextField: _usernameController,
                             text: 'Nombre(s)',
                             validator: (value) {
@@ -236,7 +276,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             height: 5,
                           ),
                           MyTextFieldWidget(
-                            width: 155,
+                            width: MediaQuery.of(context).size.width * 0.438,
                             controllerTextField: _lastnameController,
                             text: 'Apellidos',
                             validator: (value) {
@@ -267,7 +307,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _emailController,
                         text: 'Correo Electrónico',
                         validator: (value) {
@@ -293,7 +333,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyPasswordTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _passwordController,
                         text: 'Contraseña',
                         validator: (value) {
@@ -320,7 +360,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         height: 5,
                       ),
                       MyPasswordTextFieldWidget(
-                        width: 320,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _confirmPasswordController,
                         text: 'Confirmar Contraseña',
                         validator: (value) {
@@ -345,7 +385,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               CustomButton(
                 textButton: 'Actualizar',
-                width: 320,
+                width: MediaQuery.of(context).size.width * 0.9,
                 height: 40,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
