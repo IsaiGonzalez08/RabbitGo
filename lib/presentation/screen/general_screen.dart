@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
+import 'package:rabbit_go/presentation/widgets/general_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/general_seccion_title_widget.dart';
 import 'package:rabbit_go/presentation/widgets/switch_widget.dart';
 
 class MyGeneralScreen extends StatelessWidget {
@@ -23,206 +25,94 @@ class MyGeneralScreen extends StatelessWidget {
           ),
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
               height: 20,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.07),
-                  child: const Text(
-                    'Notificaciones',
+            const MyTitleGeneralWidget(title: 'Notificaciones'),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Activar notificaciones de la app',
                     style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF6B6B6B),
-                        fontWeight: FontWeight.w600),
+                        fontSize: 14,
+                        color: Color(0xFF949494),
+                        fontWeight: FontWeight.w400),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Activar notificaciones de la app',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF949494),
-                            fontWeight: FontWeight.w400),
-                      ),
-                      MySwitchWidget()
-                    ],
+                  MySwitchWidget()
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Mandar al correo notificaciones',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF949494),
+                        fontWeight: FontWeight.w400),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Mandar al correo notificaciones',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF949494),
-                            fontWeight: FontWeight.w400),
-                      ),
-                      MySwitchWidget()
-                    ],
-                  ),
-                ),
-              ],
+                  MySwitchWidget()
+                ],
+              ),
             ),
             const SizedBox(
               height: 30,
             ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.07),
-                child: const Text(
-                  'Tema',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF6B6B6B),
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Activar modo oscuro',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF949494),
-                          fontWeight: FontWeight.w400),
+            const MyTitleGeneralWidget(title: 'Tema'),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Activar modo oscuro',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF949494),
+                        fontWeight: FontWeight.w400),
+                  ),
+                  Transform.scale(
+                    scale: 0.6,
+                    child: Switch(
+                      activeColor: const Color(0xFFFFFFFF),
+                      activeTrackColor: const Color(0xFF01142B),
+                      value:
+                          themeProvider.themeData.brightness == Brightness.dark,
+                      onChanged: (value) {
+                        if (value) {
+                          themeProvider.setTheme(darkTheme);
+                        } else {
+                          themeProvider.setTheme(lightTheme);
+                        }
+                      },
                     ),
-                    Transform.scale(
-                      scale: 0.6,
-                      child: Switch(
-                        activeColor: const Color(0xFFFFFFFF),
-                        activeTrackColor: const Color(0xFF01142B),
-                        value: themeProvider.themeData.brightness ==
-                            Brightness.dark,
-                        onChanged: (value) {
-                          if (value) {
-                            themeProvider.setTheme(darkTheme);
-                          } else {
-                            themeProvider.setTheme(lightTheme);
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
-            ]),
+            ),
             const SizedBox(
               height: 30,
             ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.07),
-                child: const Text(
-                  'Ayuda y Soporte',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF6B6B6B),
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Política de privacidad',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF949494),
-                            fontWeight: FontWeight.w400),
-                      ),
-                      Row(
-                        children: [
-                          Image.asset('assets/images/Forward.png'),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.06))
-                        ],
-                      ),
-                    ]),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Términos del servicio',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF949494),
-                          fontWeight: FontWeight.w400),
-                    ),
-                    Row(
-                      children: [
-                        Image.asset('assets/images/Forward.png'),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                right:
-                                    MediaQuery.of(context).size.width * 0.06))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Ajuste de privacidad',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF949494),
-                            fontWeight: FontWeight.w400),
-                      ),
-                      Row(
-                        children: [
-                          Image.asset('assets/images/Forward.png'),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.06))
-                        ],
-                      ),
-                    ]),
-              ),
-            ]),
+            const MyTitleGeneralWidget(title: 'Ayuda y Soporte'),
+            MyGeneralButton(onTap: () {}, subtitle: 'Política de privacidad'),
+            MyGeneralButton(onTap: () {}, subtitle: 'Terminos del servicio'),
+            MyGeneralButton(onTap: () {}, subtitle: 'Ajuste de privacidad'),
+            const SizedBox(
+              height: 30,
+            ),
+            const MyTitleGeneralWidget(title: 'Más información'),
+            MyGeneralButton(onTap: () {}, subtitle: 'Estatus de cuenta')
           ],
         ),
       );
