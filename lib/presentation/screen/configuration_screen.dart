@@ -23,11 +23,11 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   String? token;
 
   @override
-  void initState() {
-    super.initState();
-    _name = Provider.of<UserData>(context, listen: false).name;
-    _lastname = Provider.of<UserData>(context, listen: false).lastname;
-    _email = Provider.of<UserData>(context, listen: false).email;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _name = Provider.of<UserData>(context).name;
+    _lastname = Provider.of<UserData>(context).lastname;
+    _email = Provider.of<UserData>(context).email;
   }
 
   void _showConfirmDialog() {
