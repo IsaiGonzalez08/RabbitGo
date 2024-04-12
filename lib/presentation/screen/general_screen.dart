@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
+import 'package:rabbit_go/presentation/screen/status_account_screen.dart';
 import 'package:rabbit_go/presentation/widgets/general_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/general_seccion_title_widget.dart';
 import 'package:rabbit_go/presentation/widgets/switch_widget.dart';
@@ -112,7 +113,14 @@ class MyGeneralScreen extends StatelessWidget {
               height: 30,
             ),
             const MyTitleGeneralWidget(title: 'Más información'),
-            MyGeneralButton(onTap: () {}, subtitle: 'Estatus de cuenta')
+            MyGeneralButton(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyStatusAccountScreen()));
+                },
+                subtitle: 'Estatus de cuenta')
           ],
         ),
       );
