@@ -39,7 +39,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   CancelToken? _cancelToken;
 
   List<Color> gradientColors = [
-    const Color(0xFFA3CCFD),
     const Color(0xFF01142B),
   ];
 
