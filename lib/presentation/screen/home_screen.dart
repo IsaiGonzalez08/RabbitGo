@@ -198,10 +198,10 @@ class _MyHomeScreenState extends State<MyHomeScreen>
           ),
           Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  horizontal: MediaQuery.of(context).size.width * 0.05,
                   vertical: MediaQuery.of(context).size.height * 0.08),
               child: Container(
-                width: MediaQuery.of(context).size.width * 1.4,
+                width: MediaQuery.of(context).size.width * 0.9,
                 height: 40,
                 decoration: BoxDecoration(boxShadow: [
                   BoxShadow(
