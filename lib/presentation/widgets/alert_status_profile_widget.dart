@@ -1,8 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:http/http.dart' as http;
 
-class MyAlertStatusProfile extends StatelessWidget {
+class MyAlertStatusProfile extends StatefulWidget {
   const MyAlertStatusProfile({super.key});
+
+  @override
+  State<MyAlertStatusProfile> createState() => _MyAlertStatusProfileState();
+}
+
+class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
+  String? userId;
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = Provider.of<UserData>(context, listen: false).uuid;
+    token = Provider.of<UserData>(context, listen: false).token;
+  }
+
+  void navigateSignUpScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+    );
+  }
+
+  _deleteAccount() async {
+    try {
+      String url = 'https://rabbitgo.sytes.net/user/$userId';
+      final response =
+          await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+      if (response.statusCode == 200) {
+        navigateSignUpScreen();
+      }
+    } catch (error) {
+      throw ('Error al eliminar el usuario, $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +85,7 @@ class MyAlertStatusProfile extends StatelessWidget {
               color: const Color(0xFFAB0000),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () {
-                Navigator.pop(context);
+                _deleteAccount();
               },
             ),
             const SizedBox(
