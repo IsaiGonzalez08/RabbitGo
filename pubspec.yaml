@@ -67,27 +67,27 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/images/AlertLocation.png
     - assets/images/bg-bienvenida.png
-    - assets/images/Google.png
-    - assets/images/LoginLogo.svg
-    - assets/images/LeftArrow.png
-    - assets/images/LogoRabbitGo1.svg
+    - assets/images/Bus.png
     - assets/images/CheckmarkYes.png
+    - assets/images/Forward.png
+    - assets/images/ForwardLeft.png
+    - assets/images/Google.png
     - assets/images/home.svg
+    - assets/images/homewhite.svg
+    - assets/images/LeftArrow.png
+    - assets/images/LoginLogo.svg
+    - assets/images/Logo.svg
+    - assets/images/LogoRabbit.png
+    - assets/images/LogoRabbitGo1.svg
+    - assets/images/Logout.png
     - assets/images/love.svg
+    - assets/images/MapMarker.png
     - assets/images/marker.svg
     - assets/images/profile.svg
     - assets/images/profile2.svg
-    - assets/images/Forward.png
-    - assets/images/homewhite.svg
-    - assets/images/ForwardLeft.png
-    - assets/images/Logout.png
-    - assets/images/Logo.svg
-    - assets/images/MapMarker.png
-    - assets/images/Bus.png
     - assets/images/Route.svg
-    - assets/images/LogoRabbit.png
-    - assets/images/AlertLocation.png
     - assets/images/Search.png
 
   # The following line ensures that the Material Icons font is
