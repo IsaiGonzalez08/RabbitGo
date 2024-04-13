@@ -82,6 +82,11 @@ class _MySignScreenState extends State<MySignUpScreen> {
           );
 
           if (response.statusCode == 201) {
+            _usernameController.clear();
+            _lastnameController.clear();
+            _emailController.clear();
+            _passwordController.clear();
+            _confirmPasswordController.clear();
             navigateLoginScreen();
           } else {}
         } catch (error) {
