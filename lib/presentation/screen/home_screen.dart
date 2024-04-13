@@ -233,7 +233,8 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                       filled: true,
                       fillColor: const Color(0xFFFFFFFF),
                       prefixIcon: Image.asset(
-                        'assets/images/search.png',
+                        'assets/images/Search.png',
+                        width: 10,
                       ), // Icono dentro del campo de texto
                     ),
                   );

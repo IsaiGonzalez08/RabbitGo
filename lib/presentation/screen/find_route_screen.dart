@@ -114,7 +114,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                       filled: true,
                       fillColor: const Color(0xFFFFFFFF),
                       prefixIcon: Image.asset(
-                        'assets/images/search.png',
+                        'assets/images/Search.png', width: 20,
                       ),
                     ),
                   );

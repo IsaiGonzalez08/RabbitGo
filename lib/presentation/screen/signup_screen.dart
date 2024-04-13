@@ -104,7 +104,17 @@ class _MySignScreenState extends State<MySignUpScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Image.asset(
+                'assets/images/LeftArrow.png',
+                width: 30,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           body: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -221,7 +231,10 @@ class _MySignScreenState extends State<MySignUpScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal:
                                     MediaQuery.of(context).size.width * 0.03)),
-                        Image.asset('assets/images/MarkYes.png'),
+                        Image.asset(
+                          'assets/images/CheckmarkYes.png',
+                          width: 15,
+                        ),
                         const SizedBox(width: 5),
                         const Text(
                           'Al registrarte aceptas todos los términos y condiciones \nde la aplicación.',

@@ -15,6 +15,15 @@ class MyGeneralScreen extends StatelessWidget {
     return Consumer<ThemeProvider>(builder: (context, themeProvider, _) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Image.asset(
+              'assets/images/ForwardLeft.png',
+              width: 20,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           centerTitle: true,
           iconTheme: const IconThemeData(color: Color(0xFF979797)),
           title: const Text(

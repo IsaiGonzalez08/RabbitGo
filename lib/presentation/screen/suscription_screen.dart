@@ -21,10 +21,13 @@ class MySuscriptionScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Padding(
-                padding: const EdgeInsets.only(left: 30, top: 20),
+                padding: const EdgeInsets.only(left: 25, top: 20),
                 child: Row(
                   children: [
-                    Image.asset('assets/images/ForwardProfile.png'),
+                    Image.asset(
+                      'assets/images/ForwardLeft.png',
+                      width: 20,
+                    ),
                   ],
                 ),
               ),

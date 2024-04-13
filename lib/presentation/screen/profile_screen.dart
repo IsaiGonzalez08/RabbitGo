@@ -197,6 +197,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/images/ForwardLeft.png',
+            width: 20,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         automaticallyImplyLeading: true,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Color(0xFF979797)),

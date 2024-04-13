@@ -68,15 +68,11 @@ flutter_launcher_icons:
 flutter:
   assets:
     - assets/images/bg-bienvenida.png
-    - assets/images/Fondo-bienvenida.png
     - assets/images/Google.png
-    - assets/images/Google.svg
-    - assets/images/LeftArrow.png
     - assets/images/LoginLogo.svg
-    - assets/images/MarkYes.png
+    - assets/images/LeftArrow.png
     - assets/images/LogoRabbitGo1.svg
-    - assets/images/bg-home.png
-    - assets/images/search.png
+    - assets/images/CheckmarkYes.png
     - assets/images/home.svg
     - assets/images/love.svg
     - assets/images/marker.svg
@@ -84,18 +80,15 @@ flutter:
     - assets/images/profile2.svg
     - assets/images/Forward.png
     - assets/images/homewhite.svg
-    - assets/images/perfil.png
-    - assets/images/ForwardProfile.png
-    - assets/images/UserProfile.png
+    - assets/images/ForwardLeft.png
     - assets/images/Logout.png
     - assets/images/Logo.svg
-    - assets/images/Switch.png
     - assets/images/MapMarker.png
-    - assets/images/OkStatus.png
-    - assets/images/Img-alert.png
     - assets/images/Bus.png
     - assets/images/Route.svg
     - assets/images/LogoRabbit.png
+    - assets/images/AlertLocation.png
+    - assets/images/Search.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -66,8 +66,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(String uuid, String token, String name, String lastname, String email) {
-    Provider.of<UserData>(context, listen: false).setDataUser(uuid, token, name, lastname, email);
+  void provider(
+      String uuid, String token, String name, String lastname, String email) {
+    Provider.of<UserData>(context, listen: false)
+        .setDataUser(uuid, token, name, lastname, email);
   }
 
   Future<void> _loginUser() async {
@@ -123,7 +125,17 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Image.asset(
+              'assets/images/LeftArrow.png',
+              width: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,

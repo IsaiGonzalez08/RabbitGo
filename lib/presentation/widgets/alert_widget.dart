@@ -35,7 +35,7 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 0, left: 30, right: 30),
+      padding: const EdgeInsets.only(left: 30, right: 30),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28.0),
         image: const DecorationImage(
@@ -44,9 +44,13 @@ class _MyAlertWidgetState extends State<MyAlertWidget> {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset('assets/images/Img-alert.png'),
+          Image.asset(
+            'assets/images/AlertLocation.png',
+            width: 200,
+          ),
           const Text(
             'Activa tú ubicación',
             textAlign: TextAlign.center,
