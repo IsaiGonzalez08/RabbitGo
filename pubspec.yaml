@@ -70,10 +70,11 @@ flutter:
     - assets/images/bg-bienvenida.png
     - assets/images/Fondo-bienvenida.png
     - assets/images/Google.png
+    - assets/images/Google.svg
     - assets/images/LeftArrow.png
     - assets/images/LoginLogo.svg
     - assets/images/MarkYes.png
-    - assets/images/LogoRabbitGo1.png
+    - assets/images/LogoRabbitGo1.svg
     - assets/images/bg-home.png
     - assets/images/search.png
     - assets/images/home.svg

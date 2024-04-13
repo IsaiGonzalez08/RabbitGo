@@ -154,7 +154,10 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                               color: Color(0xFFFF7878),
                               fontWeight: FontWeight.w500),
                         ),
-                        Image.asset('assets/images/Logout.png'),
+                        Image.asset(
+                          'assets/images/Logout.png',
+                          width: 20,
+                        ),
                       ],
                     ),
                   ),

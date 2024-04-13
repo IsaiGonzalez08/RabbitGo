@@ -43,7 +43,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           'Authorization': token!,
           'Content-Type': 'application/json; charset=UTF-8',
         },
-      ); 
+      );
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
         if (responseData != null && responseData['data'] != null) {
@@ -149,7 +149,10 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                         children: [
                           Row(
                             children: [
-                              Image.asset('assets/images/Bus.png'),
+                              Image.asset(
+                                'assets/images/Bus.png',
+                                width: 50,
+                              ),
                               const SizedBox(
                                 width: 5,
                               ),

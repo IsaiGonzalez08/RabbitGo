@@ -90,7 +90,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset('assets/images/Google.png'),
+                    Image.asset('assets/images/Google.png', width: 25,),
                     const Text(
                       'Continuar con Google',
                       textAlign: TextAlign.center,

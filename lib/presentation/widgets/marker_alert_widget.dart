@@ -39,7 +39,6 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
   Future<List<Routes>> _getBusRoute(String? markerId) async {
     try {
-
       String url = ('https://rabbitgo.sytes.net/bus/route/at/$markerId');
 
       final response = await http.get(
@@ -166,7 +165,10 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                             children: [
                               Row(
                                 children: [
-                                  Image.asset('assets/images/Bus.png'),
+                                  Image.asset(
+                                    'assets/images/Bus.png',
+                                    width: 50,
+                                  ),
                                   const SizedBox(
                                     width: 5,
                                   ),

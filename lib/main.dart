@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
@@ -70,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF01142B),
       body: Center(
-        child: Image.asset('assets/images/LogoRabbitGo1.png'),
+        child: SvgPicture.asset('assets/images/LogoRabbitGo1.svg'),
       ),
     );
   }

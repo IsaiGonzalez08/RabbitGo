@@ -29,7 +29,10 @@ class MyButtonConfigurationWidget extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: Color(0xFF6B6B6B)),
               ),
-              Image.asset('assets/images/Forward.png')
+              Image.asset(
+                'assets/images/Forward.png',
+                width: 20,
+              )
             ],
           ),
         ),

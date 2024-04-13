@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MyGeneralButton extends StatelessWidget {
-  const MyGeneralButton({super.key, required this.subtitle, this.onTap,});
+  const MyGeneralButton({
+    super.key,
+    required this.subtitle,
+    this.onTap,
+  });
 
   final String subtitle;
   final Function()? onTap;
@@ -27,7 +31,10 @@ class MyGeneralButton extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Image.asset('assets/images/Forward.png'),
+                  Image.asset(
+                    'assets/images/Forward.png',
+                    width: 20,
+                  ),
                   Padding(
                       padding: EdgeInsets.only(
                           right: MediaQuery.of(context).size.width * 0.06))
