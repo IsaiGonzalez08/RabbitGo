@@ -24,10 +24,11 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
   }
 
   void navigateSignUpScreen() {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
     );
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   _deleteAccount() async {
