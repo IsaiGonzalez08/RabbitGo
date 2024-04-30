@@ -30,12 +30,12 @@ class _MyLoginPage extends State<MyLoginSignPage> {
             Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: MediaQuery.of(context).size.height * 0.1)),
-            const Text(
+            Text(
               '¡Bienvenido!',
               style: TextStyle(
-                color: Color(0xFF01142B),
+                color: const Color(0xFF01142B),
                 fontWeight: FontWeight.w700,
-                fontSize: 32,
+                fontSize: MediaQuery.of(context).size.width * 0.1,
               ),
             ),
             const SizedBox(height: 5),
@@ -53,7 +53,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               textButton: 'Tengo una cuenta',
               width: MediaQuery.of(context).size.width * 0.9,
               height: 40,
-              fontSize: 14,
+              fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
@@ -90,14 +90,17 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset('assets/images/Google.png', width: 25,),
-                    const Text(
+                    Image.asset(
+                      'assets/images/Google.png',
+                      width: 25,
+                    ),
+                    Text(
                       'Continuar con Google',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF9F9F9F),
+                        color: const Color(0xFF9F9F9F),
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ),
                     Padding(

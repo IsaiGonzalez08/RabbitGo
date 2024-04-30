@@ -9,12 +9,12 @@ class MyCreateAccountWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           '¿Aún no tienes una cuenta?,',
           style: TextStyle(
-            color: Color(0xFF6C6C6C),
+            color: const Color(0xFF6C6C6C),
             fontWeight: FontWeight.w400,
-            fontSize: 14,
+            fontSize: MediaQuery.of(context).size.width * 0.038,
           ),
         ),
         const SizedBox(width: 2),
@@ -29,12 +29,12 @@ class MyCreateAccountWidget extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => const MySignUpScreen()),
               );
             },
-            child: const Text(
+            child: Text(
               'Crea una cuenta ahora.',
               style: TextStyle(
-                color: Color(0xFF01142B),
+                color: const Color(0xFF01142B),
                 fontWeight: FontWeight.w800,
-                fontSize: 14,
+                fontSize: MediaQuery.of(context).size.width * 0.038,
               ),
             ),
           ),
