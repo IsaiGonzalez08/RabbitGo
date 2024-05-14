@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:rabbit_go/domain/models/route.dart';
+import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 
-class FindRouteAPI {
+class RouteAPI {
   final Dio _dio;
   final UserData _userController;
-  FindRouteAPI(this._dio, this._userController);
   CancelToken? _cancelToken;
-  final _controller = StreamController<List<Routes>?>.broadcast();
-
-  Stream<List<Routes>?> get onResults => _controller.stream;
+  final _controller = StreamController<List<RouteModel>?>.broadcast();
+  RouteAPI(this._dio, this._userController);
+  Stream<List<RouteModel>?> get onResults => _controller.stream;
 
   void find(String query) async {
     try {
@@ -28,7 +27,7 @@ class FindRouteAPI {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = response.data['data'];
-        Routes route = Routes.fromJson(responseData);
+        RouteModel route = RouteModel.fromJson(responseData);
         _controller.sink.add([route]);
       } else {
         _controller.sink.add(null);

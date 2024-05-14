@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/route.dart';
-import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
+import 'package:rabbit_go/domain/models/Route/route.dart';
+import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
@@ -20,13 +20,13 @@ class MyAlertMarker extends StatefulWidget {
 class _MyAlertMarkerState extends State<MyAlertMarker> {
   late String? markerId;
   String? token;
-  late Future<List<Routes>> futureRoutes;
+  late Future<List<RouteModel>> futureRoutes;
   bool isButtonEnabled = false;
   late String? routeId;
   List<LatLng>? listCordinates = [];
 
   void providerCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinatesModel>(context, listen: false)
+    Provider.of<RouteCoordinates>(context, listen: false)
         .setDataCoordinates(coordinates);
   }
 
@@ -37,7 +37,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
     );
   }
 
-  Future<List<Routes>> _getBusRoute(String? markerId) async {
+  Future<List<RouteModel>> _getBusRoute(String? markerId) async {
     try {
       String url = ('https://rabbitgo.sytes.net/bus/route/at/$markerId');
 
@@ -51,8 +51,8 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
         if (jsonResponse.containsKey('data')) {
           List<dynamic> routeJson = jsonResponse['data'];
-          List<Routes> routes =
-              routeJson.map((route) => Routes.fromJson(route)).toList();
+          List<RouteModel> routes =
+              routeJson.map((route) => RouteModel.fromJson(route)).toList();
           for (var dataRoute in routes) {
             routeId = dataRoute.uuid;
           }
@@ -131,7 +131,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                 ],
               ),
             ),
-            FutureBuilder<List<Routes>>(
+            FutureBuilder<List<RouteModel>>(
               future: futureRoutes,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {

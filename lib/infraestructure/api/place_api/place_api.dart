@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:rabbit_go/domain/models/place.dart';
+import 'package:rabbit_go/domain/models/Place/place.dart';
 
-class SearchAPI {
+class PlaceAPI {
   final Dio _dio;
-
-  SearchAPI(this._dio);
   CancelToken? _cancelToken;
   final _controller = StreamController<List<Place>?>.broadcast();
+  
+  PlaceAPI(this._dio);
 
   Stream<List<Place>?> get onResults => _controller.stream;
 
-  void search(String query) async {
+  void find(String query) async {
     try {
       _cancelToken = CancelToken();
       final response = await _dio.get(

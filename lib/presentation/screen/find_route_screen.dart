@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/data/repositories_impl/find_route_repository_impl.dart';
-import 'package:rabbit_go/domain/api/find_route_api.dart';
-import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
-import 'package:rabbit_go/infraestructure/controllers/find_route_controller.dart';
+import 'package:rabbit_go/domain/use_cases/Route/route_use_case.dart';
+import 'package:rabbit_go/infraestructure/api/route_api/route_api.dart';
+import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
@@ -23,7 +23,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   List<LatLng>? listCordinates;
 
   void providerRouteCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinatesModel>(context, listen: false)
+    Provider.of<RouteCoordinates>(context, listen: false)
         .setDataCoordinates(coordinates);
   }
 
@@ -72,9 +72,8 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => FindRouteController(FindRouteRepositoryImpl(
-              FindRouteAPI(
-                  Dio(), Provider.of<UserData>(context, listen: false)),
+        create: (_) => RouteProvider(RouteUseCase(
+              RouteAPI(Dio(), Provider.of<UserData>(context, listen: false)),
             )),
         child: Scaffold(
             appBar: AppBar(
@@ -95,7 +94,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                 ]),
                 child: Builder(builder: (context) {
                   return TextField(
-                    onChanged: context.read<FindRouteController>().queryChanged,
+                    onChanged: context.read<RouteProvider>().queryChanged,
                     textAlignVertical: TextAlignVertical.center,
                     cursorHeight: 25.0,
                     cursorColor: const Color(0xFF01142B),
@@ -114,14 +113,15 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                       filled: true,
                       fillColor: const Color(0xFFFFFFFF),
                       prefixIcon: Image.asset(
-                        'assets/images/Search.png', width: 20,
+                        'assets/images/Search.png',
+                        width: 20,
                       ),
                     ),
                   );
                 }),
               ),
             ),
-            body: Consumer<FindRouteController>(builder: (_, controller, __) {
+            body: Consumer<RouteProvider>(builder: (_, controller, __) {
               final routes = controller.routes;
               if (routes == null) {
               } else if (routes.isEmpty && controller.query.length >= 3) {}

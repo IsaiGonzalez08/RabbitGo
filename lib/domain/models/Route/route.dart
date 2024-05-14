@@ -1,8 +1,8 @@
-class Routes {
+class RouteModel {
   final String uuid, name, startTime, endTime, busStopId;
   final int price;
 
-  Routes(
+  RouteModel(
       {required this.uuid,
       required this.name,
       required this.startTime,
@@ -10,8 +10,8 @@ class Routes {
       required this.price,
       required this.busStopId});
 
-  factory Routes.fromJson(Map<String, dynamic> json) {
-    return Routes(
+  factory RouteModel.fromJson(Map<String, dynamic> json) {
+    return RouteModel(
         uuid: json['uuid'],
         name: json['name'],
         startTime: json['startTime'],

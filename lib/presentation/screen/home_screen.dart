@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rabbit_go/data/repositories_impl/search_place_repository_impl.dart';
-import 'package:rabbit_go/domain/api/search_place_api.dart';
-import 'package:rabbit_go/domain/models/route_coordinates_model.dart';
-import 'package:rabbit_go/domain/models/place.dart';
+import 'package:rabbit_go/domain/use_cases/Place/place_use_case.dart';
+import 'package:rabbit_go/infraestructure/api/place_api/place_api.dart';
+import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
-import 'package:rabbit_go/infraestructure/controllers/search_place_controller.dart';
+import 'package:rabbit_go/infraestructure/controllers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
 import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
@@ -149,7 +149,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     token = Provider.of<UserData>(context, listen: false).token;
     getBusStops(token);
     List<LatLng>? coordinates =
-        Provider.of<RouteCoordinatesModel>(context, listen: false).coordinates;
+        Provider.of<RouteCoordinates>(context, listen: false).coordinates;
     polyline = GradientPolyline(
       polylineId: const PolylineId('route'),
       points: coordinates!,
@@ -161,8 +161,8 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SearchPlaceController(SearchRepositoryImpl(
-        SearchAPI(Dio()),
+      create: (_) => PlaceProvider(PlaceUseCase(
+        PlaceAPI(Dio()),
       )),
       child: Stack(
         children: [
