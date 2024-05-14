@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/use_cases/Route/route_use_case.dart';
 import 'package:rabbit_go/infraestructure/api/route_api/route_api.dart';
-import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +23,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   List<LatLng>? listCordinates;
 
   void providerRouteCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinates>(context, listen: false)
+    Provider.of<RouteCoordinatesProvider>(context, listen: false)
         .setDataCoordinates(coordinates);
   }
 

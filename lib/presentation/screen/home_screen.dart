@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rabbit_go/domain/use_cases/Place/place_use_case.dart';
 import 'package:rabbit_go/infraestructure/api/place_api/place_api.dart';
-import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
@@ -149,7 +149,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     token = Provider.of<UserProvider>(context, listen: false).token;
     getBusStops(token);
     List<LatLng>? coordinates =
-        Provider.of<RouteCoordinates>(context, listen: false).coordinates;
+        Provider.of<RouteCoordinatesProvider>(context, listen: false).coordinates;
     polyline = GradientPolyline(
       polylineId: const PolylineId('route'),
       points: coordinates!,

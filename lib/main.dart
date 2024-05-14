@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
@@ -13,8 +13,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(create: (context) => UserProvider()),
-        ChangeNotifierProvider<RouteCoordinates>(
-          create: (_) => RouteCoordinates(),
+        ChangeNotifierProvider<RouteCoordinatesProvider>(
+          create: (_) => RouteCoordinatesProvider(),
         )
       ],
       child: const MyApp(),

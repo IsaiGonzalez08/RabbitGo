@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
+import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
@@ -26,7 +26,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   List<LatLng>? listCordinates = [];
 
   void providerCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinates>(context, listen: false)
+    Provider.of<RouteCoordinatesProvider>(context, listen: false)
         .setDataCoordinates(coordinates);
   }
 
