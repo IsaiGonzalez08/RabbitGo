@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:http/http.dart' as http;
@@ -19,8 +19,8 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserData>(context, listen: false).uuid;
-    token = Provider.of<UserData>(context, listen: false).token;
+    userId = Provider.of<UserProvider>(context, listen: false).uuid;
+    token = Provider.of<UserProvider>(context, listen: false).token;
   }
 
   void navigateSignUpScreen() {

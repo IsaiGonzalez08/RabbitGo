@@ -7,11 +7,10 @@ import 'package:rabbit_go/domain/models/Place/place.dart';
 
 class PlaceProvider extends ChangeNotifier {
   final PlaceGateway _placeGateway;
-  String _query = '';
   late StreamSubscription _subscription;
-
   List<Place>? _places = [];
   List<Place>? get places => _places;
+  String _query = '';
 
   PlaceProvider(this._placeGateway) {
     _subscription = _placeGateway.onResults.listen(
@@ -21,6 +20,7 @@ class PlaceProvider extends ChangeNotifier {
       },
     );
   }
+  
   String get query => _query;
 
   void handleSubmiitted(String text) {

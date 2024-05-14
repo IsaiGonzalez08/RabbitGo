@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
@@ -102,7 +102,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   void initState() {
     super.initState();
     markerId = widget.markerId;
-    token = Provider.of<UserData>(context, listen: false).token;
+    token = Provider.of<UserProvider>(context, listen: false).token;
     futureRoutes = _getBusRoute(markerId);
   }
 

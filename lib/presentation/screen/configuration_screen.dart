@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
@@ -25,9 +25,9 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _name = Provider.of<UserData>(context).name;
-    _lastname = Provider.of<UserData>(context).lastname;
-    _email = Provider.of<UserData>(context).email;
+    _name = Provider.of<UserProvider>(context).name;
+    _lastname = Provider.of<UserProvider>(context).lastname;
+    _email = Provider.of<UserProvider>(context).email;
   }
 
   void _showConfirmDialog() {

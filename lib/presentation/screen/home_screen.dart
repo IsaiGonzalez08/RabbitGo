@@ -9,8 +9,8 @@ import 'package:rabbit_go/infraestructure/api/place_api/place_api.dart';
 import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
 import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
-import 'package:rabbit_go/infraestructure/controllers/place_provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
@@ -146,7 +146,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     _waitController = WaitController(Permission.location);
     _homeController = HomeController();
     _showAlertPermissionsLocation();
-    token = Provider.of<UserData>(context, listen: false).token;
+    token = Provider.of<UserProvider>(context, listen: false).token;
     getBusStops(token);
     List<LatLng>? coordinates =
         Provider.of<RouteCoordinates>(context, listen: false).coordinates;

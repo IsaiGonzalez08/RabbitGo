@@ -7,7 +7,7 @@ import 'package:rabbit_go/domain/use_cases/Route/route_use_case.dart';
 import 'package:rabbit_go/infraestructure/api/route_api/route_api.dart';
 import 'package:rabbit_go/infraestructure/controllers/route_coordinates.dart';
 import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
@@ -66,14 +66,14 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   @override
   void initState() {
     super.initState();
-    token = Provider.of<UserData>(context, listen: false).token;
+    token = Provider.of<UserProvider>(context, listen: false).token;
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => RouteProvider(RouteUseCase(
-              RouteAPI(Dio(), Provider.of<UserData>(context, listen: false)),
+              RouteAPI(Dio(), Provider.of<UserProvider>(context, listen: false)),
             )),
         child: Scaffold(
             appBar: AppBar(

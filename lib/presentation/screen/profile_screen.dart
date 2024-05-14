@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
@@ -55,17 +55,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   void provider(String uuid, String name, String lastname, String email) {
-    Provider.of<UserData>(context, listen: false)
+    Provider.of<UserProvider>(context, listen: false)
         .setDataUser(uuid, token, name, lastname, email);
   }
 
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserData>(context, listen: false).uuid;
-    token = Provider.of<UserData>(context, listen: false).token;
-    name = Provider.of<UserData>(context, listen: false).name;
-    lastname = Provider.of<UserData>(context, listen: false).lastname;
+    userId = Provider.of<UserProvider>(context, listen: false).uuid;
+    token = Provider.of<UserProvider>(context, listen: false).token;
+    name = Provider.of<UserProvider>(context, listen: false).name;
+    lastname = Provider.of<UserProvider>(context, listen: false).lastname;
   }
 
   navigateConfiguration() {
@@ -228,7 +228,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: const Color(0xFF01142B),
-                    child: Consumer<UserData>(
+                    child: Consumer<UserProvider>(
                       builder: (context, userData, child) {
                         String initials = getInitials(
                             userData.name ?? '', userData.lastname ?? '');

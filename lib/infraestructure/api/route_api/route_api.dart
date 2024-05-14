@@ -2,19 +2,19 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/infraestructure/controllers/user_controller.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 
 class RouteAPI {
   final Dio _dio;
-  final UserData _userController;
+  final UserProvider _userProvider;
   CancelToken? _cancelToken;
   final _controller = StreamController<List<RouteModel>?>.broadcast();
-  RouteAPI(this._dio, this._userController);
+  RouteAPI(this._dio, this._userProvider);
   Stream<List<RouteModel>?> get onResults => _controller.stream;
 
   void find(String query) async {
     try {
-      String? token = _userController.token;
+      String? token = _userProvider.token;
       Map<String, dynamic> headers = {
         "Content-Type": "application/json",
         "Authorization": "$token",
