@@ -11,7 +11,7 @@ import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/wait_controller.dart';
+import 'package:rabbit_go/infraestructure/controllers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
@@ -30,7 +30,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late Polyline polyline;
   late Polyline polylineFromAlert;
   final TextEditingController _searchController = TextEditingController();
-  late WaitController _waitController;
+  late WaitProvider _waitController;
   late HomeController _homeController;
   String? token;
   Iterable markers = [];
@@ -143,7 +143,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   @override
   void initState() {
     super.initState();
-    _waitController = WaitController(Permission.location);
+    _waitController = WaitProvider(Permission.location);
     _homeController = HomeController();
     _showAlertPermissionsLocation();
     token = Provider.of<UserProvider>(context, listen: false).token;
