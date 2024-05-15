@@ -7,7 +7,6 @@ import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
-import 'package:http/http.dart' as http;
 
 class MySignUpScreen extends StatefulWidget {
   const MySignUpScreen({super.key});
@@ -19,7 +18,6 @@ class MySignUpScreen extends StatefulWidget {
 
 class _MySignScreenState extends State<MySignUpScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -28,6 +26,8 @@ class _MySignScreenState extends State<MySignUpScreen> {
       TextEditingController();
 
   bool _showPassword = true;
+
+  get http => null;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {

@@ -11,7 +11,7 @@ import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
-import 'package:rabbit_go/infraestructure/controllers/wait_provider.dart';
+import 'package:rabbit_go/infraestructure/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
