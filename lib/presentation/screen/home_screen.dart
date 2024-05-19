@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rabbit_go/domain/use_cases/Place/place_use_case.dart';
-import 'package:rabbit_go/infraestructure/api/place_api/place_api.dart';
 import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
-import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
@@ -30,7 +27,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late Polyline polyline;
   late Polyline polylineFromAlert;
   final TextEditingController _searchController = TextEditingController();
-  late WaitProvider _waitController;
+  late WaitProvider _waitProvider;
   late HomeController _homeController;
   String? token;
   Iterable markers = [];
@@ -127,7 +124,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> _showAlertPermissionsLocation() async {
-    bool isLocationPermissionGranted = await _waitController.checkPermission();
+    bool isLocationPermissionGranted = await _waitProvider.checkPermission();
     if (!isLocationPermissionGranted) {
       Future.delayed(const Duration(seconds: 3), () {
         showModalBottomSheet(
@@ -143,13 +140,14 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   @override
   void initState() {
     super.initState();
-    _waitController = WaitProvider(Permission.location);
+    _waitProvider = WaitProvider(Permission.location);
     _homeController = HomeController();
     _showAlertPermissionsLocation();
     token = Provider.of<UserProvider>(context, listen: false).token;
     getBusStops(token);
     List<LatLng>? coordinates =
-        Provider.of<RouteCoordinatesProvider>(context, listen: false).coordinates;
+        Provider.of<RouteCoordinatesProvider>(context, listen: false)
+            .coordinates;
     polyline = GradientPolyline(
       polylineId: const PolylineId('route'),
       points: coordinates!,
@@ -160,87 +158,82 @@ class _MyHomeScreenState extends State<MyHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => PlaceProvider(PlaceUseCase(
-        PlaceAPI(Dio()),
-      )),
-      child: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: (GoogleMapController controller) async {
-              _homeController.onMapCreated(controller);
-              LatLng? location = await _homeController.getUserLocation();
-              if (location != null) {
-                if (mounted) {
-                  setState(() {
-                    userLocation = location;
-                  });
-                  controller
-                      .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
-                }
+    return Stack(
+      children: [
+        GoogleMap(
+          onMapCreated: (GoogleMapController controller) async {
+            _homeController.onMapCreated(controller);
+            LatLng? location = await _homeController.getUserLocation();
+            if (location != null) {
+              if (mounted) {
+                setState(() {
+                  userLocation = location;
+                });
                 controller
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
-            },
-            polylines: {polyline},
-            markers: Set.from({...markers, ...hereMarkers}),
-            compassEnabled: false,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(16.75973, -93.11308),
-              zoom: 14,
-            ),
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            padding: const EdgeInsets.only(
-              top: 100.0,
-            ),
+              controller
+                  .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
+            }
+          },
+          polylines: {polyline},
+          markers: Set.from({...markers, ...hereMarkers}),
+          compassEnabled: false,
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(16.75973, -93.11308),
+            zoom: 14,
           ),
-          Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05,
-                  vertical: MediaQuery.of(context).size.height * 0.08),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 40,
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 1),
-                  )
-                ]),
-                child: Builder(builder: (context) {
-                  return TextField(
-                    controller: _searchController,
-                    onSubmitted: (value) => getPlacesFromHereAPI(value),
-                    textAlignVertical: TextAlignVertical.center,
-                    cursorHeight: 25.0,
-                    cursorColor: const Color(0xFF01142B),
-                    style: const TextStyle(
-                        color: Color(0xFF01142B), fontWeight: FontWeight.w500),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: 'Buscar un lugar',
-                      hintStyle: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFFE0E0E0),
-                          fontWeight: FontWeight.w500),
-                      filled: true,
-                      fillColor: const Color(0xFFFFFFFF),
-                      prefixIcon: Image.asset(
-                        'assets/images/Search.png',
-                        width: 10,
-                      ), // Icono dentro del campo de texto
+          myLocationButtonEnabled: true,
+          myLocationEnabled: true,
+          padding: const EdgeInsets.only(
+            top: 100.0,
+          ),
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+                vertical: MediaQuery.of(context).size.height * 0.08),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 40,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 1),
+                )
+              ]),
+              child: Builder(builder: (context) {
+                return TextField(
+                  controller: _searchController,
+                  onSubmitted: (value) => getPlacesFromHereAPI(value),
+                  textAlignVertical: TextAlignVertical.center,
+                  cursorHeight: 25.0,
+                  cursorColor: const Color(0xFF01142B),
+                  style: const TextStyle(
+                      color: Color(0xFF01142B), fontWeight: FontWeight.w500),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                      borderSide: BorderSide.none,
                     ),
-                  );
-                }),
-              )),
-        ],
-      ),
+                    hintText: 'Buscar un lugar',
+                    hintStyle: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFE0E0E0),
+                        fontWeight: FontWeight.w500),
+                    filled: true,
+                    fillColor: const Color(0xFFFFFFFF),
+                    prefixIcon: Image.asset(
+                      'assets/images/Search.png',
+                      width: 10,
+                    ), // Icono dentro del campo de texto
+                  ),
+                );
+              }),
+            )),
+      ],
     );
   }
 }

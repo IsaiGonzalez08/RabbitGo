@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/screen/admin_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -52,11 +53,18 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     );
   }
 
+  void navigateAdminScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyAdminScreen()),
+    );
+  }
+
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 6) {
-      return "La contraseña debe tener al menos 6 caracteres";
+    } else if (value.length < 4) {
+      return "La contraseña debe tener al menos 4 caracteres";
     } else if (value.length > 15) {
       return "La contraseña no puede ser mayor a 15 caracteres";
     } else if (_isPasswordInValid) {
@@ -97,8 +105,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
           final name = responseData['data']['name'];
           final lastname = responseData['data']['lastname'];
           final email = responseData['data']['email'];
+          final role = responseData['data']['rol'];
           provider(uuid, token, name, lastname, email);
-          navigateTapBar();
+          if (role == 'admin') {
+            navigateAdminScreen();
+          } else {
+            navigateTapBar();
+          }
           setState(() {
             _isEmailInValid = false;
             _isPasswordInValid = false;

@@ -4,8 +4,8 @@ import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/api/place_api/place_api.dart';
 
 class PlaceUseCase implements PlaceGateway {
-  final PlaceAPI _placeAPI;
-  PlaceUseCase(this._placeAPI);
+  final PlaceAPI _placeAPI = PlaceAPI();
+  PlaceUseCase();
   @override
   void cancel() {
     _placeAPI.cancel();

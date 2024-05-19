@@ -4,11 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:rabbit_go/domain/models/Place/place.dart';
 
 class PlaceAPI {
-  final Dio _dio;
+  final _dio = Dio();
   CancelToken? _cancelToken;
   final _controller = StreamController<List<Place>?>.broadcast();
   
-  PlaceAPI(this._dio);
+  PlaceAPI();
 
   Stream<List<Place>?> get onResults => _controller.stream;
 

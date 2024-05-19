@@ -28,7 +28,7 @@ class RouteProvider extends ChangeNotifier {
   void queryChanged(String text) {
     _query = text;
     _debouncer?.cancel();
-    _debouncer = Timer(const Duration(milliseconds: 200), () {
+    _debouncer = Timer(const Duration(milliseconds: 800), () {
       if (_query.length >= 3) {
         _routeGateway.cancel();
         _routeGateway.find(query);

@@ -2,19 +2,26 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
+import 'domain/use_cases/Place/place_use_case.dart';
+
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserProvider>(create: (context) => UserProvider()),
+        ChangeNotifierProvider<UserProvider>(
+            create: (context) => UserProvider()),
         ChangeNotifierProvider<RouteCoordinatesProvider>(
           create: (_) => RouteCoordinatesProvider(),
+        ),
+        ChangeNotifierProvider<PlaceProvider>(
+          create: (context) => PlaceProvider(PlaceUseCase()),
         )
       ],
       child: const MyApp(),
