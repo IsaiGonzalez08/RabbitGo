@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
-import 'package:rabbit_go/presentation/screen/admin_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
@@ -56,7 +56,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   void navigateAdminScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MyAdminScreen()),
+      MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
     );
   }
 

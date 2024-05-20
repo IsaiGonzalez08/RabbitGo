@@ -64,9 +64,6 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
               indent: 0,
               endIndent: 0,
             ),
-            const SizedBox(
-              height: 30,
-            ),
             Expanded(
               child: FutureBuilder<List<RouteModel>>(
                 future: futureRoutes,
@@ -91,6 +88,9 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                 },
               ),
             ),
+            const SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),

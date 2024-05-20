@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rabbit_go/presentation/screen/admin_find_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/admin_screen.dart';
-import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
-import 'package:rabbit_go/presentation/screen/find_route_screen.dart';
 
 class MyTapBarAdminWidget extends StatefulWidget {
   const MyTapBarAdminWidget({Key? key}) : super(key: key);
@@ -15,8 +14,7 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
   int _currentIndex = 0;
   List<Widget> body = const [
     MyAdminScreen(),
-    MyFindRouteScreen(),
-    MyConfigurationScreen()
+    MyAdminFindRouteScreen(),
   ];
 
   @override
@@ -40,13 +38,13 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
               icon: SvgPicture.asset('assets/images/homewhite.svg')),
           BottomNavigationBarItem(
             label: 'Agregar',
-            activeIcon: SvgPicture.asset('assets/images/Add.png'),
-            icon: SvgPicture.asset('assets/images/Add_active.png'),
+            activeIcon: Image.asset('assets/images/Add.png', width: 25),
+            icon: Image.asset('assets/images/Add_active.png', width: 25),
           ),
           BottomNavigationBarItem(
               label: 'Buscar',
-              activeIcon: SvgPicture.asset('assets/images/Search.png'),
-              icon: SvgPicture.asset('assets/images/search_active.png')),
+              activeIcon: Image.asset('assets/images/Search.png', width: 25),
+              icon: Image.asset('assets/images/search_active.png', width: 25)),
         ],
         selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w500,
