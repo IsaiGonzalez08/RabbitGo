@@ -89,6 +89,9 @@ flutter:
     - assets/images/profile2.svg
     - assets/images/Route.svg
     - assets/images/Search.png
+    - assets/images/search_active.png
+    - assets/images/Add.png
+    - assets/images/Add_active.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
