@@ -4,6 +4,8 @@ import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/repositories/route_repository_impl.dart';
+import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
+import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
 
 class MyAdminScreen extends StatefulWidget {
@@ -28,6 +30,22 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     } else {
       futureRoutes = Future.error('User token not found');
     }
+  }
+
+  void navigateUpdateScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyAdminUpdateRouteScreen()),
+    );
+  }
+
+  void openDeleteAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MyAlertDeleteRoute();
+      },
+    );
   }
 
   @override
@@ -78,6 +96,12 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                           startTime: route.startTime,
                           endTime: route.endTime,
                           price: route.price.toString(),
+                          onEdit: () {
+                            navigateUpdateScreen();
+                          },
+                          onDelete: () {
+                            openDeleteAlert();
+                          },
                         );
                       },
                     );
