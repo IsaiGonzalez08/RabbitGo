@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class RouteRepositoryImpl implements RouteRepository {
   @override
-    Future<List<RouteModel>> getAllRoutes(String token) async {
+  Future<List<RouteModel>> getAllRoutes(String token) async {
     try {
       String url = ('https://rabbitgo.sytes.net/bus/route/time/18:00');
 
@@ -26,6 +26,24 @@ class RouteRepositoryImpl implements RouteRepository {
         }
       } else {
         throw ('error en la petición: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw ('el error es $e');
+    }
+  }
+
+  @override
+  Future<void> deleteRouteById(String? token, String? id) async {
+    try {
+      String url = ('https://rabbitgo.sytes.net/bus/route/$id');
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        print('Ruta Borrada Correctamente');
+      } else {
+        print('No se pudo borrar la ruta');
       }
     } catch (e) {
       throw ('el error es $e');

@@ -43,7 +43,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const MyAlertDeleteRoute();
+        return MyAlertDeleteRoute(id: id,);
       },
     );
   }

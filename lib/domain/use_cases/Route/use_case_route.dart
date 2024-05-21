@@ -6,6 +6,16 @@ class GetAllRoutesUseCase {
   GetAllRoutesUseCase(this._routeRepository);
 
   Future<List<RouteModel>> execute(String token) async {
-   return await _routeRepository.getAllRoutes(token);
+    return await _routeRepository.getAllRoutes(token);
+  }
+}
+
+class DeleteRouteById {
+  final RouteRepository _routeRepository;
+
+  DeleteRouteById(this._routeRepository);
+
+  Future<void> deleteRouteById(String? token, String? id) async {
+    return await _routeRepository.deleteRouteById(token, id);
   }
 }
