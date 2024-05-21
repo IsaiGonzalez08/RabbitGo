@@ -35,3 +35,22 @@ class CreateBusRouteUseCase {
         await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime, routeEndTime, routeBusStop, token);
       }
 }
+
+class UpdateBusRouteUseCase {
+  final RouteRepository _routeRepository;
+
+  UpdateBusRouteUseCase(this._routeRepository);
+
+  Future<void> updateBusStop(
+      String routeName,
+      String routePrice,
+      String routeStartTime,
+      String routeEndTime,
+      String routeBusStop,
+      String token,
+      String id) async {
+        await _routeRepository.updateBusRoute(routeName, routePrice, routeStartTime, routeEndTime, routeBusStop, token, id);
+      }
+}
+
+

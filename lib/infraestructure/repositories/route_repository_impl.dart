@@ -81,4 +81,37 @@ class RouteRepositoryImpl implements RouteRepository {
       throw ('el error es $e');
     }
   }
+
+  @override
+  Future<void> updateBusRoute(
+      String routeName,
+      String routePrice,
+      String routeStartTime,
+      String routeEndTime,
+      String routeBusStop,
+      String token,
+      String id) async {
+    try {
+      String url = ('https://rabbitgo.sytes.net/bus/route/$id');
+      final userData = {
+        'name': routeName,
+        'price': routePrice,
+        'startTime': routeStartTime,
+        'endTime': routeEndTime,
+        'busStopId': routeBusStop,
+      };
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Authorization': token, 'Content-Type': 'application/json'},
+        body: jsonEncode(userData),
+      );
+      if (response.statusCode == 200) {
+        print('Ruta actualizada Correctamente');
+      } else {
+        print('No se pudo actualizar la ruta');
+      }
+    } catch (e) {
+      throw ('el error es $e');
+    }
+  }
 }

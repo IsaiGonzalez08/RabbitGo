@@ -32,10 +32,10 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     }
   }
 
-  void navigateUpdateScreen() {
+  void navigateUpdateScreen(String id) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MyAdminUpdateRouteScreen()),
+      MaterialPageRoute(builder: (context) => MyAdminUpdateRouteScreen(id: id,)),
     );
   }
 
@@ -43,7 +43,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertDeleteRoute(id: id,);
+        return MyAlertDeleteRoute(id: id);
       },
     );
   }
@@ -101,7 +101,8 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                         endTime: route.endTime,
                         price: route.price.toString(),
                         onEdit: () {
-                          navigateUpdateScreen();
+                          final idRoute = route.uuid;
+                          navigateUpdateScreen(idRoute);
                         },
                         onDelete: () {
                           final idRoute = route.uuid;
