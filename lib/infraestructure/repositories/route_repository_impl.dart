@@ -49,4 +49,36 @@ class RouteRepositoryImpl implements RouteRepository {
       throw ('el error es $e');
     }
   }
+
+  @override
+  Future<void> createBusRoute(
+      String routeName,
+      String routePrice,
+      String routeStartTime,
+      String routeEndTime,
+      String routeBusStop,
+      String token) async {
+    try {
+      String url = ('https://rabbitgo.sytes.net/bus/route');
+      final userData = {
+        'name': routeName,
+        'price': routePrice,
+        'startTime': routeStartTime,
+        'endTime': routeEndTime,
+        'busStopId': routeBusStop,
+      };
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Authorization': token, 'Content-Type': 'application/json'},
+        body: jsonEncode(userData),
+      );
+      if (response.statusCode == 200) {
+        print('Ruta creada Correctamente');
+      } else {
+        print('No se pudo crear la ruta');
+      }
+    } catch (e) {
+      throw ('el error es $e');
+    }
+  }
 }

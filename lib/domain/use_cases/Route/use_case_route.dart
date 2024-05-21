@@ -19,3 +19,19 @@ class DeleteRouteById {
     return await _routeRepository.deleteRouteById(token, id);
   }
 }
+
+class CreateBusRouteUseCase {
+  final RouteRepository _routeRepository;
+
+  CreateBusRouteUseCase(this._routeRepository);
+
+  Future<void> createBusStop(
+      String routeName,
+      String routePrice,
+      String routeStartTime,
+      String routeEndTime,
+      String routeBusStop,
+      String token) async {
+        await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime, routeEndTime, routeBusStop, token);
+      }
+}

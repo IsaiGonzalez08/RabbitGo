@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/Stop/stop.dart';
+import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/infraestructure/repositories/route_repository_impl.dart';
 import 'package:rabbit_go/infraestructure/repositories/stop_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
@@ -14,19 +17,55 @@ class MyAdminAddRouteScreen extends StatefulWidget {
 }
 
 class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
-  final TextEditingController _usernameController = TextEditingController();
   final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-  final List<String> list = <String>['One', 'Two', 'Three', 'Four'];
+  final createBusRoute = CreateBusRouteUseCase(RouteRepositoryImpl());
+  final TextEditingController _routeNameController = TextEditingController();
+  final TextEditingController _routePriceController = TextEditingController();
+  final TextEditingController _routeStartTimeController =
+      TextEditingController();
+  final TextEditingController _routeEndTimeController = TextEditingController();
+  final TextEditingController _routeBusStopController = TextEditingController();
 
-  late String dropdownValue = list.first;
+  List<String> list = [];
+  String? dropdownValue;
 
   @override
   void initState() {
     super.initState();
-    dropdownValue = list.first;
     final token = Provider.of<UserProvider>(context, listen: false).token;
     if (token != null) {
-      getAllBusStops.execute(token);
+      _fetchBusStops(token);
+    }
+  }
+
+  Future<void> _fetchBusStops(String token) async {
+    try {
+      List<Stop> stops = await getAllBusStops.getAllBusStops(token);
+      setState(() {
+        list = stops.map((stop) => stop.name).toList();
+        if (list.isNotEmpty) {
+          dropdownValue = list.first;
+        }
+      });
+    } catch (e) {
+      print('Error fetching bus stops: $e');
+    }
+  }
+
+  Future<void> _createBusRoute() async {
+    try {
+      final token = Provider.of<UserProvider>(context, listen: false).token;
+      if (token != null) {
+        final routeName = _routeNameController.text;
+        final routePrice = _routePriceController.text;
+        final routeStartTime = _routeStartTimeController.text;
+        final routeEndTime = _routeEndTimeController.text;
+        final routeBusStop = _routeBusStopController.text;
+        createBusRoute.createBusStop(routeName, routePrice, routeStartTime,
+            routeEndTime, routeBusStop, token);
+      }
+    } catch (e) {
+      print('Error fetching bus stops: $e');
     }
   }
 
@@ -53,125 +92,135 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _usernameController,
-                text: 'Nombre(s)',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _usernameController,
-                text: 'Precio',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _usernameController,
-                text: 'Hora de Inicio',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _usernameController,
-                text: 'Hora de Termino',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          DropdownMenu<String>(
-            initialSelection: list.first,
-            width: MediaQuery.of(context).size.width * 0.9,
-            menuStyle: const MenuStyle(
-              backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 50,
             ),
-            menuHeight: 150,
-            textStyle: const TextStyle(
-                color: Color(0xFFB8B8B8),
-                fontSize: 12,
-                fontWeight: FontWeight.w500),
-            inputDecorationTheme: const InputDecorationTheme(
-                iconColor: Color(0xFFB8B8B8),
-                border: InputBorder.none,
-                filled: true,
-                fillColor: Color(0xFFEDEDED)),
-            onSelected: (String? value) {
-              setState(() {
-                dropdownValue = value!;
-              });
-            },
-            dropdownMenuEntries:
-                list.map<DropdownMenuEntry<String>>((String value) {
-              return DropdownMenuEntry<String>(value: value, label: value);
-            }).toList(),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomButton(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeNameController,
+                  text: 'Nombre(s)',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routePriceController,
+                  text: 'Precio',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeStartTimeController,
+                  text: 'Hora de Inicio',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeEndTimeController,
+                  text: 'Hora de Termino',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if (list.isNotEmpty)
+              DropdownMenu<String>(
+                initialSelection: dropdownValue ?? '',
+                controller: _routeBusStopController,
+                width: MediaQuery.of(context).size.width * 0.9,
+                menuStyle: const MenuStyle(
+                  backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
+                ),
+                menuHeight: 150,
+                textStyle: const TextStyle(
+                    color: Color(0xFFB8B8B8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500),
+                inputDecorationTheme: const InputDecorationTheme(
+                    iconColor: Color(0xFFB8B8B8),
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Color(0xFFEDEDED)),
+                onSelected: (String? value) {
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                dropdownMenuEntries:
+                    list.map<DropdownMenuEntry<String>>((String value) {
+                  return DropdownMenuEntry<String>(value: value, label: value);
+                }).toList(),
+              )
+            else
+              const CircularProgressIndicator(),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomButton(
               textButton: 'Agregar',
               width: MediaQuery.of(context).size.width * 0.9,
               height: 40,
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF01142B),
-              colorText: const Color(0xFFFFFFFF))
-        ],
+              colorText: const Color(0xFFFFFFFF),
+              onPressed: () {
+                _createBusRoute();
+              },
+            )
+          ],
+        ),
       ),
     );
   }

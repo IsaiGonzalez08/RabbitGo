@@ -19,7 +19,7 @@ class StopRepositoryImpl implements StopRepository {
         if (jsonResponse.containsKey('data')) {
           List<dynamic> stopJson = jsonResponse['data'];
           List<Stop> stops =
-              stopJson.map((route) => Stop.fromJson(route)).toList();
+              stopJson.map((stop) => Stop.fromJson(stop)).toList();
           return stops;
         } else {
           throw Exception('Response does not contain "data"');

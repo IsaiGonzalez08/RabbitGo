@@ -5,7 +5,7 @@ class GetAllBusStopsUseCase {
   final StopRepository _stopRepository;
   GetAllBusStopsUseCase(this._stopRepository);
 
-  Future<List<Stop>> execute(String token) async {
+  Future<List<Stop>> getAllBusStops(String token) async {
    return await _stopRepository.getAllBusStops(token);
   }
 }

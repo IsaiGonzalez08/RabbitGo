@@ -1,21 +1,13 @@
 class Stop {
-  final String name, id;
-  final double latitude;
-  final double longitude;
+  final String name;
 
-  Stop(
-      {
-      required this.id,
-      required this.name,
-      required this.latitude,
-      required this.longitude,
-      });
+  Stop({
+    required this.name,
+  });
 
-  factory Stop.fromJson(Map<String, dynamic> json) {
+  factory Stop.fromJson(Map<dynamic, dynamic> json) {
     return Stop(
-        id: json['data']['uuid'],
-        name: json['data']['name'],
-        latitude: json['data']['latitude'],
-        longitude: json['data']['longitud']);
+      name: json['name'],
+    );
   }
 }
