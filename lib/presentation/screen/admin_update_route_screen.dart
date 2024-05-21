@@ -45,7 +45,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
     try {
       List<Stop> stops = await getAllBusStops.getAllBusStops(token);
       setState(() {
-        list = stops.map((stop) => stop.name).toList();
+        list = stops.map((stop) => stop.id).toList();
         if (list.isNotEmpty) {
           dropdownValue = list.first;
         }
@@ -98,133 +98,135 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeNameController,
+                  text: 'Nombre(s)',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routePriceController,
+                  text: 'Precio',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeStartTimeController,
+                  text: 'Hora de Inicio',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyTextFieldWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  controllerTextField: _routeEndTimeController,
+                  text: 'Hora de Termino',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa un nombre de usuario';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if (list.isNotEmpty)
+              DropdownMenu<String>(
+                initialSelection: dropdownValue ?? '',
+                controller: _routeBusStopController,
                 width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _routeNameController,
-                text: 'Nombre(s)',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
+                menuStyle: const MenuStyle(
+                  backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
+                ),
+                menuHeight: 150,
+                textStyle: const TextStyle(
+                    color: Color(0xFFB8B8B8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500),
+                inputDecorationTheme: const InputDecorationTheme(
+                    iconColor: Color(0xFFB8B8B8),
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Color(0xFFEDEDED)),
+                onSelected: (String? value) {
+                  setState(() {
+                    dropdownValue = value!;
+                  });
                 },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _routePriceController,
-                text: 'Precio',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _routeStartTimeController,
-                text: 'Hora de Inicio',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.9,
-                controllerTextField: _routeEndTimeController,
-                text: 'Hora de Termino',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          if (list.isNotEmpty)
-            DropdownMenu<String>(
-              initialSelection: dropdownValue ?? '',
-              controller: _routeBusStopController,
-              width: MediaQuery.of(context).size.width * 0.9,
-              menuStyle: const MenuStyle(
-                backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
-              ),
-              menuHeight: 150,
-              textStyle: const TextStyle(
-                  color: Color(0xFFB8B8B8),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500),
-              inputDecorationTheme: const InputDecorationTheme(
-                  iconColor: Color(0xFFB8B8B8),
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: Color(0xFFEDEDED)),
-              onSelected: (String? value) {
-                setState(() {
-                  dropdownValue = value!;
-                });
+                dropdownMenuEntries:
+                    list.map<DropdownMenuEntry<String>>((String value) {
+                  return DropdownMenuEntry<String>(value: value, label: value);
+                }).toList(),
+              )
+            else
+              const CircularProgressIndicator(),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomButton(
+              textButton: 'Actualizar',
+              width: MediaQuery.of(context).size.width * 0.438,
+              height: 40,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF01142B),
+              colorText: const Color(0xFFFFFFFF),
+              onPressed: () {
+                _updateBusRoute();
               },
-              dropdownMenuEntries:
-                  list.map<DropdownMenuEntry<String>>((String value) {
-                return DropdownMenuEntry<String>(value: value, label: value);
-              }).toList(),
             )
-          else
-            const CircularProgressIndicator(),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomButton(
-            textButton: 'Actualizar',
-            width: MediaQuery.of(context).size.width * 0.438,
-            height: 40,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF01142B),
-            colorText: const Color(0xFFFFFFFF),
-            onPressed: () {
-              _updateBusRoute();
-            },
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

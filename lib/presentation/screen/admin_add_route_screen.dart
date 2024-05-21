@@ -42,7 +42,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
     try {
       List<Stop> stops = await getAllBusStops.getAllBusStops(token);
       setState(() {
-        list = stops.map((stop) => stop.name).toList();
+        list = stops.map((stop) => stop.id).toList();
         if (list.isNotEmpty) {
           dropdownValue = list.first;
         }

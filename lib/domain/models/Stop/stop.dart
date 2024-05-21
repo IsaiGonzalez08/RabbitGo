@@ -1,13 +1,13 @@
 class Stop {
-  final String name;
+  final String id;
 
   Stop({
-    required this.name,
+    required this.id,
   });
 
   factory Stop.fromJson(Map<dynamic, dynamic> json) {
     return Stop(
-      name: json['name'],
+      id: json['uuid'],
     );
   }
 }
