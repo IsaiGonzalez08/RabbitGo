@@ -47,7 +47,7 @@ class RouteCard extends StatelessWidget {
                     name,
                     style: const TextStyle(
                         color: Color(0xFF8D8D8D),
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600),
                   ),
                   Text(
@@ -84,6 +84,9 @@ class RouteCard extends StatelessWidget {
                         fontWeight: FontWeight.w700),
                   )
                 ],
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Row(
                 children: [

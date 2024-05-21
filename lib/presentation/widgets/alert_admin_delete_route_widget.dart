@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
 class MyAlertDeleteRoute extends StatelessWidget {
-  const MyAlertDeleteRoute({super.key});
+  final String? id;
+  const MyAlertDeleteRoute({super.key, this.id});
 
   @override
   Widget build(BuildContext context) {

@@ -39,7 +39,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     );
   }
 
-  void openDeleteAlert() {
+  void openDeleteAlert(String id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -51,72 +51,76 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.08),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 50,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 50,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.07),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Bienvenido',
+                  style: TextStyle(
+                      color: Color(0xFF707070),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  '$_name',
+                  style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF131313)),
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1.0,
+                  height: 20.0,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+              ],
             ),
-            const Text(
-              'Bienvenido',
-              style: TextStyle(
-                  color: Color(0xFF707070),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400),
+          ),
+          Expanded(
+            child: FutureBuilder<List<RouteModel>>(
+              future: futureRoutes,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final route = snapshot.data![index];
+                      return RouteCard(
+                        name: route.name,
+                        startTime: route.startTime,
+                        endTime: route.endTime,
+                        price: route.price.toString(),
+                        onEdit: () {
+                          navigateUpdateScreen();
+                        },
+                        onDelete: () {
+                          final idRoute = route.uuid;
+                          openDeleteAlert(idRoute);
+                        },
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
             ),
-            Text(
-              '$_name',
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF131313)),
-            ),
-            const Divider(
-              color: Colors.grey,
-              thickness: 1.0,
-              height: 20.0,
-              indent: 0,
-              endIndent: 0,
-            ),
-            Expanded(
-              child: FutureBuilder<List<RouteModel>>(
-                future: futureRoutes,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final route = snapshot.data![index];
-                        return RouteCard(
-                          name: route.name,
-                          startTime: route.startTime,
-                          endTime: route.endTime,
-                          price: route.price.toString(),
-                          onEdit: () {
-                            navigateUpdateScreen();
-                          },
-                          onDelete: () {
-                            openDeleteAlert();
-                          },
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            )
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 20,
+          )
+        ],
       ),
     );
   }
