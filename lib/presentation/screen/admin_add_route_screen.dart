@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
+import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/infraestructure/repositories/stop_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
@@ -11,6 +15,20 @@ class MyAdminAddRouteScreen extends StatefulWidget {
 
 class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   final TextEditingController _usernameController = TextEditingController();
+  final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
+  final List<String> list = <String>['One', 'Two', 'Three', 'Four'];
+
+  late String dropdownValue = list.first;
+
+  @override
+  void initState() {
+    super.initState();
+    dropdownValue = list.first;
+    final token = Provider.of<UserProvider>(context, listen: false).token;
+    if (token != null) {
+      getAllBusStops.execute(token);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +62,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Nombre(s)',
                 validator: (value) {
@@ -63,7 +81,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Precio',
                 validator: (value) {
@@ -82,7 +100,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Hora de Inicio',
                 validator: (value) {
@@ -101,7 +119,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Hora de Termino',
                 validator: (value) {
@@ -116,28 +134,38 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
           const SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
-                controllerTextField: _usernameController,
-                text: 'ID Bus Stop',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
+          DropdownMenu<String>(
+            initialSelection: list.first,
+            width: MediaQuery.of(context).size.width * 0.9,
+            menuStyle: const MenuStyle(
+              backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
+            ),
+            menuHeight: 150,
+            textStyle: const TextStyle(
+                color: Color(0xFFB8B8B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w500),
+            inputDecorationTheme: const InputDecorationTheme(
+                iconColor: Color(0xFFB8B8B8),
+                border: InputBorder.none,
+                filled: true,
+                fillColor: Color(0xFFEDEDED)),
+            onSelected: (String? value) {
+              setState(() {
+                dropdownValue = value!;
+              });
+            },
+            dropdownMenuEntries:
+                list.map<DropdownMenuEntry<String>>((String value) {
+              return DropdownMenuEntry<String>(value: value, label: value);
+            }).toList(),
           ),
           const SizedBox(
             height: 20,
           ),
           CustomButton(
               textButton: 'Agregar',
-              width: MediaQuery.of(context).size.width * 0.438,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: 40,
               fontSize: 14,
               fontWeight: FontWeight.w600,

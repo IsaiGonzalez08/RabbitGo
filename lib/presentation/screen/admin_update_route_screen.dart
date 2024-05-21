@@ -12,6 +12,9 @@ class MyAdminUpdateRouteScreen extends StatefulWidget {
 
 class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   final TextEditingController _usernameController = TextEditingController();
+  final List<String> list = <String>['One', 'Two', 'Three', 'Four'];
+
+  late String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Nombre(s)',
                 validator: (value) {
@@ -64,7 +67,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Precio',
                 validator: (value) {
@@ -83,7 +86,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Hora de Inicio',
                 validator: (value) {
@@ -102,7 +105,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
+                width: MediaQuery.of(context).size.width * 0.9,
                 controllerTextField: _usernameController,
                 text: 'Hora de Termino',
                 validator: (value) {
@@ -117,21 +120,31 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
           const SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyTextFieldWidget(
-                width: MediaQuery.of(context).size.width * 0.438,
-                controllerTextField: _usernameController,
-                text: 'ID Bus Stop',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre de usuario';
-                  }
-                  return null;
-                },
-              ),
-            ],
+          DropdownMenu<String>(
+            initialSelection: list.first,
+            width: MediaQuery.of(context).size.width * 0.9,
+            menuStyle: const MenuStyle(
+              backgroundColor: MaterialStatePropertyAll(Color(0xFFEDEDED)),
+            ),
+            menuHeight: 150,
+            textStyle: const TextStyle(
+                color: Color(0xFFB8B8B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w500),
+            inputDecorationTheme: const InputDecorationTheme(
+                iconColor: Color(0xFFB8B8B8),
+                border: InputBorder.none,
+                filled: true,
+                fillColor: Color(0xFFEDEDED)),
+            onSelected: (String? value) {
+              setState(() {
+                dropdownValue = value!;
+              });
+            },
+            dropdownMenuEntries:
+                list.map<DropdownMenuEntry<String>>((String value) {
+              return DropdownMenuEntry<String>(value: value, label: value);
+            }).toList(),
           ),
           const SizedBox(
             height: 20,
