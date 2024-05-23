@@ -8,17 +8,17 @@ import '../../infraestructure/providers/user_provider.dart';
 
 class MyAlertDeleteRoute extends StatefulWidget {
   final String id;
-  const MyAlertDeleteRoute({super.key, required this.id});
+  final BuildContext context;
+  const MyAlertDeleteRoute(
+      {super.key, required this.id, required this.context});
 
   @override
   State<MyAlertDeleteRoute> createState() => _MyAlertDeleteRouteState();
 }
 
 class _MyAlertDeleteRouteState extends State<MyAlertDeleteRoute> {
-  late String? token;
+  late String token;
   late String id;
-
-  final deleteRouteUseCase = DeleteRouteById(RouteRepositoryImpl());
 
   @override
   void initState() {
@@ -56,10 +56,10 @@ class _MyAlertDeleteRouteState extends State<MyAlertDeleteRoute> {
               color: const Color(0xFFAB0000),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () {
-                if (token != null) {
-                  deleteRouteUseCase.deleteRouteById(token, id);
-                  Navigator.pop(context);
-                }
+                final deleteRouteUseCase =
+                    DeleteRouteById(RouteRepositoryImpl(context));
+                deleteRouteUseCase.deleteRouteById(token, id);
+                Navigator.pop(context);
               },
             ),
             const SizedBox(

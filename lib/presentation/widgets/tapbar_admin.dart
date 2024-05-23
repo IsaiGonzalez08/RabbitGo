@@ -13,14 +13,15 @@ class MyTapBarAdminWidget extends StatefulWidget {
 
 class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
   int _currentIndex = 0;
-  List<Widget> body = const [
-    MyAdminScreen(),
-    MyAdminAddRouteScreen(),
-    MyAdminFindRouteScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> body = [
+      MyAdminScreen(context: context),
+      MyAdminAddRouteScreen(context: context),
+      const MyAdminFindRouteScreen(),
+    ];
+
     return Scaffold(
       body: Center(
         child: body[_currentIndex],

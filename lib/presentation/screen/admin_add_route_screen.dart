@@ -10,7 +10,8 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MyAdminAddRouteScreen extends StatefulWidget {
-  const MyAdminAddRouteScreen({super.key});
+  final BuildContext context;
+  const MyAdminAddRouteScreen({super.key, required this.context});
 
   @override
   State<MyAdminAddRouteScreen> createState() => _MyAdminAddRouteScreenState();
@@ -18,7 +19,7 @@ class MyAdminAddRouteScreen extends StatefulWidget {
 
 class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-  final createBusRoute = CreateBusRouteUseCase(RouteRepositoryImpl());
+  
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
   final TextEditingController _routeStartTimeController =
@@ -33,9 +34,8 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   void initState() {
     super.initState();
     final token = Provider.of<UserProvider>(context, listen: false).token;
-    if (token != null) {
-      _fetchBusStops(token);
-    }
+
+    _fetchBusStops(token);
   }
 
   Future<void> _fetchBusStops(String token) async {
@@ -55,15 +55,15 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   Future<void> _createBusRoute() async {
     try {
       final token = Provider.of<UserProvider>(context, listen: false).token;
-      if (token != null) {
-        final routeName = _routeNameController.text;
-        final routePrice = _routePriceController.text;
-        final routeStartTime = _routeStartTimeController.text;
-        final routeEndTime = _routeEndTimeController.text;
-        final routeBusStop = _routeBusStopController.text;
-        createBusRoute.createBusStop(routeName, routePrice, routeStartTime,
-            routeEndTime, routeBusStop, token);
-      }
+
+      final routeName = _routeNameController.text;
+      final routePrice = _routePriceController.text;
+      final routeStartTime = _routeStartTimeController.text;
+      final routeEndTime = _routeEndTimeController.text;
+      final routeBusStop = _routeBusStopController.text;
+      final createBusRoute = CreateBusRouteUseCase(RouteRepositoryImpl(context));
+      createBusRoute.createBusStop(routeName, routePrice, routeStartTime,
+          routeEndTime, routeBusStop, token);
     } catch (e) {
       print('Error fetching bus stops: $e');
     }

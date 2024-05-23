@@ -9,7 +9,8 @@ import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.d
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
 
 class MyAdminScreen extends StatefulWidget {
-  const MyAdminScreen({Key? key}) : super(key: key);
+  final BuildContext context;
+  const MyAdminScreen({Key? key, required this.context}) : super(key: key);
 
   @override
   State<MyAdminScreen> createState() => _MyAdminScreenState();
@@ -18,24 +19,24 @@ class MyAdminScreen extends StatefulWidget {
 class _MyAdminScreenState extends State<MyAdminScreen> {
   late Future<List<RouteModel>> futureRoutes;
   String? _name;
-  final getAllRoutesUseCase = GetAllRoutesUseCase(RouteRepositoryImpl());
 
   @override
   void initState() {
     super.initState();
     _name = Provider.of<UserProvider>(context, listen: false).name;
     final token = Provider.of<UserProvider>(context, listen: false).token;
-    if (token != null) {
-      futureRoutes = getAllRoutesUseCase.execute(token);
-    } else {
-      futureRoutes = Future.error('User token not found');
-    }
+    final getAllRoutesUseCase =
+        GetAllRoutesUseCase(RouteRepositoryImpl(context));
+    futureRoutes = getAllRoutesUseCase.execute(token);
   }
 
   void navigateUpdateScreen(String id) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MyAdminUpdateRouteScreen(id: id,)),
+      MaterialPageRoute(
+          builder: (context) => MyAdminUpdateRouteScreen(
+                id: id, context: context,
+              )),
     );
   }
 
@@ -43,7 +44,10 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertDeleteRoute(id: id);
+        return MyAlertDeleteRoute(
+          id: id,
+          context: context,
+        );
       },
     );
   }

@@ -28,7 +28,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   bool _showPassword = true;
   String? userId;
-  String? token;
+  String token = '';
   String? name;
   String? lastname;
 
@@ -90,7 +90,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
           final response = await http.put(Uri.parse(url),
               headers: {
-                'Authorization': token!,
+                'Authorization': token,
                 'Content-Type': 'application/json'
               },
               body: jsonEncode(userData));

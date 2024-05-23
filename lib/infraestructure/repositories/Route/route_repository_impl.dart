@@ -1,56 +1,54 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:http/http.dart' as http;
+import 'package:rabbit_go/infraestructure/repositories/Route/api_route_repository.dart';
+import 'package:rabbit_go/infraestructure/repositories/Route/local_route_repository.dart';
 
-class RouteRepositoryImpl implements RouteRepository {
+import '../../connectivity/connectivity_services.dart';
+
+class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
   CancelToken? cancelToken;
   final dio = Dio();
+  final ApiRouteRepository _apiRouteRepository = ApiRouteRepository();
+  final LocalRouteRepository _localRouteRepository = LocalRouteRepository();
+  final BuildContext context;
+
+  RouteRepositoryImpl(
+       this.context);
 
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/time/18:00');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
-      );
-      if (response.statusCode == 200) {
-        final dynamic jsonResponse = json.decode(response.body);
-        if (jsonResponse.containsKey('data')) {
-          List<dynamic> routeJson = jsonResponse['data'];
-          List<RouteModel> routes =
-              routeJson.map((route) => RouteModel.fromJson(route)).toList();
-          return routes;
-        } else {
-          throw Exception('Response does not contain "data"');
-        }
-      } else {
-        throw ('error en la petición: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw ('el error es $e');
+    var connectivityService =
+        Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      print('hay internet');
+      await _localRouteRepository.proccessPendingOperations(
+          _apiRouteRepository, token);
+      final routes = await _apiRouteRepository.getAllRoutes(token);
+      await _localRouteRepository.saveRoutesLocally(routes);
+      return routes;
+    } else {
+      print('no hay internet');
+      return _localRouteRepository.getAllRoutes(token);
     }
   }
 
   @override
-  Future<void> deleteRouteById(String? token, String? id) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/$id');
-      final response = await http.delete(
-        Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
-      );
-      if (response.statusCode == 200) {
-        print('Ruta Borrada Correctamente');
-      } else {
-        print('No se pudo borrar la ruta');
-      }
-    } catch (e) {
-      throw ('el error es $e');
+  Future<void> deleteRouteById(String token, String id) async {
+    var connectivityService =
+        Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      print('hay internet');
+      await _localRouteRepository.proccessPendingOperations(
+          _apiRouteRepository, token);
+      await _apiRouteRepository.deleteRouteById(token, id);
+    } else {
+      print(' no hay internet');
+      await _localRouteRepository.deleteRoutesLocally(id);
+      final operation = {'action': 'delete', 'token': token, 'uuid': id};
+      await _localRouteRepository.savePendingOperations(operation);
     }
   }
 
@@ -62,27 +60,23 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeEndTime,
       String routeBusStop,
       String token) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route');
-      final userData = {
+    var connectivityService =
+        Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      await _localRouteRepository.proccessPendingOperations(
+          _apiRouteRepository, token);
+      await _apiRouteRepository.createBusRoute(routeName, routePrice,
+          routeStartTime, routeEndTime, routeBusStop, token);
+    } else {
+      final operation = {
+        'action': 'create',
         'name': routeName,
         'price': routePrice,
         'startTime': routeStartTime,
         'endTime': routeEndTime,
         'busStopId': routeBusStop,
       };
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
-        body: jsonEncode(userData),
-      );
-      if (response.statusCode == 200) {
-        print('Ruta creada Correctamente');
-      } else {
-        print('No se pudo crear la ruta');
-      }
-    } catch (e) {
-      throw ('el error es $e');
+      await _localRouteRepository.savePendingOperations(operation);
     }
   }
 
@@ -95,27 +89,24 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeBusStop,
       String token,
       String id) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/$id');
-      final userData = {
+    var connectivityService =
+        Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      await _localRouteRepository.proccessPendingOperations(
+          _apiRouteRepository, token);
+      await _apiRouteRepository.updateBusRoute(routeName, routePrice,
+          routeStartTime, routeEndTime, routeBusStop, token, id);
+    } else {
+      final operation = {
+        'action': 'update',
+        'uuid': id,
         'name': routeName,
         'price': routePrice,
         'startTime': routeStartTime,
         'endTime': routeEndTime,
         'busStopId': routeBusStop,
       };
-      final response = await http.put(
-        Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
-        body: jsonEncode(userData),
-      );
-      if (response.statusCode == 200) {
-        print('Ruta actualizada Correctamente');
-      } else {
-        print('No se pudo actualizar la ruta');
-      }
-    } catch (e) {
-      throw ('el error es $e');
+      await _localRouteRepository.savePendingOperations(operation);
     }
   }
 

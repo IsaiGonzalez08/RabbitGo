@@ -6,12 +6,13 @@ import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 
 class RouteProvider extends ChangeNotifier {
-  final RouteRepository _routeRepository = RouteRepositoryImpl();
+  BuildContext context;
+  final RouteRepository _routeRepository;
 
   List<RouteModel>? _routes = [];
   List<RouteModel>? get routes => _routes;
 
-  RouteProvider();
+  RouteProvider(this.context): _routeRepository = RouteRepositoryImpl(context);
   Timer? _debouncer;
 
   void queryChanged(String? token, String query) {
@@ -30,6 +31,7 @@ class RouteProvider extends ChangeNotifier {
       }
     });
   }
+
   void cleanListRoutes() {
     _routes = [];
     notifyListeners();

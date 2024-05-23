@@ -15,7 +15,7 @@ class DeleteRouteById {
 
   DeleteRouteById(this._routeRepository);
 
-  Future<void> deleteRouteById(String? token, String? id) async {
+  Future<void> deleteRouteById(String token, String id) async {
     return await _routeRepository.deleteRouteById(token, id);
   }
 }

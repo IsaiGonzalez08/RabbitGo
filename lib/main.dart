@@ -2,12 +2,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/connectivity/connectivity_services.dart';
 import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
+import 'package:rabbit_go/infraestructure/repositories/Route/api_route_repository.dart';
+import 'package:rabbit_go/infraestructure/repositories/Route/local_route_repository.dart';
+import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 void main() {
@@ -23,7 +27,15 @@ void main() {
           create: (context) => PlaceProvider(),
         ),
         ChangeNotifierProvider<RouteProvider>(
-            create: (context) => RouteProvider())
+            create: (context) => RouteProvider(context)),
+        ChangeNotifierProvider(create: (_)=> ConnectivityService()),
+        Provider(create: (_) => ApiRouteRepository()),
+        Provider(create: (_) => LocalRouteRepository()),
+        ChangeNotifierProvider<RouteRepositoryImpl>(
+          create: (context) => RouteRepositoryImpl(
+            context, // Agrega el contexto aquí
+          ),
+        ),
       ],
       child: const MyApp(),
     ),

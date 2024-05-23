@@ -12,7 +12,8 @@ import '../../infraestructure/providers/user_provider.dart';
 
 class MyAdminUpdateRouteScreen extends StatefulWidget {
   final String id;
-  const MyAdminUpdateRouteScreen({super.key, required this.id});
+  final BuildContext context;
+  const MyAdminUpdateRouteScreen({super.key, required this.id, required this.context});
 
   @override
   State<MyAdminUpdateRouteScreen> createState() =>
@@ -21,7 +22,7 @@ class MyAdminUpdateRouteScreen extends StatefulWidget {
 
 class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-  final updateBusRoute = UpdateBusRouteUseCase(RouteRepositoryImpl());
+  
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
   final TextEditingController _routeStartTimeController =
@@ -36,9 +37,8 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   void initState() {
     super.initState();
     final token = Provider.of<UserProvider>(context, listen: false).token;
-    if (token != null) {
-      _fetchBusStops(token);
-    }
+
+    _fetchBusStops(token);
   }
 
   Future<void> _fetchBusStops(String token) async {
@@ -61,15 +61,15 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
         id = widget.id;
       });
       final token = Provider.of<UserProvider>(context, listen: false).token;
-      if (token != null) {
-        final routeName = _routeNameController.text;
-        final routePrice = _routePriceController.text;
-        final routeStartTime = _routeStartTimeController.text;
-        final routeEndTime = _routeEndTimeController.text;
-        final routeBusStop = _routeBusStopController.text;
-        updateBusRoute.updateBusStop(routeName, routePrice, routeStartTime,
-            routeEndTime, routeBusStop, token, id);
-      }
+
+      final routeName = _routeNameController.text;
+      final routePrice = _routePriceController.text;
+      final routeStartTime = _routeStartTimeController.text;
+      final routeEndTime = _routeEndTimeController.text;
+      final routeBusStop = _routeBusStopController.text;
+      final updateBusRoute = UpdateBusRouteUseCase(RouteRepositoryImpl(context));
+      updateBusRoute.updateBusStop(routeName, routePrice, routeStartTime,
+          routeEndTime, routeBusStop, token, id);
     } catch (e) {
       print('Error fetching bus stops: $e');
     }
