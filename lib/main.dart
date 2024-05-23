@@ -13,8 +13,6 @@ import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
-import 'domain/use_cases/Place/place_use_case.dart';
-
 void main() {
   runApp(
     MultiProvider(
@@ -25,7 +23,7 @@ void main() {
           create: (_) => RouteCoordinatesProvider(),
         ),
         ChangeNotifierProvider<PlaceProvider>(
-          create: (context) => PlaceProvider(PlaceUseCase()),
+          create: (context) => PlaceProvider(),
         ),
         ChangeNotifierProvider(
             create: (context) => RouteProvider(RouteUseCase(

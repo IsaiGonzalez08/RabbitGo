@@ -1,42 +1,28 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart' show ChangeNotifier;
-import 'package:rabbit_go/domain/models/Place/gateway/place_gateway.dart';
-import 'package:rabbit_go/domain/models/Place/place.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rabbit_go/domain/models/Place/repositories/place_repository.dart';
+import 'package:rabbit_go/infraestructure/repositories/Place/place_repository_impl.dart';
 
 class PlaceProvider extends ChangeNotifier {
-  final PlaceGateway _placeGateway;
-  late StreamSubscription _subscription;
-  List<Place>? _places = [];
-  List<Place>? get places => _places;
-  String _query = '';
+  final PlaceRepository _placeRepository = PlaceRepositoryImpl();
+  PlaceProvider();
 
-  PlaceProvider(this._placeGateway) {
-    _subscription = _placeGateway.onResults.listen(
-      (results) {
-        _places = results;
+  List<Marker> _hereMarkers = [];
+
+  List<Marker> get hereMarkers => _hereMarkers;
+
+  Future<void> handleSubmitted(String query) async {
+    try {
+      if (query.length >= 3) {
+        _hereMarkers = await _placeRepository.onResults(query);
         notifyListeners();
-      },
-    );
-  }
-  
-  String get query => _query;
-
-  void handleSubmiitted(String text) {
-    _query = text;
-    if (_query.length >= 3) {
-      _placeGateway.cancel();
-      _placeGateway.find(query);
-    } else {
-      _placeGateway.cancel();
+      } else {
+        _placeRepository.cancel();
+      }
+    } catch (e) {
+      throw ('El error es $e');
     }
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    _placeGateway.dispose();
-    super.dispose();
   }
 }

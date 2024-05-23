@@ -1,16 +1,17 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/use_cases/Place/use_case_place.dart';
+import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
-import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/infraestructure/controllers/home_controller.dart';
 import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
+import 'package:rabbit_go/infraestructure/repositories/Place/place_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
@@ -26,14 +27,13 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
   late Polyline polylineFromAlert;
-  final TextEditingController _searchController = TextEditingController();
   late WaitProvider _waitProvider;
   late HomeController _homeController;
   String? token;
   Iterable markers = [];
   List<Marker> hereMarkers = [];
   LatLng? userLocation;
-  CancelToken? _cancelToken;
+  final onResults = GetPlaceUseCase(PlaceRepositoryImpl());
 
   List<Color> gradientColors = [
     const Color(0xFF01142B),
@@ -86,43 +86,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  getPlacesFromHereAPI(String query) async {
-    Dio dio = Dio();
-    try {
-      _cancelToken = CancelToken();
-      final response = await dio.get(
-        'https://discover.search.hereapi.com/v1/discover',
-        queryParameters: {
-          "apiKey": 'gKmQKAgOGGi4sP8OgC1vc5WK2z_ZLv7KLLqQqNFfhE0',
-          "q": query,
-          "in": "bbox:-93.226372,16.719187,-93.050247,16.804001"
-        },
-        cancelToken: _cancelToken,
-      );
-      final results = (response.data['items'] as List)
-          .map(
-            (e) => Place.fromJson(e),
-          )
-          .toList();
-      hereMarkers.clear();
-      for (var place in results) {
-        final id = place.id;
-        LatLng position = place.position;
-        hereMarkers.add(Marker(
-            markerId: MarkerId(id),
-            position: position,
-            infoWindow:
-                InfoWindow(title: place.title, snippet: place.address)));
-      }
-      setState(() {
-        hereMarkers = hereMarkers;
-      });
-      _cancelToken = null;
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.cancel) {}
-    }
-  }
-
   Future<void> _showAlertPermissionsLocation() async {
     bool isLocationPermissionGranted = await _waitProvider.checkPermission();
     if (!isLocationPermissionGranted) {
@@ -156,39 +119,53 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     );
   }
 
+  Future<void> _getPlace(String query) async {
+    try {
+      await Provider.of<PlaceProvider>(context, listen: false)
+          .handleSubmitted(query);
+    } catch (e) {
+      throw ('el error es $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        GoogleMap(
-          onMapCreated: (GoogleMapController controller) async {
-            _homeController.onMapCreated(controller);
-            LatLng? location = await _homeController.getUserLocation();
-            if (location != null) {
-              if (mounted) {
-                setState(() {
-                  userLocation = location;
-                });
+        Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
+          return GoogleMap(
+            onMapCreated: (GoogleMapController controller) async {
+              _homeController.onMapCreated(controller);
+              LatLng? location = await _homeController.getUserLocation();
+              if (location != null) {
+                if (mounted) {
+                  setState(() {
+                    userLocation = location;
+                  });
+                  controller
+                      .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
+                }
                 controller
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
-              controller
-                  .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
-            }
-          },
-          polylines: {polyline},
-          markers: Set.from({...markers, ...hereMarkers}),
-          compassEnabled: false,
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(16.75973, -93.11308),
-            zoom: 14,
-          ),
-          myLocationButtonEnabled: true,
-          myLocationEnabled: true,
-          padding: const EdgeInsets.only(
-            top: 100.0,
-          ),
-        ),
+            },
+            polylines: {polyline},
+            markers: Set.from({
+              ...markers,
+              ...placeProvider.hereMarkers
+            }), // ---AQUÍ NECESITO LA LISTA DE MARCADORES
+            compassEnabled: false,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(16.75973, -93.11308),
+              zoom: 14,
+            ),
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            padding: const EdgeInsets.only(
+              top: 100.0,
+            ),
+          );
+        }),
         Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -206,8 +183,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               ]),
               child: Builder(builder: (context) {
                 return TextField(
-                  controller: _searchController,
-                  onSubmitted: (value) => getPlacesFromHereAPI(value),
+                  onSubmitted: (value) => _getPlace(value),
                   textAlignVertical: TextAlignVertical.center,
                   cursorHeight: 25.0,
                   cursorColor: const Color(0xFF01142B),
