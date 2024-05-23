@@ -4,9 +4,6 @@ import 'package:rabbit_go/infraestructure/helpers/map_style.dart';
 
 class HomeController {
   String? token;
-  final Map<MarkerId, Marker> _markers = {};
-
-  Set<Marker> get markers => _markers.values.toSet();
 
   void onMapCreated(GoogleMapController controller) {
     controller.setMapStyle(newMapStyle);

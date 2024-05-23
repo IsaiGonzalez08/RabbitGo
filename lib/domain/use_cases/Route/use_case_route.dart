@@ -32,8 +32,9 @@ class CreateBusRouteUseCase {
       String routeEndTime,
       String routeBusStop,
       String token) async {
-        await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime, routeEndTime, routeBusStop, token);
-      }
+    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, routeBusStop, token);
+  }
 }
 
 class UpdateBusRouteUseCase {
@@ -49,8 +50,21 @@ class UpdateBusRouteUseCase {
       String routeBusStop,
       String token,
       String id) async {
-        await _routeRepository.updateBusRoute(routeName, routePrice, routeStartTime, routeEndTime, routeBusStop, token, id);
-      }
+    await _routeRepository.updateBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, routeBusStop, token, id);
+  }
 }
 
+class GetRouteByNameUseCase {
+  final RouteRepository _routeRepository;
 
+  GetRouteByNameUseCase(this._routeRepository);
+
+  Future<void> getRouteByName(String query) async {
+    await _routeRepository.getRouteByName(query);
+  }
+
+  void cancel() {
+    _routeRepository.cancel();
+  }
+}

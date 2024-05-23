@@ -1,26 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/domain/models/Route/gateway/route_gateway.dart';
+import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 
 class RouteProvider extends ChangeNotifier {
-  List<RouteModel>? _routes = [];
-  List<RouteModel>? get routes => _routes;
-  RouteModel? _origin;
-  RouteModel? get origin => _origin;
-  final RouteGateway _routeGateway;
+  final RouteRepository _routeRepository = RouteRepositoryImpl();
+
   late StreamSubscription _subscription;
+
   String _query = '';
 
-  RouteProvider(this._routeGateway) {
-    _subscription = _routeGateway.onResults.listen(
-      (results) {
-        _routes = results;
-        notifyListeners();
-      },
-    );
-  }
+  List<RouteModel>? _routes = [];
+  List<RouteModel>? get routes => _routes;
+
+  RouteProvider();
 
   String get query => _query;
   Timer? _debouncer;
@@ -30,10 +25,10 @@ class RouteProvider extends ChangeNotifier {
     _debouncer?.cancel();
     _debouncer = Timer(const Duration(milliseconds: 800), () {
       if (_query.length >= 3) {
-        _routeGateway.cancel();
-        _routeGateway.find(query);
+        _routeRepository.cancel();
+        _routeRepository.getRouteByName(query);
       } else {
-        _routeGateway.cancel();
+        _routeRepository.cancel();
         _routes = [];
         notifyListeners();
       }
@@ -43,8 +38,7 @@ class RouteProvider extends ChangeNotifier {
   @override
   void dispose() {
     _debouncer?.cancel();
-    _subscription.cancel();
-    _routeGateway.dispose();
+    _subscription.cancel();  
     super.dispose();
   }
 }

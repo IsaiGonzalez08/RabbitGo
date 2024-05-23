@@ -1,10 +1,17 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:http/http.dart' as http;
 
+import '../../providers/user_provider.dart';
+
 class RouteRepositoryImpl implements RouteRepository {
+  CancelToken? cancelToken;
+  final dio = Dio();
+  final UserProvider _userProvider = UserProvider();
+
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
     try {
@@ -112,6 +119,46 @@ class RouteRepositoryImpl implements RouteRepository {
       }
     } catch (e) {
       throw ('el error es $e');
+    }
+  }
+
+  @override
+  Future<List<RouteModel>> getRouteByName(String query) async {
+    try {
+      String? token = _userProvider.token;
+      Map<String, dynamic> headers = {
+        "Content-Type": "application/json",
+        "Authorization": token,
+      };
+      cancelToken = CancelToken();
+      final response = await dio.get(
+        'https://rabbitgo.sytes.net/bus/route/name/$query',
+        options: Options(headers: headers),
+        cancelToken: cancelToken,
+      );
+      if (response.statusCode == 200) {
+        final dynamic jsonResponse = json.decode(response.data);
+        if (jsonResponse.containsKey('data')) {
+          List<dynamic> routeJson = jsonResponse['data'];
+          List<RouteModel> routes =
+              routeJson.map((route) => RouteModel.fromJson(route)).toList();
+          return routes;
+        } else {
+          throw Exception('Response does not contain "data"');
+        }
+      } else {
+        throw ('error en la petición: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw ('El erro es $e');
+    }
+  }
+
+  @override
+  void cancel() {
+    if (cancelToken != null) {
+      cancelToken!.cancel();
+      cancelToken = null;
     }
   }
 }

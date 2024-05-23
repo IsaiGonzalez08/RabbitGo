@@ -18,4 +18,6 @@ abstract class RouteRepository {
       String routeBusStop,
       String token,
       String id);
+  Future<List<RouteModel>> getRouteByName(String query);
+  void cancel();
 }

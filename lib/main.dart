@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/use_cases/Route/route_use_case.dart';
-import 'package:rabbit_go/infraestructure/api/route_api/route_api.dart';
 import 'package:rabbit_go/infraestructure/providers/place_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
@@ -25,11 +22,8 @@ void main() {
         ChangeNotifierProvider<PlaceProvider>(
           create: (context) => PlaceProvider(),
         ),
-        ChangeNotifierProvider(
-            create: (context) => RouteProvider(RouteUseCase(
-                  RouteAPI(
-                      Dio(), Provider.of<UserProvider>(context, listen: false)),
-                )))
+        ChangeNotifierProvider<RouteProvider>(
+            create: (context) => RouteProvider())
       ],
       child: const MyApp(),
     ),
