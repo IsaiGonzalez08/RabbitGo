@@ -60,8 +60,8 @@ class GetRouteByNameUseCase {
 
   GetRouteByNameUseCase(this._routeRepository);
 
-  Future<void> getRouteByName(String query) async {
-    await _routeRepository.getRouteByName(query);
+  Future<void> getRouteByName(String token, String query) async {
+    await _routeRepository.getRouteByName(token, query);
   }
 
   void cancel() {

@@ -26,6 +26,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   }
 
   navigateHome() {
+    Provider.of<RouteProvider>(context, listen: false).cleanListRoutes();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const MyTapBarWidget(),
     ));
@@ -88,7 +89,10 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
             ]),
             child: Builder(builder: (context) {
               return TextField(
-                onChanged: context.read<RouteProvider>().queryChanged,
+                onChanged: (value) {
+                  Provider.of<RouteProvider>(context, listen: false)
+                      .queryChanged(token, value);
+                },
                 textAlignVertical: TextAlignVertical.center,
                 cursorHeight: 25.0,
                 cursorColor: const Color(0xFF01142B),
@@ -118,7 +122,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
         body: Consumer<RouteProvider>(builder: (_, controller, __) {
           final routes = controller.routes;
           if (routes == null) {
-          } else if (routes.isEmpty && controller.query.length >= 3) {}
+          } else if (routes.isEmpty) {}
           return ListView.builder(
             itemBuilder: (_, index) {
               final route = routes[index];

@@ -5,12 +5,9 @@ import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:http/http.dart' as http;
 
-import '../../providers/user_provider.dart';
-
 class RouteRepositoryImpl implements RouteRepository {
   CancelToken? cancelToken;
   final dio = Dio();
-  final UserProvider _userProvider = UserProvider();
 
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
@@ -123,9 +120,8 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<List<RouteModel>> getRouteByName(String query) async {
+  Future<List<RouteModel>> getRouteByName(String? token, String query) async {
     try {
-      String? token = _userProvider.token;
       Map<String, dynamic> headers = {
         "Content-Type": "application/json",
         "Authorization": token,
@@ -136,21 +132,27 @@ class RouteRepositoryImpl implements RouteRepository {
         options: Options(headers: headers),
         cancelToken: cancelToken,
       );
+
       if (response.statusCode == 200) {
-        final dynamic jsonResponse = json.decode(response.data);
-        if (jsonResponse.containsKey('data')) {
-          List<dynamic> routeJson = jsonResponse['data'];
-          List<RouteModel> routes =
-              routeJson.map((route) => RouteModel.fromJson(route)).toList();
-          return routes;
+        final jsonResponse = response.data;
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey('data')) {
+          final data = jsonResponse['data'];
+          if (data != null) {
+            List<RouteModel> routes = [RouteModel.fromJson(data)];
+            return routes;
+          } else {
+            throw Exception('Data is null or empty');
+          }
         } else {
-          throw Exception('Response does not contain "data"');
+          throw Exception(
+              'Response does not contain "data" or is not a valid JSON object');
         }
       } else {
         throw ('error en la petición: ${response.statusCode}');
       }
     } catch (e) {
-      throw ('El erro es $e');
+      throw ('El error es $e');
     }
   }
 

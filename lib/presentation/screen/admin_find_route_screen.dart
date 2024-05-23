@@ -47,7 +47,9 @@ class MyAdminFindRouteScreen extends StatelessWidget {
                   ]),
                   child: Builder(builder: (context) {
                     return TextField(
-                      onChanged: context.read<RouteProvider>().queryChanged,
+                      onChanged: (value) {
+                        context.read<RouteProvider>().queryChanged;
+                      },
                       textAlignVertical: TextAlignVertical.center,
                       cursorHeight: 25.0,
                       cursorColor: const Color(0xFF01142B),

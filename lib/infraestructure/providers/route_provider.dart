@@ -8,25 +8,21 @@ import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_im
 class RouteProvider extends ChangeNotifier {
   final RouteRepository _routeRepository = RouteRepositoryImpl();
 
-  late StreamSubscription _subscription;
-
-  String _query = '';
-
   List<RouteModel>? _routes = [];
   List<RouteModel>? get routes => _routes;
 
   RouteProvider();
-
-  String get query => _query;
   Timer? _debouncer;
 
-  void queryChanged(String text) {
-    _query = text;
+  void queryChanged(String? token, String query) {
     _debouncer?.cancel();
-    _debouncer = Timer(const Duration(milliseconds: 800), () {
-      if (_query.length >= 3) {
+    _debouncer = Timer(const Duration(milliseconds: 800), () async {
+      if (query.length >= 3) {
         _routeRepository.cancel();
-        _routeRepository.getRouteByName(query);
+        List<RouteModel> routes =
+            await _routeRepository.getRouteByName(token, query);
+        _routes = routes;
+        notifyListeners();
       } else {
         _routeRepository.cancel();
         _routes = [];
@@ -34,11 +30,8 @@ class RouteProvider extends ChangeNotifier {
       }
     });
   }
-
-  @override
-  void dispose() {
-    _debouncer?.cancel();
-    _subscription.cancel();  
-    super.dispose();
+  void cleanListRoutes() {
+    _routes = [];
+    notifyListeners();
   }
 }
