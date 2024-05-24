@@ -1,7 +1,7 @@
-import 'dart:convert';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:rabbit_go/domain/use_cases/User/use_case_user.dart';
+import 'package:rabbit_go/infraestructure/repositories/User/user_repository_impl.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -24,10 +24,10 @@ class _MySignScreenState extends State<MySignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final CreateUserUseCase _createUserUseCase =
+      CreateUserUseCase(UserRepositoryImpl());
 
   bool _showPassword = true;
-
-  get http => null;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -63,35 +63,17 @@ class _MySignScreenState extends State<MySignUpScreen> {
       if (_passwordController.text != _confirmPasswordController.text) {
         return;
       } else {
-        try {
-          String url = ('https://rabbitgo.sytes.net/user');
-
-          final userData = {
-            'name': _usernameController.text,
-            'lastname': _lastnameController.text,
-            'email': _emailController.text,
-            'password': _passwordController.text,
-          };
-
-          final response = await http.post(
-            Uri.parse(url),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(userData),
-          );
-
-          if (response.statusCode == 201) {
-            _usernameController.clear();
-            _lastnameController.clear();
-            _emailController.clear();
-            _passwordController.clear();
-            _confirmPasswordController.clear();
-            navigateLoginScreen();
-          } else {}
-        } catch (error) {
-          throw ('Error al conectar con el servidor: $error');
-        }
+        final String name = _usernameController.text;
+        final String lastName = _lastnameController.text;
+        final String email = _emailController.text;
+        final String password = _passwordController.text;
+        await _createUserUseCase.createUser(name, lastName, email, password);
+        _usernameController.clear();
+        _lastnameController.clear();
+        _emailController.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
+        navigateLoginScreen();
       }
       return;
     }
