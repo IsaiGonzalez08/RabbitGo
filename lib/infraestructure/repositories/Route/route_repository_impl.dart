@@ -6,7 +6,7 @@ import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/api_route_repository.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/local_route_repository.dart';
 
-import '../../connectivity/connectivity_services.dart';
+import '../../../presentation/providers/connectivity_services.dart';
 
 class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
   CancelToken? cancelToken;
@@ -45,7 +45,7 @@ class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
           _apiRouteRepository, token);
       await _apiRouteRepository.deleteRouteById(token, id);
     } else {
-      print(' no hay internet');
+      print('no hay internet');
       await _localRouteRepository.deleteRoutesLocally(id);
       final operation = {'action': 'delete', 'token': token, 'uuid': id};
       await _localRouteRepository.savePendingOperations(operation);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';

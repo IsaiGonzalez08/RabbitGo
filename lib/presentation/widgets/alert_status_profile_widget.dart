@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:http/http.dart' as http;

@@ -4,7 +4,7 @@ import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
-import '../../infraestructure/providers/user_provider.dart';
+import '../providers/user_provider.dart';
 
 class MyAlertDeleteRoute extends StatefulWidget {
   final String id;

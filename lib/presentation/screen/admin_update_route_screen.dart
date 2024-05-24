@@ -8,7 +8,7 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 import '../../domain/models/Stop/stop.dart';
-import '../../infraestructure/providers/user_provider.dart';
+import '../providers/user_provider.dart';
 
 class MyAdminUpdateRouteScreen extends StatefulWidget {
   final String id;

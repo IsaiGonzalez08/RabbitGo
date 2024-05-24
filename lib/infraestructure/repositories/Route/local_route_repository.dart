@@ -10,7 +10,8 @@ class LocalRouteRepository {
   Future<void> proccessPendingOperations(
       ApiRouteRepository apiRouteRepository, String token) async {
     final prefs = await SharedPreferences.getInstance();
-    final pendingOperations = prefs.getStringList('pendingOperations');
+    final pendingOperations = prefs.getStringList(_pendingOperationsKey);
+    
     if (pendingOperations != null) {
       for (final operationsJson in pendingOperations) {
         final operation = json.decode(operationsJson);
@@ -37,7 +38,9 @@ class LocalRouteRepository {
           await apiRouteRepository.deleteRouteById(token, id);
         }
       }
-      await prefs.remove('pendingOperations');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      print("SharedPreferences cleared");
     }
   }
 
@@ -64,13 +67,45 @@ class LocalRouteRepository {
 
   Future<List<RouteModel>> getAllRoutes(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    final String? routesString = prefs.getString('routes');
-    if (routesString != null) {
-      final List<dynamic> routesJson = json.decode(routesString);
-      return routesJson
-          .map((routeJson) => RouteModel.fromJson(routeJson)).toList();
+    final List<String>? routesStringList = prefs.getStringList('routes');
+    if (routesStringList != null) {
+      final List<RouteModel> routes = routesStringList.map((routeString) {
+        final Map<String, dynamic> routeJson = json.decode(routeString);
+        print(RouteModel.fromJson(routeJson));
+        return RouteModel.fromJson(routeJson);
+      }).toList();
+      print(routes);
+      return routes;
     } else {
+      print('No hay nada');
       return [];
+    }
+  }
+
+  Future<void> deleteRoutesLocally(String routeId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? routesStringList = prefs.getStringList('routes');
+
+    if (routesStringList != null) {
+      // Decodifica la lista de rutas
+      final List<Map<String, dynamic>> routesJson =
+          routesStringList.map((routeString) {
+        return json.decode(routeString) as Map<String, dynamic>;
+      }).toList();
+
+      // Filtra la ruta que no coincide con el `routeId` proporcionado
+      final List<Map<String, dynamic>> updatedRoutes =
+          routesJson.where((route) {
+        return route['uuid'] != routeId;
+      }).toList();
+
+      // Codifica la lista de rutas actualizada
+      final List<String> updatedRoutesJson =
+          updatedRoutes.map((route) => json.encode(route)).toList();
+
+      // Guarda la lista actualizada de vuelta en `SharedPreferences`
+      await prefs.setStringList('routes', updatedRoutesJson);
+      print('Route deleted locally');
     }
   }
 
@@ -79,43 +114,45 @@ class LocalRouteRepository {
     final List<String> routesJson =
         routes.map((route) => json.encode(route.toJson())).toList();
     await prefs.setStringList('routes', routesJson);
+    print('Productos almacenados localmente: $routesJson');
   }
-
-  Future<void> deleteRoutesLocally(String routeId) async {
-  final prefs = await SharedPreferences.getInstance();
-  final String? routesString = prefs.getString('routes');
-  
-  if (routesString != null) {
-    // Decodificar la cadena JSON a una lista de mapas
-    final List<dynamic> routesJson = json.decode(routesString);
-
-    // Realizar un casting explícito
-    final List<Map<String, dynamic>> routes = 
-        List<Map<String, dynamic>>.from(routesJson);
-
-    // Filtrar las rutas para eliminar la que tiene el ID proporcionado
-    final List<Map<String, dynamic>> updatedRoutes = 
-        routes.where((route) => route['id'] != routeId).toList();
-
-    // Codificar de nuevo las rutas actualizadas como una cadena JSON
-    final String updatedRoutesJson = json.encode(updatedRoutes);
-
-    // Guardar la cadena JSON actualizada en SharedPreferences
-    await prefs.setString('routes', updatedRoutesJson);
-    
-    print('Route deleted locally');
-  }
-}
 
   Future<void> createRoutesLocally(RouteModel route) async {
     final prefs = await SharedPreferences.getInstance();
-    final String? routesString = prefs.getString('routes');
-    if (routesString != null) {
-      final List<dynamic> routesJson = json.decode(routesString);
-      routesJson.add(route.toJson());
-      final createRoutesJson =
-          routesJson.map((routes) => json.encode(routes)).toList();
-      await prefs.setStringList('routes', createRoutesJson);
+    final List<String>? routesStringList = prefs.getStringList('routes');
+
+    // Verificar si routesStringList no es null y contiene datos
+    if (routesStringList != null) {
+      print('Existing routes found: $routesStringList');
+    } else {
+      print('No existing routes found, initializing new list.');
+    }
+
+    // Decodificar las rutas existentes o inicializar una lista vacía si no existen
+    final List<Map<String, dynamic>> routesJson = routesStringList != null
+        ? routesStringList.map((routeString) {
+            return json.decode(routeString) as Map<String, dynamic>;
+          }).toList()
+        : [];
+
+    // Agregar la nueva ruta
+    routesJson.add(route.toJson());
+    print('New route added: ${route.toJson()}');
+
+    // Codificar la lista actualizada de rutas
+    final List<String> updatedRoutesJson =
+        routesJson.map((route) => json.encode(route)).toList();
+    print('Updated routes list: $updatedRoutesJson');
+
+    // Guardar la lista actualizada de vuelta en `SharedPreferences`
+    await prefs.setStringList('routes', updatedRoutesJson);
+
+    // Confirmar si los datos se guardaron correctamente
+    final List<String>? checkSavedRoutes = prefs.getStringList('routes');
+    if (checkSavedRoutes != null && checkSavedRoutes.isNotEmpty) {
+      print('Route created locally: $checkSavedRoutes');
+    } else {
+      print('Failed to save routes locally.');
     }
   }
 
@@ -134,5 +171,4 @@ class LocalRouteRepository {
       await prefs.setStringList('routes', updatedRoutesJson);
     }
   }
-
 }

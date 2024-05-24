@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';

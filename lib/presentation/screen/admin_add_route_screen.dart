@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/infraestructure/repositories/Stop/stop_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';

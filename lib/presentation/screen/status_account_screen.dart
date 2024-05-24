@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_status_profile_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 

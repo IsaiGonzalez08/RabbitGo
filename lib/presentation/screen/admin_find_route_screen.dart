@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/providers/route_provider.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 
 class MyAdminFindRouteScreen extends StatelessWidget {
   const MyAdminFindRouteScreen({super.key});

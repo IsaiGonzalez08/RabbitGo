@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/infraestructure/providers/route_coordinates_provider.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 

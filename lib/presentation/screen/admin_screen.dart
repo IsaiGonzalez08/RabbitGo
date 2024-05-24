@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
-import 'package:rabbit_go/infraestructure/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';

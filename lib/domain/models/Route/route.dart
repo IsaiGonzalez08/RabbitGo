@@ -13,6 +13,7 @@ class RouteModel {
   Map<String, dynamic> toJson() => {
     'uuid': uuid,
     'name': name,
+    'price': price,
     'startTime': startTime,
     'endTime': endTime,
     'busStopId': busStopId
