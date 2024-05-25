@@ -54,9 +54,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  void provider(String uuid, String name, String lastname, String email) {
+  void provider(String uuid, String name, String lastname, String email, String role) {
     Provider.of<UserProvider>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email);
+        .setDataUser(uuid, token, name, lastname, email, role);
   }
 
   @override
@@ -106,8 +106,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             final name = responseData['data']['name'];
             final lastname = responseData['data']['lastname'];
             final email = responseData['data']['email'];
+            final role = responseData['data']['role'];
             setState(() {
-              provider(uuid, name, lastname, email);
+              provider(uuid, name, lastname, email, role);
               navigateConfiguration();
             });
           } else {

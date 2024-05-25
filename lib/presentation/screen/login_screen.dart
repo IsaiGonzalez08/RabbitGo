@@ -1,6 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/domain/use_cases/User/use_case_user.dart';
+import 'package:rabbit_go/infraestructure/repositories/User/user_repository_impl.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
@@ -11,7 +13,6 @@ import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
@@ -26,6 +27,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final LoginUserUseCase _loginUserUseCase =
+      LoginUserUseCase(UserRepositoryImpl());
 
   String? uuid;
   String? token;
@@ -46,7 +50,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return null;
   }
 
-  void navigateTapBar() {
+  void navigateUserScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
@@ -74,60 +78,35 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(
-      String uuid, String token, String name, String lastname, String email) {
+  void userProvider(String uuid, String token, String name, String lastname,
+      String email, String role) {
     Provider.of<UserProvider>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email);
+        .setDataUser(uuid, token, name, lastname, email, role);
   }
 
-  Future<void> _loginUser() async {
+  Future<bool> _loginUser() async {
     if (_formKey.currentState!.validate()) {
-      try {
-        String url = 'https://rabbitgo.sytes.net/user/login';
-
-        final userData = {
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        };
-
-        final response = await http.post(
-          Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(userData),
-        );
-
-        if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-          final uuid = responseData['data']['uuid'];
-          final token = responseData['data']['token'];
-          final name = responseData['data']['name'];
-          final lastname = responseData['data']['lastname'];
-          final email = responseData['data']['email'];
-          final role = responseData['data']['rol'];
-          provider(uuid, token, name, lastname, email);
-          if (role == 'admin') {
-            navigateAdminScreen();
-          } else {
-            navigateTapBar();
-          }
-          setState(() {
-            _isEmailInValid = false;
-            _isPasswordInValid = false;
-          });
-        } else if (response.statusCode == 400) {
-          setState(() {
-            _isEmailInValid = true;
-            _isPasswordInValid = true;
-            _emailController.clear();
-            _passwordController.clear();
-          });
-          _formKey.currentState?.validate();
-        }
-      } catch (error) {
-        throw ('Error al conectar con el servidor: $error');
+      final String email = _emailController.text;
+      final String password = _passwordController.text;
+      final User user = await _loginUserUseCase.userLogin(email, password);
+      final userId = user.uuid;
+      final userToken = user.token;
+      final userName = user.name;
+      final userLastName = user.lastName;
+      final userEmail = user.email;
+      final userRole = user.role;
+      _emailController.clear();
+      _passwordController.clear();
+      userProvider(
+          userId, userToken, userName, userLastName, userEmail, userRole);
+      if (userRole == 'admin') {
+        navigateAdminScreen();
+      } else {
+        navigateUserScreen();
       }
+      return true;
+    } else {
+      return false;
     }
   }
 

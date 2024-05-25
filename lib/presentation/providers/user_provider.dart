@@ -6,6 +6,7 @@ class UserProvider extends ChangeNotifier {
   String? name;
   String? lastname;
   String? email;
+  String? role;
 
   void setDataUser(
     String? userUuid,
@@ -13,12 +14,14 @@ class UserProvider extends ChangeNotifier {
     String? username,
     String? userLastname,
     String? userEmail,
+    String? userRole,
   ) {
     uuid = userUuid;
     token = usertoken;
     name = username;
     lastname = userLastname;
     email = userEmail;
+    role = userRole;
     notifyListeners();
   }
 }
