@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +20,8 @@ class MyAlertMarker extends StatefulWidget {
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
   late String? markerId;
-  String? token;
+  late User _user;
+  late String _token;
   late Future<List<RouteModel>> futureRoutes;
   bool isButtonEnabled = false;
   late String? routeId;
@@ -43,7 +45,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
+        headers: {'Authorization': _token, 'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -76,7 +78,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
 
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
+        headers: {'Authorization': _token, 'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -102,7 +104,8 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   void initState() {
     super.initState();
     markerId = widget.markerId;
-    token = Provider.of<UserProvider>(context, listen: false).token;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
     futureRoutes = _getBusRoute(markerId);
   }
 

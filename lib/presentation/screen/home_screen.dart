@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/domain/use_cases/Place/use_case_place.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
@@ -29,10 +30,11 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late Polyline polylineFromAlert;
   late WaitProvider _waitProvider;
   late HomeController _homeController;
-  String? token;
   Iterable markers = [];
   List<Marker> hereMarkers = [];
   LatLng? userLocation;
+  late User _user;
+  late String _token;
   final onResults = GetPlaceUseCase(PlaceRepositoryImpl());
 
   List<Color> gradientColors = [
@@ -106,8 +108,9 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     _waitProvider = WaitProvider(Permission.location);
     _homeController = HomeController();
     _showAlertPermissionsLocation();
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    getBusStops(token);
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    getBusStops(_token);
     List<LatLng>? coordinates =
         Provider.of<RouteCoordinatesProvider>(context, listen: false)
             .coordinates;
@@ -150,10 +153,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               }
             },
             polylines: {polyline},
-            markers: Set.from({
-              ...markers,
-              ...placeProvider.hereMarkers
-            }),
+            markers: Set.from({...markers, ...placeProvider.hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),

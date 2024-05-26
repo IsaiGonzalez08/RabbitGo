@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -17,14 +18,16 @@ class MyAlertDeleteRoute extends StatefulWidget {
 }
 
 class _MyAlertDeleteRouteState extends State<MyAlertDeleteRoute> {
-  late String token;
-  late String id;
+  late User _user;
+  late String _token;
+  late String _id;
 
   @override
   void initState() {
     super.initState();
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    id = widget.id;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    _id = widget.id;
   }
 
   @override
@@ -58,7 +61,7 @@ class _MyAlertDeleteRouteState extends State<MyAlertDeleteRoute> {
               onPressed: () {
                 final deleteRouteUseCase =
                     DeleteRouteById(RouteRepositoryImpl(context));
-                deleteRouteUseCase.deleteRouteById(token, id);
+                deleteRouteUseCase.deleteRouteById(_token, _id);
                 Navigator.pop(context);
               },
             ),

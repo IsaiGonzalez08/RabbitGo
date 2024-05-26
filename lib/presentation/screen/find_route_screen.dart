@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
@@ -17,8 +18,9 @@ class MyFindRouteScreen extends StatefulWidget {
 }
 
 class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
-  String? token;
   List<LatLng>? listCordinates;
+  late User _user;
+  late String _token;
 
   void providerRouteCoordinates(List<LatLng>? coordinates) {
     Provider.of<RouteCoordinatesProvider>(context, listen: false)
@@ -35,12 +37,11 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   getRouteCoordinates(String id) async {
     try {
       String url = 'https://rabbitgo.sytes.net/path/route/$id';
-      
 
       final response = await http.get(
         Uri.parse(url),
         headers: <String, String>{
-          'Authorization': token!,
+          'Authorization': _token,
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
@@ -66,7 +67,8 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   @override
   void initState() {
     super.initState();
-    token = Provider.of<UserProvider>(context, listen: false).token;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
   }
 
   @override
@@ -92,7 +94,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
               return TextField(
                 onChanged: (value) {
                   Provider.of<RouteProvider>(context, listen: false)
-                      .queryChanged(token, value);
+                      .queryChanged(_token, value);
                 },
                 textAlignVertical: TextAlignVertical.center,
                 cursorHeight: 25.0,

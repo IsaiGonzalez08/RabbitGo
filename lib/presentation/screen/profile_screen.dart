@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
-import 'package:http/http.dart' as http;
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -27,10 +26,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       TextEditingController();
 
   bool _showPassword = true;
-  String? userId;
-  String token = '';
-  String? name;
-  String? lastname;
+  late User _user;
+  late String _userId;
+  late String _token;
+  late String _name;
+  late String _lastname;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -54,72 +54,41 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  void provider(String uuid, String name, String lastname, String email, String role) {
-    Provider.of<UserProvider>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email, role);
-  }
-
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserProvider>(context, listen: false).uuid;
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    name = Provider.of<UserProvider>(context, listen: false).name;
-    lastname = Provider.of<UserProvider>(context, listen: false).lastname;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _userId = _user.uuid;
+    _token = _user.token;
+    _name = _user.name;
+    _lastname = _user.lastName;
   }
 
-  navigateConfiguration() {
+  navigateConfigurationScreen() {
     Navigator.pop(context);
     Navigator.pop(context);
   }
 
-  Future<void> _updateUser() async {
+  void _updateUser() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         return;
       } else {
-        try {
-          String url = ('https://rabbitgo.sytes.net/user/$userId');
-
-          final userData = {
-            'name': _usernameController.text,
-            'lastname': _lastnameController.text,
-            'email': _emailController.text,
-            'password': _passwordController.text,
-          };
-
-          final response = await http.put(Uri.parse(url),
-              headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-              },
-              body: jsonEncode(userData));
-
-          if (response.statusCode == 200) {
-            final responseData = jsonDecode(response.body);
-            _usernameController.clear();
-            _lastnameController.clear();
-            _emailController.clear();
-            _passwordController.clear();
-            _confirmPasswordController.clear();
-            final uuid = responseData['data']['uuid'];
-            final name = responseData['data']['name'];
-            final lastname = responseData['data']['lastname'];
-            final email = responseData['data']['email'];
-            final role = responseData['data']['role'];
-            setState(() {
-              provider(uuid, name, lastname, email, role);
-              navigateConfiguration();
-            });
-          } else {
-            throw ('error en la petición: ${response.statusCode}');
-          }
-        } catch (error) {
-          throw ('Error al conectar con el servidor: $error');
-        }
+        final name = _usernameController.text;
+        final lastname = _lastnameController.text;
+        final email = _emailController.text;
+        final password = _passwordController.text;
+        await Provider.of<UserProvider>(context, listen: false)
+            .updateUser(_userId, name, lastname, email, password, _token);
+        _usernameController.clear();
+        _lastnameController.clear();
+        _emailController.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
+        navigateConfigurationScreen();
       }
-      return;
     }
+    return;
   }
 
   void _showSuccessDialog() {
@@ -231,8 +200,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     backgroundColor: const Color(0xFF01142B),
                     child: Consumer<UserProvider>(
                       builder: (context, userData, child) {
-                        String initials = getInitials(
-                            userData.name ?? '', userData.lastname ?? '');
+                        String initials = getInitials(_name, _lastname);
                         return Text(initials,
                             style: const TextStyle(
                                 fontSize: 36, color: Color(0xFFFFFFFF)));

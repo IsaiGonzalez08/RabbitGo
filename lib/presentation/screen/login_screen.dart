@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/user_provider_2.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -26,6 +26,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  late User _user;
+  late String _role;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
   bool _showPassword = true;
@@ -71,20 +73,25 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  Future<void> _loginUser() async {
+  void _loginUser() async {
     if (_formKey.currentState!.validate()) {
       final String email = _emailController.text;
       final String password = _passwordController.text;
-      Provider.of<UserProvider2>(context, listen: false).loginUser(email, password);
-      final User user = Provider.of<UserProvider2>(context, listen: false).userData;
-      final userRole = user.role;
+      await Provider.of<UserProvider>(context, listen: false)
+          .loginUser(email, password);
+      providerUserData();
+      _role = _user.role;
       _emailController.clear();
       _passwordController.clear();
-      navigateUser(userRole);
+      navigateUser(_role);
     } else {
       _isEmailInValid = true;
       _isPasswordInValid = true;
     }
+  }
+
+  providerUserData() {
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
   @override

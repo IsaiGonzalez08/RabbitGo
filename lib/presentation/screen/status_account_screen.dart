@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_status_profile_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -12,18 +13,16 @@ class MyStatusAccountScreen extends StatefulWidget {
 }
 
 class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
-  String? userId;
-  String? token;
-  String? name;
-  String? lastname;
+  late User _user;
+  late String _name;
+  late String _lastname;
 
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserProvider>(context, listen: false).uuid;
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    name = Provider.of<UserProvider>(context, listen: false).name;
-    lastname = Provider.of<UserProvider>(context, listen: false).lastname;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _name = _user.name;
+    _lastname = _user.lastName;
   }
 
   String getInitials(String firstName, String lastName) {
@@ -77,7 +76,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
                     child: Consumer<UserProvider>(
                       builder: (context, userData, child) {
                         String initials = getInitials(
-                            userData.name ?? '', userData.lastname ?? '');
+                            _name, _lastname);
                         return Text(initials,
                             style: const TextStyle(
                                 fontSize: 36, color: Color(0xFFFFFFFF)));
@@ -88,7 +87,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
                     height: 10,
                   ),
                   Text(
-                    '$name $lastname',
+                    '$_name $_lastname',
                     style: const TextStyle(
                         color: Color(0xFF01142B),
                         fontWeight: FontWeight.w600,

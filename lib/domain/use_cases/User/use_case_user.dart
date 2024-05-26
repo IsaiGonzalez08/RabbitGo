@@ -22,3 +22,12 @@ class LoginUserUseCase {
     return await _userRepository.userLogin(email, password);
   }
 }
+
+class UpdateUserUseCase {
+  final UserRepository _userRepository;
+  UpdateUserUseCase(this._userRepository);
+  Future<User> updateUser(
+      String userId, String name, String lastName, String email, String password, String token) async {
+    return _userRepository.updateUser(userId, name, lastName, email, password, token);
+  }
+}

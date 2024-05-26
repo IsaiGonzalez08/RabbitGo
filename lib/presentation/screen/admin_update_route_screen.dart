@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
 import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
@@ -13,7 +14,8 @@ import '../providers/user_provider.dart';
 class MyAdminUpdateRouteScreen extends StatefulWidget {
   final String id;
   final BuildContext context;
-  const MyAdminUpdateRouteScreen({super.key, required this.id, required this.context});
+  const MyAdminUpdateRouteScreen(
+      {super.key, required this.id, required this.context});
 
   @override
   State<MyAdminUpdateRouteScreen> createState() =>
@@ -22,7 +24,7 @@ class MyAdminUpdateRouteScreen extends StatefulWidget {
 
 class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-  
+
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
   final TextEditingController _routeStartTimeController =
@@ -31,14 +33,16 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   final TextEditingController _routeBusStopController = TextEditingController();
   List<String> list = [];
   String? dropdownValue;
+  late User _user;
+  late String _token;
   late String id;
 
   @override
   void initState() {
     super.initState();
-    final token = Provider.of<UserProvider>(context, listen: false).token;
-
-    _fetchBusStops(token);
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    _fetchBusStops(_token);
   }
 
   Future<void> _fetchBusStops(String token) async {
@@ -60,16 +64,15 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
       setState(() {
         id = widget.id;
       });
-      final token = Provider.of<UserProvider>(context, listen: false).token;
-
       final routeName = _routeNameController.text;
       final routePrice = _routePriceController.text;
       final routeStartTime = _routeStartTimeController.text;
       final routeEndTime = _routeEndTimeController.text;
       final routeBusStop = _routeBusStopController.text;
-      final updateBusRoute = UpdateBusRouteUseCase(RouteRepositoryImpl(context));
+      final updateBusRoute =
+          UpdateBusRouteUseCase(RouteRepositoryImpl(context));
       updateBusRoute.updateBusStop(routeName, routePrice, routeStartTime,
-          routeEndTime, routeBusStop, token, id);
+          routeEndTime, routeBusStop, _token, id);
     } catch (e) {
       print('Error fetching bus stops: $e');
     }

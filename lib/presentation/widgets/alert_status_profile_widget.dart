@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -13,14 +14,16 @@ class MyAlertStatusProfile extends StatefulWidget {
 }
 
 class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
-  String? userId;
-  String? token;
+  late User _user;
+  late String _userId;
+  late String _token;
 
   @override
   void initState() {
     super.initState();
-    userId = Provider.of<UserProvider>(context, listen: false).uuid;
-    token = Provider.of<UserProvider>(context, listen: false).token;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _userId = _user.uuid;
+    _token = _user.token;
   }
 
   void navigateSignUpScreen() {
@@ -33,9 +36,9 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
 
   _deleteAccount() async {
     try {
-      String url = 'https://rabbitgo.sytes.net/user/$userId';
+      String url = 'https://rabbitgo.sytes.net/user/$_userId';
       final response =
-          await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+          await http.delete(Uri.parse(url), headers: {'Authorization': _token});
       if (response.statusCode == 200) {
         navigateSignUpScreen();
       }

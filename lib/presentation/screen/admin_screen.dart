@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
@@ -18,16 +19,18 @@ class MyAdminScreen extends StatefulWidget {
 
 class _MyAdminScreenState extends State<MyAdminScreen> {
   late Future<List<RouteModel>> futureRoutes;
+  late User _user;
+  late String _token;
   String? _name;
 
   @override
   void initState() {
     super.initState();
-    _name = Provider.of<UserProvider>(context, listen: false).name;
-    final token = Provider.of<UserProvider>(context, listen: false).token;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
     final getAllRoutesUseCase =
         GetAllRoutesUseCase(RouteRepositoryImpl(context));
-    futureRoutes = getAllRoutesUseCase.execute(token);
+    futureRoutes = getAllRoutesUseCase.execute(_token);
   }
 
   void navigateUpdateScreen(String id) {
@@ -35,7 +38,8 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
       context,
       MaterialPageRoute(
           builder: (context) => MyAdminUpdateRouteScreen(
-                id: id, context: context,
+                id: id,
+                context: context,
               )),
     );
   }

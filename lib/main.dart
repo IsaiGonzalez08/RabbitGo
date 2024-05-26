@@ -12,15 +12,14 @@ import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/api_route_repository.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/local_route_repository.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
-import 'package:rabbit_go/presentation/providers/user_provider_2.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserProvider2>(
-            create: (context) => UserProvider2()),
+        ChangeNotifierProvider<UserProvider>(
+            create: (context) => UserProvider()),
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
         ChangeNotifierProvider<RouteCoordinatesProvider>(

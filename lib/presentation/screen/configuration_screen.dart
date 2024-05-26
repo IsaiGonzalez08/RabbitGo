@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/user_provider_2.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
@@ -17,15 +17,15 @@ class MyConfigurationScreen extends StatefulWidget {
 }
 
 class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
-  String? _name;
-  String? _lastname;
-  String? _email;
   late User _user;
+  late String _name;
+  late String _lastname;
+  late String _email;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _user = Provider.of<UserProvider2>(context).userData;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
     _name = _user.name;
     _lastname = _user.lastName;
     _email = _user.email;
@@ -81,7 +81,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                                 fontSize: 18),
                           ),
                           Text(
-                            _email ?? '',
+                            _email,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF737373),

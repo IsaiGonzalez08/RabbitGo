@@ -11,8 +11,8 @@ class User {
     required this.name,
     required this.lastName,
     required this.email,
-    required this.role,
-    required this.token,
+    this.role = '',
+    this.token = ''
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -21,8 +21,8 @@ class User {
       name: json['name'],
       lastName: json['lastname'],
       email: json['email'],
-      role: json['rol'],
-      token: json['token'],
+      role: json['role'] ?? '',
+      token: json['token'] ?? '',
     );
   }
 }
