@@ -18,7 +18,7 @@ class RouteProvider extends ChangeNotifier {
   void queryChanged(String? token, String query) {
     _debouncer?.cancel();
     _debouncer = Timer(const Duration(milliseconds: 800), () async {
-      if (query.length >= 3) {
+      if (query.isNotEmpty) {
         _routeRepository.cancel();
         List<RouteModel> routes =
             await _routeRepository.getRouteByName(token, query);

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/domain/use_cases/User/use_case_user.dart';
-import 'package:rabbit_go/infraestructure/repositories/User/user_repository_impl.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider_2.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -28,11 +26,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final LoginUserUseCase _loginUserUseCase =
-      LoginUserUseCase(UserRepositoryImpl());
-
-  String? uuid;
-  String? token;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
   bool _showPassword = true;
@@ -50,20 +43,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return null;
   }
 
-  void navigateUserScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
-    );
-  }
-
-  void navigateAdminScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
-    );
-  }
-
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
@@ -78,35 +57,33 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void userProvider(String uuid, String token, String name, String lastname,
-      String email, String role) {
-    Provider.of<UserProvider>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email, role);
+  void navigateUser(String role) {
+    if (role == 'admin') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+      );
+    }
   }
 
-  Future<bool> _loginUser() async {
+  Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
       final String email = _emailController.text;
       final String password = _passwordController.text;
-      final User user = await _loginUserUseCase.userLogin(email, password);
-      final userId = user.uuid;
-      final userToken = user.token;
-      final userName = user.name;
-      final userLastName = user.lastName;
-      final userEmail = user.email;
+      Provider.of<UserProvider2>(context, listen: false).loginUser(email, password);
+      final User user = Provider.of<UserProvider2>(context, listen: false).userData;
       final userRole = user.role;
       _emailController.clear();
       _passwordController.clear();
-      userProvider(
-          userId, userToken, userName, userLastName, userEmail, userRole);
-      if (userRole == 'admin') {
-        navigateAdminScreen();
-      } else {
-        navigateUserScreen();
-      }
-      return true;
+      navigateUser(userRole);
     } else {
-      return false;
+      _isEmailInValid = true;
+      _isPasswordInValid = true;
     }
   }
 
@@ -203,6 +180,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     color: const Color(0xFF01142B),
                     colorText: const Color(0xFFFFFFFF),
                     onPressed: () {
+                      _isPasswordInValid = false;
+                      _isEmailInValid = false;
                       _formKey.currentState!.save();
                       _loginUser();
                     },

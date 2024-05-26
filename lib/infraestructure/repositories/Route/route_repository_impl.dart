@@ -119,7 +119,7 @@ class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
       };
       cancelToken = CancelToken();
       final response = await dio.get(
-        'https://rabbitgo.sytes.net/bus/route/name/$query',
+        'https://rabbitgo.sytes.net/bus/route/name/Ruta $query',
         options: Options(headers: headers),
         cancelToken: cancelToken,
       );

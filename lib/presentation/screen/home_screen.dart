@@ -153,7 +153,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             markers: Set.from({
               ...markers,
               ...placeProvider.hereMarkers
-            }), // ---AQUÍ NECESITO LA LISTA DE MARCADORES
+            }),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),

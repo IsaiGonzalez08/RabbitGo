@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/user_provider_2.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
 import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
@@ -19,18 +20,18 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   String? _name;
   String? _lastname;
   String? _email;
-  String? userId;
-  String? token;
+  late User _user;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _name = Provider.of<UserProvider>(context).name;
-    _lastname = Provider.of<UserProvider>(context).lastname;
-    _email = Provider.of<UserProvider>(context).email;
+    _user = Provider.of<UserProvider2>(context).userData;
+    _name = _user.name;
+    _lastname = _user.lastName;
+    _email = _user.email;
   }
 
-  void _showConfirmDialog() {
+  void _showDialogLogout() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -136,7 +137,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
             ),
             InkWell(
                 onTap: () {
-                  _showConfirmDialog();
+                  _showDialogLogout();
                 },
                 child: SizedBox(
                   height: 80,
