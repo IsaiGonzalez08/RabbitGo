@@ -27,7 +27,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   late String? routeId;
   List<LatLng>? listCordinates = [];
 
-  void providerCoordinates(List<LatLng>? coordinates) {
+  void providerCoordinates(List<LatLng> coordinates) {
     Provider.of<RouteCoordinatesProvider>(context, listen: false)
         .setDataCoordinates(coordinates);
   }

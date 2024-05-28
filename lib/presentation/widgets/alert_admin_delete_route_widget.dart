@@ -60,7 +60,7 @@ class _MyAlertDeleteRouteState extends State<MyAlertDeleteRoute> {
               colorText: const Color(0xFFFFFFFF),
               onPressed: () {
                 final deleteRouteUseCase =
-                    DeleteRouteById(RouteRepositoryImpl(context));
+                    DeleteRouteById(RouteRepositoryImpl());
                 deleteRouteUseCase.deleteRouteById(_token, _id);
                 Navigator.pop(context);
               },

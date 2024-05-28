@@ -6,29 +6,23 @@ import 'package:rabbit_go/domain/models/Stop/stop.dart';
 
 class StopRepositoryImpl implements StopRepository {
   @override
-    Future<List<Stop>> getAllBusStops(String token) async {
+  Future<List<Stop>> getAllBusStops(String token) async {
     try {
-      String url = ('https://rabbitgo.sytes.net/bus/stop/');
-
       final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
-      );
+          Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
+          headers: {'Authorization': token});
+
       if (response.statusCode == 200) {
-        final dynamic jsonResponse = json.decode(response.body);
-        if (jsonResponse.containsKey('data')) {
-          List<dynamic> stopJson = jsonResponse['data'];
-          List<Stop> stops =
-              stopJson.map((stop) => Stop.fromJson(stop)).toList();
-          return stops;
-        } else {
-          throw Exception('Response does not contain "data"');
-        }
+        final Map<String, dynamic> decodedResponse = json.decode(response.body);
+        final List<dynamic> stopsJson = decodedResponse['data'];
+        final List<Stop> stops =
+            stopsJson.map((json) => Stop.fromJson(json)).toList();
+        return stops;
       } else {
-        throw ('error en la petición: ${response.statusCode}');
+        throw Exception('Error con el servidor: ${response.statusCode}');
       }
-    } catch (e) {
-      throw ('el error es $e');
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
     }
   }
 }

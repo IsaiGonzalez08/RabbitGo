@@ -1,56 +1,37 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/infraestructure/repositories/Route/api_route_repository.dart';
-import 'package:rabbit_go/infraestructure/repositories/Route/local_route_repository.dart';
+import 'package:http/http.dart' as http;
 
-import '../../../presentation/providers/connectivity_services.dart';
-
-class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
+class RouteRepositoryImpl implements RouteRepository {
   CancelToken? cancelToken;
   final dio = Dio();
-  final ApiRouteRepository _apiRouteRepository = ApiRouteRepository();
-  final LocalRouteRepository _localRouteRepository = LocalRouteRepository();
-  final BuildContext context;
-
-  RouteRepositoryImpl(
-       this.context);
 
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
-    var connectivityService =
-        Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      print('hay internet');
-      await _localRouteRepository.proccessPendingOperations(
-          _apiRouteRepository, token);
-      final routes = await _apiRouteRepository.getAllRoutes(token);
-      await _localRouteRepository.saveRoutesLocally(routes);
-      return routes;
-    } else {
-      print('no hay internet');
-      return _localRouteRepository.getAllRoutes(token);
+    try {
+      final response = await http.get(
+          Uri.parse('https://rabbitgo.sytes.net/bus/route/time/18:00'),
+          headers: {'Authorization': token});
+
+      if (response.statusCode == 200) {
+        final List<dynamic> stopsJson = json.decode(response.body);
+        final List<RouteModel> stops =
+            stopsJson.map((json) => RouteModel.fromJson(json)).toList();
+        return stops;
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
     }
   }
 
   @override
-  Future<void> deleteRouteById(String token, String id) async {
-    var connectivityService =
-        Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      print('hay internet');
-      await _localRouteRepository.proccessPendingOperations(
-          _apiRouteRepository, token);
-      await _apiRouteRepository.deleteRouteById(token, id);
-    } else {
-      print('no hay internet');
-      await _localRouteRepository.deleteRoutesLocally(id);
-      final operation = {'action': 'delete', 'token': token, 'uuid': id};
-      await _localRouteRepository.savePendingOperations(operation);
-    }
-  }
+  Future<void> deleteRouteById(String token, String id) async {}
 
   @override
   Future<void> createBusRoute(
@@ -59,26 +40,7 @@ class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
       String routeStartTime,
       String routeEndTime,
       String routeBusStop,
-      String token) async {
-    var connectivityService =
-        Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      await _localRouteRepository.proccessPendingOperations(
-          _apiRouteRepository, token);
-      await _apiRouteRepository.createBusRoute(routeName, routePrice,
-          routeStartTime, routeEndTime, routeBusStop, token);
-    } else {
-      final operation = {
-        'action': 'create',
-        'name': routeName,
-        'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStop,
-      };
-      await _localRouteRepository.savePendingOperations(operation);
-    }
-  }
+      String token) async {}
 
   @override
   Future<void> updateBusRoute(
@@ -88,27 +50,7 @@ class RouteRepositoryImpl extends ChangeNotifier implements RouteRepository {
       String routeEndTime,
       String routeBusStop,
       String token,
-      String id) async {
-    var connectivityService =
-        Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      await _localRouteRepository.proccessPendingOperations(
-          _apiRouteRepository, token);
-      await _apiRouteRepository.updateBusRoute(routeName, routePrice,
-          routeStartTime, routeEndTime, routeBusStop, token, id);
-    } else {
-      final operation = {
-        'action': 'update',
-        'uuid': id,
-        'name': routeName,
-        'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStop,
-      };
-      await _localRouteRepository.savePendingOperations(operation);
-    }
-  }
+      String id) async {}
 
   @override
   Future<List<RouteModel>> getRouteByName(String? token, String query) async {

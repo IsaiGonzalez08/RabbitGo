@@ -22,7 +22,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   late User _user;
   late String _token;
 
-  void providerRouteCoordinates(List<LatLng>? coordinates) {
+  void providerRouteCoordinates(List<LatLng> coordinates) {
     Provider.of<RouteCoordinatesProvider>(context, listen: false)
         .setDataCoordinates(coordinates);
   }

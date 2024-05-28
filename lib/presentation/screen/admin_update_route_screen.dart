@@ -70,7 +70,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
       final routeEndTime = _routeEndTimeController.text;
       final routeBusStop = _routeBusStopController.text;
       final updateBusRoute =
-          UpdateBusRouteUseCase(RouteRepositoryImpl(context));
+          UpdateBusRouteUseCase(RouteRepositoryImpl());
       updateBusRoute.updateBusStop(routeName, routePrice, routeStartTime,
           routeEndTime, routeBusStop, _token, id);
     } catch (e) {

@@ -63,7 +63,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
       final routeEndTime = _routeEndTimeController.text;
       final routeBusStop = _routeBusStopController.text;
       final createBusRoute =
-          CreateBusRouteUseCase(RouteRepositoryImpl(context));
+          CreateBusRouteUseCase(RouteRepositoryImpl());
       createBusRoute.createBusStop(routeName, routePrice, routeStartTime,
           routeEndTime, routeBusStop, _token);
     } catch (e) {

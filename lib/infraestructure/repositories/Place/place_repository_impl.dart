@@ -43,6 +43,7 @@ class PlaceRepositoryImpl implements PlaceRepository {
     }
   }
 
+  @override
   void cancel() {
     if (_cancelToken != null) {
       _cancelToken!.cancel();

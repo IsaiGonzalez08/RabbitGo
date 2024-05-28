@@ -29,7 +29,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
     final getAllRoutesUseCase =
-        GetAllRoutesUseCase(RouteRepositoryImpl(context));
+        GetAllRoutesUseCase(RouteRepositoryImpl());
     futureRoutes = getAllRoutesUseCase.execute(_token);
   }
 

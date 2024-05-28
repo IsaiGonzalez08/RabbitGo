@@ -1,21 +1,18 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/domain/use_cases/Place/use_case_place.dart';
+import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
-import 'package:rabbit_go/presentation/providers/home_controller.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
-import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
-import 'package:rabbit_go/infraestructure/repositories/Place/place_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -27,19 +24,13 @@ class MyHomeScreen extends StatefulWidget {
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
-  late Polyline polylineFromAlert;
   late WaitProvider _waitProvider;
-  late HomeController _homeController;
-  Iterable markers = [];
+  List<Stop> _busStopMarkers = [];
   List<Marker> hereMarkers = [];
+  Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;
   late String _token;
-  final onResults = GetPlaceUseCase(PlaceRepositoryImpl());
-
-  List<Color> gradientColors = [
-    const Color(0xFF01142B),
-  ];
 
   _showDialogBusStops(String markerId) {
     showBottomSheet(
@@ -54,38 +45,26 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             maxHeight: 500));
   }
 
-  getBusStops(String? token) async {
-    try {
-      if (token == null) {
-        throw Exception('El token es nulo');
-      }
-      final icon = BitmapDescriptor.fromBytes(
-          await assetToBytes('assets/images/MapMarker.png'));
-      final response = await http.get(
-          Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
-          headers: {'Authorization': token});
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body)['data'];
-        Iterable generatedMarkers = data.map((item) {
-          String markerId = item['uuid'];
-          double latitude = item["latitude"];
-          double longitude = item["longitude"];
-          LatLng latLngMarker = LatLng(latitude, longitude);
-          return Marker(
-              onTap: () {
-                _showDialogBusStops(markerId);
-              },
-              markerId: MarkerId(markerId),
-              position: latLngMarker,
-              icon: icon);
-        });
-        setState(() {
-          markers = generatedMarkers;
-        });
-      }
-    } catch (error) {
-      throw Exception('Error con el servidor: $error');
-    }
+  Future<void> getBusStops() async {
+    _busStopMarkers =
+        Provider.of<BusStopProvider>(context, listen: false).stops;
+    final icon = BitmapDescriptor.fromBytes(
+        await assetToBytes('assets/images/MapMarker.png'));
+    Set<Marker> newMarkers = _busStopMarkers.map((stop) {
+      final markerId = stop.id;
+      final latLngMarker = LatLng(stop.latitude, stop.longitude);
+      return Marker(
+        onTap: () {
+          _showDialogBusStops(markerId);
+        },
+        markerId: MarkerId(markerId),
+        position: latLngMarker,
+        icon: icon,
+      );
+    }).toSet();
+    setState(() {
+      _markers = newMarkers;
+    });
   }
 
   Future<void> _showAlertPermissionsLocation() async {
@@ -102,26 +81,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _waitProvider = WaitProvider(Permission.location);
-    _homeController = HomeController();
-    _showAlertPermissionsLocation();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
-    getBusStops(_token);
-    List<LatLng>? coordinates =
-        Provider.of<RouteCoordinatesProvider>(context, listen: false)
-            .coordinates;
-    polyline = GradientPolyline(
-      polylineId: const PolylineId('route'),
-      points: coordinates!,
-      gradientColors: gradientColors,
-      width: 3,
-    );
-  }
-
   Future<void> _getPlace(String query) async {
     try {
       await Provider.of<PlaceProvider>(context, listen: false)
@@ -131,6 +90,35 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
+  Future<LatLng?> getUserLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      return LatLng(position.latitude, position.longitude);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    Provider.of<BusStopProvider>(context, listen: false).getAllBusStops(_token);
+    getBusStops();
+    _waitProvider = WaitProvider(Permission.location);
+    _showAlertPermissionsLocation();
+    List<LatLng> coordinates =
+        Provider.of<RouteCoordinatesProvider>(context, listen: false)
+            .coordinates;
+    polyline = Polyline(
+      polylineId: const PolylineId('route'),
+      points: coordinates,
+      width: 3,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -138,8 +126,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
           return GoogleMap(
             onMapCreated: (GoogleMapController controller) async {
-              _homeController.onMapCreated(controller);
-              LatLng? location = await _homeController.getUserLocation();
+              LatLng? location = await getUserLocation();
               if (location != null) {
                 if (mounted) {
                   setState(() {
@@ -153,7 +140,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               }
             },
             polylines: {polyline},
-            markers: Set.from({...markers, ...placeProvider.hereMarkers}),
+            markers: Set.from({..._markers, ...placeProvider.hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),
