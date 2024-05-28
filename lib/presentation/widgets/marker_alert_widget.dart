@@ -1,17 +1,16 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyAlertMarker extends StatefulWidget {
-  final String? markerId;
+  final String markerId;
   const MyAlertMarker({Key? key, required this.markerId}) : super(key: key);
 
   @override
@@ -19,12 +18,11 @@ class MyAlertMarker extends StatefulWidget {
 }
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
-  late String? markerId;
+  late String markerId;
   late User _user;
   late String _token;
-  late Future<List<RouteModel>> futureRoutes;
   bool isButtonEnabled = false;
-  late String? routeId;
+  late String routeId;
   List<LatLng>? listCordinates = [];
 
   void providerCoordinates(List<LatLng> coordinates) {
@@ -39,38 +37,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
     );
   }
 
-  Future<List<RouteModel>> _getBusRoute(String? markerId) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/at/$markerId');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': _token, 'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final dynamic jsonResponse = json.decode(response.body);
-
-        if (jsonResponse.containsKey('data')) {
-          List<dynamic> routeJson = jsonResponse['data'];
-          List<RouteModel> routes =
-              routeJson.map((route) => RouteModel.fromJson(route)).toList();
-          for (var dataRoute in routes) {
-            routeId = dataRoute.uuid;
-          }
-          return routes;
-        } else {
-          throw Exception('Response does not contain "data"');
-        }
-      } else {
-        throw ('error en la petición: ${response.statusCode}');
-      }
-    } catch (error) {
-      throw ('Error al conectar con el servidor: $error');
-    }
-  }
-
-  _getRoutePath() async {
+  Future<void> _getRoutePath() async {
     try {
       listCordinates?.clear();
 
@@ -101,16 +68,12 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     markerId = widget.markerId;
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
-    futureRoutes = _getBusRoute(markerId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    Provider.of<RouteProvider>(context, listen: false)
+        .getRouteByBusStopId(_token, markerId);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -134,12 +97,16 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                 ],
               ),
             ),
-            FutureBuilder<List<RouteModel>>(
-              future: futureRoutes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data!.map((route) {
+            Consumer<RouteProvider>(
+              builder: (context, routeProvider, child) {
+                if (routeProvider.loading) {
+                  return const CircularProgressIndicator();
+                }  else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: routeProvider.routesAlert.length,
+                    itemBuilder: (context, index) {
+                      final route = routeProvider.routesAlert[index];
                       return InkWell(
                         onTap: () {
                           setState(() {
@@ -149,6 +116,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                               isButtonEnabled = true;
                             }
                           });
+                          routeId = route.uuid;
                         },
                         child: Container(
                           padding: EdgeInsets.only(
@@ -228,12 +196,9 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    },
                   );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
                 }
-                return const CircularProgressIndicator();
               },
             ),
           ],

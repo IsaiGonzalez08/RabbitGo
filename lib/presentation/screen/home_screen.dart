@@ -40,7 +40,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     _token = _user.token;
     polyline = const Polyline(
       polylineId: PolylineId('route'),
-      points: [], // Inicializamos con una lista vacía.
+      points: [],
       width: 3,
     );
     _initializeData();

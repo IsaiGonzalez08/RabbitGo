@@ -8,8 +8,12 @@ import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_im
 class RouteProvider extends ChangeNotifier {
   final RouteRepository _routeRepository = RouteRepositoryImpl();
 
-  List<RouteModel>? _routes = [];
-  List<RouteModel>? get routes => _routes;
+  List<RouteModel> _routes = [];
+  List<RouteModel> get routes => _routes;
+  List<RouteModel> _routesAlert = [];
+  List<RouteModel> get routesAlert => _routesAlert;
+  bool _loading = false;
+  bool get loading => _loading;
 
   Timer? _debouncer;
 
@@ -28,6 +32,15 @@ class RouteProvider extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  void getRouteByBusStopId(String token, String busStopId) async {
+    _loading = true;
+    List<RouteModel> routesAlert =
+        await _routeRepository.getRouteByBusStopId(token, busStopId);
+    _routesAlert = routesAlert;
+    _loading = false;
+    notifyListeners();
   }
 
   void cleanListRoutes() {

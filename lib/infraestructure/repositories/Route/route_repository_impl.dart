@@ -96,4 +96,33 @@ class RouteRepositoryImpl implements RouteRepository {
       cancelToken = null;
     }
   }
+  
+  @override
+  Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId) async {
+    try {
+      String url = ('https://rabbitgo.sytes.net/bus/route/at/$busStopId');
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': token, 'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic jsonResponse = json.decode(response.body);
+
+        if (jsonResponse.containsKey('data')) {
+          List<dynamic> routeJson = jsonResponse['data'];
+          List<RouteModel> routes =
+              routeJson.map((route) => RouteModel.fromJson(route)).toList();
+          return routes;
+        } else {
+          throw Exception('Response does not contain "data"');
+        }
+      } else {
+        throw ('error en la petición: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al conectar con el servidor: $error');
+    }
+  }
 }

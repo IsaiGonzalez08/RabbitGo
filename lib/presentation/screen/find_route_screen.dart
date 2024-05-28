@@ -67,12 +67,12 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
   }
 
   @override
   Widget build(BuildContext context) {
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -124,8 +124,6 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
         ),
         body: Consumer<RouteProvider>(builder: (_, controller, __) {
           final routes = controller.routes;
-          if (routes == null) {
-          } else if (routes.isEmpty) {}
           return ListView.builder(
             itemBuilder: (_, index) {
               final route = routes[index];
@@ -210,7 +208,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                 ),
               );
             },
-            itemCount: routes!.length,
+            itemCount: routes.length,
           );
         }));
   }
