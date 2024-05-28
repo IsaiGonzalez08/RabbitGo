@@ -32,17 +32,30 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late User _user;
   late String _token;
 
-  _showDialogBusStops(String markerId) {
-    showBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return MyAlertMarker(markerId: markerId);
-        },
-        constraints: const BoxConstraints(
-            minWidth: 0.0,
-            maxWidth: double.infinity,
-            minHeight: 0.0,
-            maxHeight: 500));
+  @override
+  void initState() {
+    super.initState();
+    _waitProvider = WaitProvider(Permission.location);
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    polyline = const Polyline(
+      polylineId: PolylineId('route'),
+      points: [], // Inicializamos con una lista vacía.
+      width: 3,
+    );
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _loadBusStops();
+    await _showAlertPermissionsLocation();
+    _loadRouteCoordinates();
+  }
+
+  Future<void> _loadBusStops() async {
+    await Provider.of<BusStopProvider>(context, listen: false)
+        .getAllBusStops(_token);
+    getBusStops();
   }
 
   Future<void> getBusStops() async {
@@ -81,6 +94,19 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
+  void _loadRouteCoordinates() {
+    List<LatLng> coordinates =
+        Provider.of<RouteCoordinatesProvider>(context, listen: false)
+            .coordinates;
+    setState(() {
+      polyline = Polyline(
+        polylineId: const PolylineId('route'),
+        points: coordinates,
+        width: 3,
+      );
+    });
+  }
+
   Future<void> _getPlace(String query) async {
     try {
       await Provider.of<PlaceProvider>(context, listen: false)
@@ -98,25 +124,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     } catch (e) {
       return null;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
-    Provider.of<BusStopProvider>(context, listen: false).getAllBusStops(_token);
-    getBusStops();
-    _waitProvider = WaitProvider(Permission.location);
-    _showAlertPermissionsLocation();
-    List<LatLng> coordinates =
-        Provider.of<RouteCoordinatesProvider>(context, listen: false)
-            .coordinates;
-    polyline = Polyline(
-      polylineId: const PolylineId('route'),
-      points: coordinates,
-      width: 3,
-    );
   }
 
   @override
@@ -154,49 +161,71 @@ class _MyHomeScreenState extends State<MyHomeScreen>
           );
         }),
         Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05,
-                vertical: MediaQuery.of(context).size.height * 0.08),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: 40,
-              decoration: BoxDecoration(boxShadow: [
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: MediaQuery.of(context).size.height * 0.08,
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 40,
+            decoration: BoxDecoration(
+              boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: const Offset(0, 1),
-                )
-              ]),
-              child: Builder(builder: (context) {
-                return TextField(
-                  onSubmitted: (value) => _getPlace(value),
-                  textAlignVertical: TextAlignVertical.center,
-                  cursorHeight: 25.0,
-                  cursorColor: const Color(0xFF01142B),
-                  style: const TextStyle(
-                      color: Color(0xFF01142B), fontWeight: FontWeight.w500),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: 'Buscar un lugar',
-                    hintStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE0E0E0),
-                        fontWeight: FontWeight.w500),
-                    filled: true,
-                    fillColor: const Color(0xFFFFFFFF),
-                    prefixIcon: Image.asset(
-                      'assets/images/Search.png',
-                      width: 10,
-                    ), // Icono dentro del campo de texto
+                ),
+              ],
+            ),
+            child: Builder(builder: (context) {
+              return TextField(
+                onSubmitted: (value) => _getPlace(value),
+                textAlignVertical: TextAlignVertical.center,
+                cursorHeight: 25.0,
+                cursorColor: const Color(0xFF01142B),
+                style: const TextStyle(
+                  color: Color(0xFF01142B),
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    borderSide: BorderSide.none,
                   ),
-                );
-              }),
-            )),
+                  hintText: 'Buscar un lugar',
+                  hintStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFFE0E0E0),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFFFFFFFF),
+                  prefixIcon: Image.asset(
+                    'assets/images/Search.png',
+                    width: 10,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _showDialogBusStops(String markerId) {
+    showBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return MyAlertMarker(markerId: markerId);
+      },
+      constraints: const BoxConstraints(
+        minWidth: 0.0,
+        maxWidth: double.infinity,
+        minHeight: 0.0,
+        maxHeight: 500,
+      ),
     );
   }
 }
