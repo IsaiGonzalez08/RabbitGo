@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyAlertMarker extends StatefulWidget {
@@ -18,62 +15,38 @@ class MyAlertMarker extends StatefulWidget {
 }
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
+  bool isButtonEnabled = false;
+  List<LatLng> listCordinates = [];
   late String markerId;
   late User _user;
   late String _token;
-  bool isButtonEnabled = false;
-  late String routeId;
-  List<LatLng>? listCordinates = [];
-
-  void providerCoordinates(List<LatLng> coordinates) {
-    Provider.of<RouteCoordinatesProvider>(context, listen: false)
-        .setDataCoordinates(coordinates);
-  }
-
-  void navigateMap() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
-    );
-  }
-
-  Future<void> _getRoutePath() async {
-    try {
-      listCordinates?.clear();
-
-      String url = ('https://rabbitgo.sytes.net/path/route/$routeId');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': _token, 'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
-        if (responseData != null && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          listCordinates = data.expand((element) {
-            final path = element['path'] as List<dynamic>;
-            return path.map((coord) => LatLng(coord[0], coord[1]));
-          }).toList();
-          providerCoordinates(listCordinates!);
-          navigateMap();
-        } else {
-          throw ('Los datos recibidos de la API no son válidos.');
-        }
-      }
-    } catch (error) {
-      throw ('Error al conectar con el servidor: $error');
-    }
-  }
+  late String busRouteId;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     markerId = widget.markerId;
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
     Provider.of<RouteProvider>(context, listen: false)
         .getRouteByBusStopId(_token, markerId);
+    super.initState();
+  }
+
+  void navigateMap() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+    );
+  }
+
+  Future<void> _getRoutePath(String token, String busRouteId) async {
+    await Provider.of<RouteProvider>(context, listen: false)
+        .getRouteBusPath(token, busRouteId);
+    navigateMap();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -101,7 +74,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
               builder: (context, routeProvider, child) {
                 if (routeProvider.loading) {
                   return const CircularProgressIndicator();
-                }  else {
+                } else {
                   return ListView.builder(
                     shrinkWrap: true,
                     itemCount: routeProvider.routesAlert.length,
@@ -116,7 +89,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                               isButtonEnabled = true;
                             }
                           });
-                          routeId = route.uuid;
+                          busRouteId = route.uuid;
                         },
                         child: Container(
                           padding: EdgeInsets.only(
@@ -218,7 +191,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
             child: TextButton(
                 onPressed: isButtonEnabled
                     ? () {
-                        _getRoutePath();
+                        _getRoutePath(_token, busRouteId);
                       }
                     : null,
                 child: const Text('Comenzar',

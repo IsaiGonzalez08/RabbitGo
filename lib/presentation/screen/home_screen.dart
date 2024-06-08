@@ -6,7 +6,7 @@ import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
@@ -95,13 +95,10 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   void _loadRouteCoordinates() {
-    List<LatLng> coordinates =
-        Provider.of<RouteCoordinatesProvider>(context, listen: false)
-            .coordinates;
     setState(() {
       polyline = Polyline(
         polylineId: const PolylineId('route'),
-        points: coordinates,
+        points: Provider.of<RouteProvider>(context, listen: false).routePath,
         width: 3,
       );
     });

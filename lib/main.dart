@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
@@ -19,9 +18,6 @@ void main() {
             create: (context) => UserProvider()),
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
-        ChangeNotifierProvider<RouteCoordinatesProvider>(
-          create: (_) => RouteCoordinatesProvider(),
-        ),
         ChangeNotifierProvider<PlaceProvider>(
           create: (context) => PlaceProvider(),
         ),

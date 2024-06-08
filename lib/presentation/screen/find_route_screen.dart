@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyFindRouteScreen extends StatefulWidget {
@@ -18,61 +14,33 @@ class MyFindRouteScreen extends StatefulWidget {
 }
 
 class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
-  List<LatLng>? listCordinates;
   late User _user;
   late String _token;
+  List<RouteModel> _routes = [];
 
-  void providerRouteCoordinates(List<LatLng> coordinates) {
-    Provider.of<RouteCoordinatesProvider>(context, listen: false)
-        .setDataCoordinates(coordinates);
+  void navigateHome() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyTapBarWidget(),
+        ));
   }
 
-  navigateHome() {
-    Provider.of<RouteProvider>(context, listen: false).cleanListRoutes();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const MyTapBarWidget(),
-    ));
-  }
-
-  getRouteCoordinates(String id) async {
-    try {
-      String url = 'https://rabbitgo.sytes.net/path/route/$id';
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Authorization': _token,
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-      if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
-        if (responseData != null && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          listCordinates = data.expand((element) {
-            final path = element['path'] as List<dynamic>;
-            return path.map((coord) => LatLng(coord[0], coord[1]));
-          }).toList();
-          providerRouteCoordinates(listCordinates!);
-          navigateHome();
-        } else {
-          throw ('Los datos recibidos de la API no son válidos.');
-        }
-      }
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.cancel) {}
-    }
+  Future<void> _getRoutePath(String token, String busRouteId) async {
+    await Provider.of<RouteProvider>(context, listen: false)
+        .getRouteBusPath(token, busRouteId);
+    navigateHome();
   }
 
   @override
   void initState() {
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -123,15 +91,15 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           ),
         ),
         body: Consumer<RouteProvider>(builder: (_, controller, __) {
-          final routes = controller.routes;
+          _routes.clear();
+          _routes = controller.routes;
           return ListView.builder(
             itemBuilder: (_, index) {
-              final route = routes[index];
+              final route = _routes[index];
               return InkWell(
                 onTap: () {
-                  final id = route.uuid;
-                  getRouteCoordinates(id);
-                  listCordinates?.clear();
+                  final busRouteId = route.uuid;
+                  _getRoutePath(_token, busRouteId);
                 },
                 child: Container(
                   padding: EdgeInsets.only(
@@ -208,7 +176,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                 ),
               );
             },
-            itemCount: routes.length,
+            itemCount: _routes.length,
           );
         }));
   }
