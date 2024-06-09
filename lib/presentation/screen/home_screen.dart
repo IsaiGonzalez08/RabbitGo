@@ -13,6 +13,7 @@ import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;
-  late String _token;
+  late String? _token;
 
   @override
   void initState() {
@@ -47,9 +48,17 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> _initializeData() async {
+    await _loadUserData();
     await _loadBusStops();
     await _showAlertPermissionsLocation();
     _loadRouteCoordinates();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('token') ?? '';
+    });
   }
 
   Future<void> _loadBusStops() async {

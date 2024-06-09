@@ -9,8 +9,14 @@ import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes.dart';
 import 'package:rabbit_go/infraestructure/helpers/themes_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  final String? token = prefs.getString('token');
   runApp(
     MultiProvider(
       providers: [
@@ -25,13 +31,15 @@ void main() {
             create: (context) => RouteProvider()),
         ChangeNotifierProvider<BusStopProvider>(create: (context) => BusStopProvider())
       ],
-      child: const MyApp(),
+      child: MyApp(isLoggedIn: isLoggedIn, token: token),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool isLoggedIn;
+  final String? token;
+  const MyApp({Key? key, required this.isLoggedIn, this.token}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -45,7 +53,7 @@ class MyApp extends StatelessWidget {
                   ColorScheme.fromSeed(seedColor: const Color(0xFF01142B)),
               useMaterial3: true,
             ),
-            home: const SplashScreen(),
+            home: isLoggedIn ? const MyTapBarWidget() : const SplashScreen(),
           );
         },
       ),

@@ -59,18 +59,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void navigateUser(String role) {
-    if (role == 'admin') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
-      );
-    }
+  void providerUserData() {
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
   void _loginUser() async {
@@ -90,8 +80,18 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  providerUserData() {
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
+  void navigateUser(String role) {
+    if (role == 'admin') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+      );
+    }
   }
 
   @override

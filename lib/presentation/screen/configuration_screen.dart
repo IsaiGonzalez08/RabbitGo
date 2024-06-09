@@ -8,6 +8,7 @@ import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_configuration.dart';
 import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyConfigurationScreen extends StatefulWidget {
   const MyConfigurationScreen({super.key});
@@ -29,6 +30,16 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
     _name = _user.name;
     _lastname = _user.lastName;
     _email = _user.email;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+      _lastname = prefs.getString('lastname') ?? '';
+      _email = prefs.getString('email') ?? '';
+    });
   }
 
   void _showDialogLogout() {

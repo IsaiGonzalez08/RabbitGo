@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAlertConfiguration extends StatelessWidget {
   const MyAlertConfiguration({super.key});
 
   @override
   Widget build(BuildContext context) {
+    void navigateLogin() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+      );
+    }
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusDirectional.circular(10.0)),
@@ -46,13 +54,11 @@ class MyAlertConfiguration extends StatelessWidget {
               textButton: 'Cerrar sesión',
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyLoginSignPage()),
-                );
-                Navigator.popUntil(context, (route) => route.isFirst);
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('isLoggedIn');
+                await prefs.remove('token');
+                navigateLogin();
               },
             ),
             const SizedBox(

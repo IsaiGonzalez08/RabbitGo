@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:rabbit_go/domain/models/User/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepositoryImpl implements UserRepository {
   @override
@@ -55,6 +56,16 @@ class UserRepositoryImpl implements UserRepository {
         final jsonResponse = jsonDecode(response.body);
         if (jsonResponse['status'] == 'success' &&
             jsonResponse['data'] != null) {
+          final token = jsonResponse['data']['token'];
+          final name = jsonResponse['data']['name'];
+          final lastname = jsonResponse['data']['lastname'];
+          final email = jsonResponse['data']['email'];
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('token', token);
+          await prefs.setString('name', name);
+          await prefs.setString('lastname', lastname);
+          await prefs.setString('email', email);
           return User.fromJson(jsonResponse['data']);
         } else {
           throw Exception('Failed to login: ${jsonResponse['message']}');
@@ -71,6 +82,11 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> updateUser(String userId, String name, String lastname,
       String email, String password, String token) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+    String? token = await getToken();
     try {
       String url = ('https://rabbitgo.sytes.net/user/$userId');
 
@@ -82,7 +98,10 @@ class UserRepositoryImpl implements UserRepository {
       };
 
       final response = await http.put(Uri.parse(url),
-          headers: {'Authorization': token, 'Content-Type': 'application/json'},
+          headers: {
+            'Authorization': token!,
+            'Content-Type': 'application/json'
+          },
           body: jsonEncode(userData));
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -103,9 +122,15 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> deleteAccount(String token, String id) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
     try {
       String url = 'https://rabbitgo.sytes.net/user/$id';
-      await http.delete(Uri.parse(url), headers: {'Authorization': token});
+      await http.delete(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
     }

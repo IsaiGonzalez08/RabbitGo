@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RouteRepositoryImpl implements RouteRepository {
   CancelToken? cancelToken;
@@ -11,10 +12,16 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
     try {
       final response = await http.get(
           Uri.parse('https://rabbitgo.sytes.net/bus/route/time/18:00'),
-          headers: {'Authorization': token});
+          headers: {'Authorization': token!});
 
       if (response.statusCode == 200) {
         final List<dynamic> stopsJson = json.decode(response.body);
@@ -53,6 +60,12 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<List<RouteModel>> getRouteByName(String token, String query) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
     try {
       Map<String, dynamic> headers = {
         "Content-Type": "application/json",
@@ -99,12 +112,18 @@ class RouteRepositoryImpl implements RouteRepository {
   @override
   Future<List<RouteModel>> getRouteByBusStopId(
       String token, String busStopId) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
     try {
       String url = ('https://rabbitgo.sytes.net/bus/route/at/$busStopId');
 
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
+        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -128,6 +147,11 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<List<LatLng>> getRouteBusPath(String token, String busRouteId) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+    String? token = await getToken();
     try {
       List<LatLng> listCordinates = [];
       listCordinates.clear();
@@ -135,7 +159,7 @@ class RouteRepositoryImpl implements RouteRepository {
 
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': token, 'Content-Type': 'application/json'},
+        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
