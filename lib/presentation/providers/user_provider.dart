@@ -16,11 +16,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUser(String userId, String name, String lastname, String email,
-      String password, String token) async {
+  Future<void> updateUser(String userId, String name, String lastname,
+      String email, String password, String token) async {
     User userData = await _userRepository.updateUser(
         userId, name, lastname, email, password, token);
     _user = userData;
     notifyListeners();
+  }
+
+  Future<void> deleteAccount(String token, String id) async {
+    await _userRepository.deleteAccount(token, id);
   }
 }

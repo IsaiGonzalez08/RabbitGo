@@ -100,4 +100,14 @@ class UserRepositoryImpl implements UserRepository {
       throw ('Error al conectar con el servidor: $error');
     }
   }
+
+  @override
+  Future<void> deleteAccount(String token, String id) async {
+    try {
+      String url = 'https://rabbitgo.sytes.net/user/$id';
+      await http.delete(Uri.parse(url), headers: {'Authorization': token});
+    } catch (error) {
+      throw ('Error al eliminar el usuario, $error');
+    }
+  }
 }
