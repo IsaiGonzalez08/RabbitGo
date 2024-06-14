@@ -7,6 +7,8 @@ import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
+import 'package:rabbit_go/presentation/widgets/update_user_data_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -18,19 +20,18 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _lastnameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  late TextEditingController _usernameController;
+  late TextEditingController _lastnameController;
+  late TextEditingController _emailController;
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
   bool _showPassword = true;
   late User _user;
-  late String _userId;
-  late String _token;
   late String _name;
   late String _lastname;
+  late String _email;
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -58,103 +59,54 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _userId = _user.uuid;
-    _token = _user.token;
     _name = _user.name;
     _lastname = _user.lastName;
+    _email = _user.email;
+    
+    _usernameController = TextEditingController(text: _name);
+    _lastnameController = TextEditingController(text: _lastname);
+    _emailController = TextEditingController(text: _email);
+
+    _loadUserData();
   }
 
-  navigateConfigurationScreen() {
-    Navigator.pop(context);
-    Navigator.pop(context);
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? _name;
+      _lastname = prefs.getString('lastname') ?? _lastname;
+      _email = prefs.getString('email') ?? _email;
+
+      _usernameController.text = _name;
+      _lastnameController.text = _lastname;
+      _emailController.text = _email;
+    });
   }
 
-  void _updateUser() async {
+  void _showSuccessDialog(
+      String name, String lastname, String email, String password) {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         return;
       } else {
-        final name = _usernameController.text;
-        final lastname = _lastnameController.text;
-        final email = _emailController.text;
-        final password = _passwordController.text;
-        await Provider.of<UserProvider>(context, listen: false)
-            .updateUser(_userId, name, lastname, email, password, _token);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MyConfirmUpdateDataWidget(
+                name: name,
+                lastname: lastname,
+                email: email,
+                password: password,
+              );
+            });
         _usernameController.clear();
         _lastnameController.clear();
         _emailController.clear();
         _passwordController.clear();
         _confirmPasswordController.clear();
-        navigateConfigurationScreen();
       }
     }
     return;
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadiusDirectional.circular(10.0)),
-          backgroundColor: const Color(0xFFFFFFFF),
-          title: const Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              "¿Estas seguro de\nactualizar tus datos?",
-              style: TextStyle(
-                  color: Color(0xFF777777),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          content: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Recuerda que tus datos personales son muy\nimportantes.",
-                style: TextStyle(
-                    color: Color(0xFFACACAC),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                CustomButton(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  width: MediaQuery.of(context).size.width * 0.27,
-                  height: 40,
-                  textButton: 'Actualizar',
-                  color: const Color(0xFF01142B),
-                  colorText: const Color(0xFFFFFFFF),
-                  onPressed: () {
-                    _updateUser();
-                  },
-                ),
-                CustomButton(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  width: MediaQuery.of(context).size.width * 0.27,
-                  height: 40,
-                  textButton: 'Cancelar',
-                  color: const Color(0xFFB6B6B6),
-                  colorText: const Color(0xFFFFFFFF),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            )
-          ],
-        );
-      },
-    );
   }
 
   String getInitials(String firstName, String lastName) {
@@ -228,7 +180,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
-                            controllerTextField: _usernameController,
+                            controllerTextField: _usernameController = TextEditingController(text: _name),
                             text: 'Nombre(s)',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -373,7 +325,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 colorText: const Color(0xFFFFFFFF),
                 onPressed: () {
                   _formKey.currentState!.save();
-                  _showSuccessDialog();
+                  final name = _usernameController.text;
+                  final lastname = _lastnameController.text;
+                  final email = _emailController.text;
+                  final password = _passwordController.text;
+                  _showSuccessDialog(name, lastname, email, password);
                 },
               ),
             ],

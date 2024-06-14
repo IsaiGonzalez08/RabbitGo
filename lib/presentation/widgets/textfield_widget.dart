@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 class MyTextFieldWidget extends StatelessWidget {
   const MyTextFieldWidget({
     Key? key,
-    required this.text,
+    this.text,
+    this.textInput,
     required this.width,
     required this.controllerTextField,
     required this.validator,
     this.onSaved,
   }) : super(key: key);
-  final String text;
+  final String? text;
+  final TextInputAction? textInput;
   final double width;
   final String? Function(String?)? validator;
   final TextEditingController controllerTextField;
@@ -20,6 +22,8 @@ class MyTextFieldWidget extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextFormField(
+        textInputAction: textInput,
+        
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),

@@ -4,6 +4,7 @@ import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_status_profile_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyStatusAccountScreen extends StatefulWidget {
   const MyStatusAccountScreen({super.key});
@@ -23,6 +24,15 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _name = _user.name;
     _lastname = _user.lastName;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+      _lastname = prefs.getString('lastname') ?? '';
+    });
   }
 
   String getInitials(String firstName, String lastName) {
@@ -75,8 +85,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
                     backgroundColor: const Color(0xFF01142B),
                     child: Consumer<UserProvider>(
                       builder: (context, userData, child) {
-                        String initials = getInitials(
-                            _name, _lastname);
+                        String initials = getInitials(_name, _lastname);
                         return Text(initials,
                             style: const TextStyle(
                                 fontSize: 36, color: Color(0xFFFFFFFF)));
