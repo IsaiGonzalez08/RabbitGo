@@ -15,7 +15,7 @@ class MyAlertMarker extends StatefulWidget {
 }
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
-  bool isButtonEnabled = false;
+  String? selectedBusRouteId;
   List<LatLng> listCordinates = [];
   late String markerId;
   late User _user;
@@ -37,6 +37,17 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
       context,
       MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
     );
+  }
+
+  void _selectRoute(String routeId) {
+    setState(() {
+      if (selectedBusRouteId == routeId) {
+        selectedBusRouteId =
+            null; // Deselecciona la ruta si ya está seleccionada
+      } else {
+        selectedBusRouteId = routeId; // Selecciona la nueva ruta
+      }
+    });
   }
 
   Future<void> _getRoutePath(String token, String busRouteId) async {
@@ -80,23 +91,15 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                     itemCount: routeProvider.routesAlert.length,
                     itemBuilder: (context, index) {
                       final route = routeProvider.routesAlert[index];
+                      final isSelected = route.uuid == selectedBusRouteId;
                       return InkWell(
-                        onTap: () {
-                          setState(() {
-                            if (isButtonEnabled) {
-                              isButtonEnabled = false;
-                            } else {
-                              isButtonEnabled = true;
-                            }
-                          });
-                          busRouteId = route.uuid;
-                        },
+                        onTap: () => _selectRoute(route.uuid),
                         child: Container(
                           padding: EdgeInsets.only(
                               right: MediaQuery.of(context).size.width * 0.07,
                               left: MediaQuery.of(context).size.width * 0.07),
                           decoration: BoxDecoration(
-                              color: isButtonEnabled
+                              color: isSelected
                                   ? const Color(0xFFE0E0E0)
                                   : const Color(0xFF),
                               border: Border.all(
@@ -171,7 +174,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                       );
                     },
                   );
-                }
+                } 
               },
             ),
           ],
@@ -183,15 +186,15 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
             width: MediaQuery.of(context).size.width * 0.9,
             height: 40,
             decoration: BoxDecoration(
-              color: isButtonEnabled
+              color: selectedBusRouteId != null
                   ? const Color(0xFF01142B)
                   : const Color(0xFFB6B6B6),
               borderRadius: BorderRadius.circular(5),
             ),
             child: TextButton(
-                onPressed: isButtonEnabled
+                onPressed: selectedBusRouteId != null
                     ? () {
-                        _getRoutePath(_token, busRouteId);
+                        _getRoutePath(_token, selectedBusRouteId!);
                       }
                     : null,
                 child: const Text('Comenzar',
