@@ -21,7 +21,7 @@ class User {
       name: json['name'],
       lastName: json['lastname'],
       email: json['email'],
-      role: json['role'] ?? '',
+      role: json['rol'] ?? '',
       token: json['token'] ?? '',
     );
   }

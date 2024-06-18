@@ -11,8 +11,7 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 class MyAdminAddRouteScreen extends StatefulWidget {
-  final BuildContext context;
-  const MyAdminAddRouteScreen({super.key, required this.context});
+  const MyAdminAddRouteScreen({super.key});
 
   @override
   State<MyAdminAddRouteScreen> createState() => _MyAdminAddRouteScreenState();

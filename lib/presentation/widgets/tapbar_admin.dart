@@ -17,8 +17,8 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> body = [
-      MyAdminScreen(context: context),
-      MyAdminAddRouteScreen(context: context),
+      const MyAdminScreen(),
+      const MyAdminAddRouteScreen(),
       const MyAdminFindRouteScreen(),
     ];
 

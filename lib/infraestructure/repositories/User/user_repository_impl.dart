@@ -60,12 +60,14 @@ class UserRepositoryImpl implements UserRepository {
           final name = jsonResponse['data']['name'];
           final lastname = jsonResponse['data']['lastname'];
           final email = jsonResponse['data']['email'];
+          final rol = jsonResponse['data']['rol'];
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
           await prefs.setString('token', token);
           await prefs.setString('name', name);
           await prefs.setString('lastname', lastname);
           await prefs.setString('email', email);
+          await prefs.setString('rol', rol);
           return User.fromJson(jsonResponse['data']);
         } else {
           throw Exception('Failed to login: ${jsonResponse['message']}');

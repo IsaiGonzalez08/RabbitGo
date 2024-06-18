@@ -82,7 +82,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
               ),
             ),
             Consumer<RouteProvider>(
-              builder: (context, routeProvider, child) {
+              builder: (_, routeProvider, __) {
                 if (routeProvider.loading) {
                   return const CircularProgressIndicator();
                 } else {

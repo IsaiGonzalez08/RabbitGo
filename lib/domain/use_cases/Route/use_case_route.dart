@@ -5,7 +5,7 @@ class GetAllRoutesUseCase {
   final RouteRepository _routeRepository;
   GetAllRoutesUseCase(this._routeRepository);
 
-  Future<List<RouteModel>> execute(String token) async {
+  Future<List<RouteModel>> getAllRoutes(String token) async {
     return await _routeRepository.getAllRoutes(token);
   }
 }

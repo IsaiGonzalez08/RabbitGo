@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
-import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
 
 class MyAdminScreen extends StatefulWidget {
-  final BuildContext context;
-  const MyAdminScreen({Key? key, required this.context}) : super(key: key);
+  const MyAdminScreen({Key? key}) : super(key: key);
 
   @override
   State<MyAdminScreen> createState() => _MyAdminScreenState();
 }
 
 class _MyAdminScreenState extends State<MyAdminScreen> {
-  late Future<List<RouteModel>> futureRoutes;
   late User _user;
   late String _token;
-  String? _name;
+  late String _name;
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
-    final getAllRoutesUseCase =
-        GetAllRoutesUseCase(RouteRepositoryImpl());
-    futureRoutes = getAllRoutesUseCase.execute(_token);
+    _name = _user.name;
+    Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
   }
 
   void navigateUpdateScreen(String id) {
@@ -78,7 +73,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                       fontWeight: FontWeight.w400),
                 ),
                 Text(
-                  '$_name',
+                  _name,
                   style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
@@ -94,38 +89,32 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: FutureBuilder<List<RouteModel>>(
-              future: futureRoutes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final route = snapshot.data![index];
-                      return RouteCard(
-                        name: route.name,
-                        startTime: route.startTime,
-                        endTime: route.endTime,
-                        price: route.price.toString(),
-                        onEdit: () {
-                          final idRoute = route.uuid;
-                          navigateUpdateScreen(idRoute);
-                        },
-                        onDelete: () {
-                          final idRoute = route.uuid;
-                          openDeleteAlert(idRoute);
-                        },
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
-          ),
+          Expanded(child: Consumer<RouteProvider>(builder: (_, controller, __) {
+            if (controller.loading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return ListView.builder(
+                  itemCount: controller.routes.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final route = controller.routes[index];
+                    return RouteCard(
+                      name: route.name,
+                      startTime: route.startTime,
+                      endTime: route.endTime,
+                      price: route.price.toString(),
+                      onEdit: () {
+                        final idRoute = route.uuid;
+                        navigateUpdateScreen(idRoute);
+                      },
+                      onDelete: () {
+                        final idRoute = route.uuid;
+                        openDeleteAlert(idRoute);
+                      },
+                    );
+                  });
+            }
+          })),
           const SizedBox(
             height: 20,
           )
