@@ -19,8 +19,6 @@ abstract class RouteRepository {
       String routeBusStop,
       String token,
       String id);
-  Future<List<RouteModel>> getRouteByName(String token, String query);
   Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
   Future<List<LatLng>> getRouteBusPath(String token, String busRouteId);
-  void cancel();
 }

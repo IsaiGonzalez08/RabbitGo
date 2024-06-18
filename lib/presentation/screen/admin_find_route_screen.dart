@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rabbit_go/presentation/providers/route_provider.dart';
 
 class MyAdminFindRouteScreen extends StatelessWidget {
   const MyAdminFindRouteScreen({super.key});
@@ -48,7 +46,6 @@ class MyAdminFindRouteScreen extends StatelessWidget {
                   child: Builder(builder: (context) {
                     return TextField(
                       onChanged: (value) {
-                        context.read<RouteProvider>().queryChanged;
                       },
                       textAlignVertical: TextAlignVertical.center,
                       cursorHeight: 25.0,

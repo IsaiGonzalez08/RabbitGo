@@ -55,20 +55,6 @@ class UpdateBusRouteUseCase {
   }
 }
 
-class GetRouteByNameUseCase {
-  final RouteRepository _routeRepository;
-
-  GetRouteByNameUseCase(this._routeRepository);
-
-  Future<void> getRouteByName(String token, String query) async {
-    await _routeRepository.getRouteByName(token, query);
-  }
-
-  void cancel() {
-    _routeRepository.cancel();
-  }
-}
-
 class GetRouteByBusStopIdUseCase {
   final RouteRepository _routeRepository;
 
@@ -76,10 +62,6 @@ class GetRouteByBusStopIdUseCase {
 
   Future<void> getRouteByBusStopId(String token, String busStopId) async {
     await _routeRepository.getRouteByBusStopId(token, busStopId);
-  }
-
-  void cancel() {
-    _routeRepository.cancel();
   }
 }
 

@@ -18,23 +18,14 @@ class RouteProvider extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
-  Timer? _debouncer;
 
-  void queryChanged(String token, String query) {
-    _debouncer?.cancel();
-    _debouncer = Timer(const Duration(milliseconds: 800), () async {
-      if (query.isNotEmpty) {
-        _routeRepository.cancel();
-        List<RouteModel> routes =
-            await _routeRepository.getRouteByName(token, query);
-        _routes = routes;
-        notifyListeners();
-      } else {
-        _routeRepository.cancel();
-        _routes = [];
-        notifyListeners();
-      }
-    });
+  void getAllRoutes(String token) async {
+    _loading = true;
+     List<RouteModel> routes =
+        await _routeRepository.getAllRoutes(token);
+    _routes = routes;
+    _loading = false;
+    notifyListeners();
   }
 
   void getRouteByBusStopId(String token, String busStopId) async {

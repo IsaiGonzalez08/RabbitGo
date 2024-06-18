@@ -2,10 +2,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/domain/models/Stop/repositories/stop_repository.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StopRepositoryImpl implements StopRepository {
   @override
   Future<List<Stop>> getAllBusStops(String? token) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
     try {
       final response = await http.get(
           Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
