@@ -33,7 +33,21 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<void> deleteRouteById(String token, String id) async {}
+  Future<void> deleteRouteById(String token, String busRouteUuid) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
+    print('El token es : $token');
+    try {
+      String url = 'https://rabbitgo.sytes.net/bus/route/$busRouteUuid';
+      await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+    } catch (error) {
+      throw ('Error al eliminar el usuario, $error');
+    }
+  }
 
   @override
   Future<void> createBusRoute(

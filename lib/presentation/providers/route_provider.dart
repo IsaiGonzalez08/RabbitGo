@@ -14,7 +14,7 @@ class RouteProvider extends ChangeNotifier {
 
   List<RouteModel> _routesAlert = [];
   List<RouteModel> get routesAlert => _routesAlert;
-  
+
   List<LatLng> _routePath = [];
   List<LatLng> get routePath => _routePath;
   bool _loading = false;
@@ -37,8 +37,8 @@ class RouteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBusRoute(routeName, routePrice, routeStartTime, routeEndTime,
-      routeBusStopUuid, token) async {
+  Future<void> createBusRoute(routeName, routePrice, routeStartTime,
+      routeEndTime, routeBusStopUuid, token) async {
     await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
         routeEndTime, routeBusStopUuid, token);
   }
@@ -47,6 +47,17 @@ class RouteProvider extends ChangeNotifier {
     List<LatLng> routePath =
         await _routeRepository.getRouteBusPath(token, busRouteId);
     _routePath = routePath;
+    notifyListeners();
+  }
+
+  void deleteRouteByUuid(String token, String busRouteUuid) async {
+    await _routeRepository.deleteRouteById(token, busRouteUuid);
+    _removeRouteLocally(busRouteUuid);
+    notifyListeners();
+  }
+
+  void _removeRouteLocally(String busRouteUuid) {
+    routes.removeWhere((route) => route.uuid == busRouteUuid);
     notifyListeners();
   }
 
