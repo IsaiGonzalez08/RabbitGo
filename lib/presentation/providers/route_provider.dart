@@ -11,18 +11,18 @@ class RouteProvider extends ChangeNotifier {
 
   List<RouteModel> _routes = [];
   List<RouteModel> get routes => _routes;
+
   List<RouteModel> _routesAlert = [];
   List<RouteModel> get routesAlert => _routesAlert;
+  
   List<LatLng> _routePath = [];
   List<LatLng> get routePath => _routePath;
   bool _loading = false;
   bool get loading => _loading;
 
-
   void getAllRoutes(String token) async {
     _loading = true;
-     List<RouteModel> routes =
-        await _routeRepository.getAllRoutes(token);
+    List<RouteModel> routes = await _routeRepository.getAllRoutes(token);
     _routes = routes;
     _loading = false;
     notifyListeners();
@@ -35,6 +35,12 @@ class RouteProvider extends ChangeNotifier {
     _routesAlert = routesAlert;
     _loading = false;
     notifyListeners();
+  }
+
+  Future<void> createBusRoute(routeName, routePrice, routeStartTime, routeEndTime,
+      routeBusStopUuid, token) async {
+    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, routeBusStopUuid, token);
   }
 
   Future<void> getRouteBusPath(String token, String busRouteId) async {

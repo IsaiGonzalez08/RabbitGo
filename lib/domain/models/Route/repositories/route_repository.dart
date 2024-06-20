@@ -9,7 +9,7 @@ abstract class RouteRepository {
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopUuid,
       String token);
   Future<void> updateBusRoute(
       String routeName,

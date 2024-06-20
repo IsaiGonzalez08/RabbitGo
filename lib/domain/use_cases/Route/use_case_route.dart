@@ -30,10 +30,10 @@ class CreateBusRouteUseCase {
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopUuid,
       String token) async {
     await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
-        routeEndTime, routeBusStop, token);
+        routeEndTime, routeBusStopUuid, token);
   }
 }
 

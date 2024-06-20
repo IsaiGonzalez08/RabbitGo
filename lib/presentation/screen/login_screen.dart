@@ -80,7 +80,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void navigateUser(String role) {
+  void navigateUser(String role) async {
     if (role == 'admin') {
       Navigator.push(
         context,

@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RouteRepositoryImpl implements RouteRepository {
-
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
     Future<String?> getToken() async {
@@ -42,8 +41,39 @@ class RouteRepositoryImpl implements RouteRepository {
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
-      String token) async {}
+      String routeBusStopUuid,
+      String token) async {
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('token');
+    }
+
+    String? token = await getToken();
+    print('El token es : $token');
+    try {
+      final userData = {
+        'name': routeName,
+        'price': routePrice,
+        'startTime': routeStartTime,
+        'endTime': routeEndTime,
+        'busStopId': routeBusStopUuid
+      };
+      final response = await http.post(
+          Uri.parse('https://rabbitgo.sytes.net/bus/route'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': token!
+          },
+          body: jsonEncode(userData));
+      if (response.statusCode == 201) {
+        print('Ruta Creada Correctamente');
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
+    }
+  }
 
   @override
   Future<void> updateBusRoute(
@@ -54,7 +84,6 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeBusStop,
       String token,
       String id) async {}
-
 
   @override
   Future<List<RouteModel>> getRouteByBusStopId(
@@ -98,6 +127,7 @@ class RouteRepositoryImpl implements RouteRepository {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('token');
     }
+
     String? token = await getToken();
     try {
       List<LatLng> listCordinates = [];

@@ -5,7 +5,10 @@ import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';
+import 'package:rabbit_go/presentation/widgets/alert_configuration.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAdminScreen extends StatefulWidget {
   const MyAdminScreen({Key? key}) : super(key: key);
@@ -26,6 +29,14 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     _token = _user.token;
     _name = _user.name;
     Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+    });
   }
 
   void navigateUpdateScreen(String id) {
@@ -51,6 +62,15 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     );
   }
 
+  void _showDialogLogout() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MyAlertConfiguration();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,21 +83,42 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.07),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Bienvenido',
-                  style: TextStyle(
-                      color: Color(0xFF707070),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  _name,
-                  style: const TextStyle(
-                      fontSize: 22,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Bienvenido',
+                          style: TextStyle(
+                              color: Color(0xFF707070),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        Text(
+                          _name,
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF131313)),
+                        ),
+                      ],
+                    ),
+                    CustomButton(
+                      onPressed: () {
+                        _showDialogLogout();
+                      },
+                      textButton: 'Cerrar Sesión',
+                      width: MediaQuery.of(context).size.width * 0.26,
+                      height: 40,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF131313)),
+                      color: const Color(0xFFAB0000),
+                      colorText: const Color(0xFFF2F2F2),
+                    )
+                  ],
                 ),
                 const Divider(
                   color: Colors.grey,

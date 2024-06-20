@@ -6,8 +6,8 @@ import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:rabbit_go/presentation/screen/admin_screen.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
     Widget homeScreen;
     if (isLoggedIn) {
       if (rol == 'admin') {
-        homeScreen = const MyAdminScreen();
+        homeScreen = const MyTapBarAdminWidget();
       } else if (rol == 'user') {
         homeScreen = const MyTapBarWidget();
       } else {

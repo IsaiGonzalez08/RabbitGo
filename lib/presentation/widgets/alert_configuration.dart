@@ -8,6 +8,7 @@ class MyAlertConfiguration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     void navigateLogin() {
       Navigator.pushReplacement(
         context,
