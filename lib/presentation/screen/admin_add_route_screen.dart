@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
-import 'package:rabbit_go/infraestructure/repositories/Stop/stop_repository_impl.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
@@ -19,25 +17,46 @@ class MyAdminAddRouteScreen extends StatefulWidget {
 }
 
 class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
-  final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
-  final TextEditingController _routeStartTimeController =
-      TextEditingController();
-  final TextEditingController _routeEndTimeController = TextEditingController();
   late User _user;
   late String _token;
-
   List<Stop> stops = [];
   Stop? selectedStop;
   bool _isLoading = true;
+  String? startTimeValue;
+  String? endTimeValue;
+
+  List<String> hoursAM = <String>[
+    '6:00',
+    '7:00',
+    '8:00',
+    '9:00',
+    '10:00',
+    '11:00',
+    '12:00'
+  ];
+  List<String> hoursPM = <String>[
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00'
+  ];
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
+    startTimeValue = hoursAM.first;
+    endTimeValue = hoursPM.first;
     _fetchBusStops(_token);
   }
 
@@ -72,8 +91,8 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
     try {
       final routeName = _routeNameController.text;
       final routePrice = _routePriceController.text;
-      final routeStartTime = _routeStartTimeController.text;
-      final routeEndTime = _routeEndTimeController.text;
+      final routeStartTime = startTimeValue;
+      final routeEndTime = endTimeValue;
       final routeBusStopUuid = selectedStop?.id ?? '';
       await Provider.of<RouteProvider>(context, listen: false).createBusRoute(
           routeName,
@@ -83,9 +102,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
           routeBusStopUuid,
           _token);
       _routeNameController.clear();
-      _routeEndTimeController.clear();
-      _routeStartTimeController.clear();
-      _routeEndTimeController.clear();
+      _routePriceController.clear();
       navigateTapBarScreen();
     } catch (e) {
       print('Error creating bus route: $e');
@@ -147,7 +164,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                         text: 'Precio',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
+                            return 'Por favor ingresa un precio';
                           }
                           return null;
                         },
@@ -158,33 +175,35 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routeStartTimeController,
-                        text: 'Hora de Inicio',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
-                          }
-                          return null;
+                      DropdownButton<String>(
+                        value: startTimeValue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            startTimeValue = value!;
+                          });
                         },
+                        items: hoursAM
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routeEndTimeController,
-                        text: 'Hora de Termino',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
-                          }
-                          return null;
+                      DropdownButton<String>(
+                        value: endTimeValue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            endTimeValue = value!;
+                          });
                         },
+                        items: hoursPM
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
@@ -200,7 +219,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                       items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
                         return DropdownMenuItem<Stop>(
                           value: stop,
-                          child: Text(stop.name), // Solo muestra el nombre
+                          child: Text(stop.name),
                         );
                       }).toList(),
                     )

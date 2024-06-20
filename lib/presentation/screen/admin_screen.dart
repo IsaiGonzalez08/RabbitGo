@@ -110,7 +110,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                       onPressed: () {
                         _showDialogLogout();
                       },
-                      textButton: 'Cerrar Sesión',
+                      textButton: 'Cerrar',
                       width: MediaQuery.of(context).size.width * 0.26,
                       height: 40,
                       fontSize: 16,
