@@ -175,56 +175,115 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DropdownButton<String>(
-                        value: startTimeValue,
-                        onChanged: (String? value) {
-                          setState(() {
-                            startTimeValue = value!;
-                          });
-                        },
-                        items: hoursAM
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: DropdownButton<String>(
+                            menuMaxHeight: 200,
+                            iconEnabledColor: const Color(0xFFB8B8B8),
+                            iconSize: 20,
+                            style: const TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12),
+                            underline: Container(),
+                            value: startTimeValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                startTimeValue = value!;
+                              });
+                            },
+                            items: hoursAM
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 135),
+                                  child: Text(value),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
-                      DropdownButton<String>(
-                        value: endTimeValue,
-                        onChanged: (String? value) {
-                          setState(() {
-                            endTimeValue = value!;
-                          });
-                        },
-                        items: hoursPM
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: DropdownButton<String>(
+                            menuMaxHeight: 200,
+                            iconEnabledColor: const Color(0xFFB8B8B8),
+                            iconSize: 20,
+                            style: const TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12),
+                            underline: Container(),
+                            value: endTimeValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                endTimeValue = value!;
+                              });
+                            },
+                            items: hoursPM
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 135),
+                                  child: Text(value),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  if (stops.isNotEmpty)
-                    DropdownButton<Stop>(
-                      value: selectedStop,
-                      onChanged: (Stop? newValue) {
-                        setState(() {
-                          selectedStop = newValue!;
-                        });
-                      },
-                      items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
-                        return DropdownMenuItem<Stop>(
-                          value: stop,
-                          child: Text(stop.name),
-                        );
-                      }).toList(),
-                    )
-                  else
-                    const CircularProgressIndicator(),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xFFEDEDED)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: DropdownButton<Stop>(
+                        menuMaxHeight: 200,
+                        iconEnabledColor: const Color(0xFFB8B8B8),
+                        iconSize: 20,
+                        style: const TextStyle(
+                            color: Color(0xFFB8B8B8),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12),
+                        underline: Container(),
+                        value: selectedStop,
+                        onChanged: (Stop? newValue) {
+                          setState(() {
+                            selectedStop = newValue!;
+                          });
+                        },
+                        items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
+                          return DropdownMenuItem<Stop>(
+                            value: stop,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 255),
+                              child: Text(stop.name),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   CustomButton(
                     textButton: 'Agregar',
