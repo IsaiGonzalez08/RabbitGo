@@ -90,7 +90,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   Future<void> _createBusRoute() async {
     try {
       final routeName = _routeNameController.text;
-      final routePrice = _routePriceController.text;
+      final routePrice = int.tryParse(_routePriceController.text);
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
       final routeBusStopUuid = selectedStop?.id ?? '';

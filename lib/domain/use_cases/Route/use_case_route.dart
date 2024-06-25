@@ -25,15 +25,15 @@ class CreateBusRouteUseCase {
 
   CreateBusRouteUseCase(this._routeRepository);
 
-  Future<void> createBusStop(
+  Future<RouteModel> createBusStop(
       String routeName,
-      String routePrice,
+      int routePrice,
       String routeStartTime,
       String routeEndTime,
       String routeBusStopUuid,
       String token) async {
-    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
-        routeEndTime, routeBusStopUuid, token);
+    return await _routeRepository.createBusRoute(routeName, routePrice,
+        routeStartTime, routeEndTime, routeBusStopUuid, token);
   }
 }
 

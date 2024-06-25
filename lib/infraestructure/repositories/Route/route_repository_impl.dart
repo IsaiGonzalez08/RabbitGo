@@ -45,9 +45,9 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<void> createBusRoute(
+  Future<RouteModel> createBusRoute(
       String routeName,
-      String routePrice,
+      int routePrice,
       String routeStartTime,
       String routeEndTime,
       String routeBusStopUuid,
@@ -71,6 +71,10 @@ class RouteRepositoryImpl implements RouteRepository {
           body: jsonEncode(userData));
       if (response.statusCode == 201) {
         print('Ruta Creada Correctamente');
+        final data = jsonDecode(response.body);
+        final routeData = data['data'];
+        print('La data de la ruta es: $routeData');
+        return RouteModel.fromJson(routeData);
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');
       }
