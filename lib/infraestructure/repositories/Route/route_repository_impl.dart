@@ -6,13 +6,13 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RouteRepositoryImpl implements RouteRepository {
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
   @override
   Future<List<RouteModel>> getAllRoutes(String token) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     try {
       final response = await http.get(
@@ -34,11 +34,6 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<void> deleteRouteById(String token, String busRouteUuid) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     print('El token es : $token');
     try {
@@ -57,11 +52,6 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeEndTime,
       String routeBusStopUuid,
       String token) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     print('El token es : $token');
     try {
@@ -91,22 +81,43 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<void> updateBusRoute(
+      String routeUuid,
       String routeName,
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
-      String token,
-      String id) async {}
+      String routeBusStopUuid,
+      String token) async {
+    String? token = await getToken();
+    print('El token desde impl es: $token');
+    try {
+      final userData = {
+        'name': routeName,
+        'price': routePrice,
+        'startTime': routeStartTime,
+        'endTime': routeEndTime,
+        'busStopId': routeBusStopUuid
+      };
+      final response = await http.put(
+          Uri.parse('https://rabbitgo.sytes.net/bus/route/$routeUuid'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': token!
+          },
+          body: jsonEncode(userData));
+      if (response.statusCode == 200) {
+        print('Ruta Actualizada Correctamente');
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
+    }
+  }
 
   @override
   Future<List<RouteModel>> getRouteByBusStopId(
       String token, String busStopId) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     try {
       String url = ('https://rabbitgo.sytes.net/bus/route/at/$busStopId');
@@ -137,11 +148,6 @@ class RouteRepositoryImpl implements RouteRepository {
 
   @override
   Future<List<LatLng>> getRouteBusPath(String token, String busRouteId) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     try {
       List<LatLng> listCordinates = [];

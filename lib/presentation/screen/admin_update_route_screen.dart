@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
-import 'package:rabbit_go/domain/use_cases/Stop/use_case_stop.dart';
-import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
-import 'package:rabbit_go/infraestructure/repositories/Stop/stop_repository_impl.dart';
+import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 import '../../domain/models/Stop/stop.dart';
@@ -23,39 +22,69 @@ class MyAdminUpdateRouteScreen extends StatefulWidget {
 }
 
 class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
-  final getAllBusStops = GetAllBusStopsUseCase(StopRepositoryImpl());
-
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
-  final TextEditingController _routeStartTimeController =
-      TextEditingController();
-  final TextEditingController _routeEndTimeController = TextEditingController();
-  final TextEditingController _routeBusStopController = TextEditingController();
-  List<String> list = [];
-  String? dropdownValue;
   late User _user;
   late String _token;
   late String id;
+  List<Stop> stops = [];
+  Stop? selectedStop;
+  bool _isLoading = true;
+  String? startTimeValue;
+  String? endTimeValue;
+
+  List<String> hoursAM = <String>[
+    '6:00',
+    '7:00',
+    '8:00',
+    '9:00',
+    '10:00',
+    '11:00',
+    '12:00'
+  ];
+  List<String> hoursPM = <String>[
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00'
+  ];
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
+    startTimeValue = hoursAM.first;
+    endTimeValue = hoursPM.first;
     _fetchBusStops(_token);
   }
 
   Future<void> _fetchBusStops(String token) async {
     try {
-      List<Stop> stops = await getAllBusStops.getAllBusStops(token);
+      await Provider.of<BusStopProvider>(context, listen: false)
+          .getAllBusStops(token);
+      List<Stop> fetchedStops =
+          // ignore: use_build_context_synchronously
+          Provider.of<BusStopProvider>(context, listen: false).stops;
       setState(() {
-        list = stops.map((stop) => stop.id).toList();
-        if (list.isNotEmpty) {
-          dropdownValue = list.first;
+        stops = fetchedStops;
+        if (stops.isNotEmpty) {
+          selectedStop = stops.first;
         }
+        _isLoading = false;
       });
     } catch (e) {
       print('Error fetching bus stops: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -64,18 +93,30 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
       setState(() {
         id = widget.id;
       });
+      final routeUuid = id;
       final routeName = _routeNameController.text;
       final routePrice = _routePriceController.text;
-      final routeStartTime = _routeStartTimeController.text;
-      final routeEndTime = _routeEndTimeController.text;
-      final routeBusStop = _routeBusStopController.text;
-      final updateBusRoute =
-          UpdateBusRouteUseCase(RouteRepositoryImpl());
-      updateBusRoute.updateBusStop(routeName, routePrice, routeStartTime,
-          routeEndTime, routeBusStop, _token, id);
+      final routeStartTime = startTimeValue;
+      final routeEndTime = endTimeValue;
+      final routeBusStopUuid = selectedStop?.id ?? '';
+      await Provider.of<RouteProvider>(context, listen: false).updateBusRoute(
+        routeUuid,
+        routeName,
+        routePrice,
+        routeStartTime,
+        routeEndTime,
+        routeBusStopUuid,
+        _token,
+      );
+      navigateHomeAdmin();
     } catch (e) {
-      print('Error fetching bus stops: $e');
+      print('Error updating bus route: $e');
     }
+  }
+
+  void navigateHomeAdmin() {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()));
   }
 
   @override
@@ -101,136 +142,182 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyTextFieldWidget(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        controllerTextField: _routeNameController,
+                        text: 'Nombre(s)',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingresa un nombre de usuario';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyTextFieldWidget(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        controllerTextField: _routePriceController,
+                        text: 'Precio',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingresa un nombre de usuario';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: DropdownButton<String>(
+                            menuMaxHeight: 200,
+                            iconEnabledColor: const Color(0xFFB8B8B8),
+                            iconSize: 20,
+                            style: const TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12),
+                            underline: Container(),
+                            value: startTimeValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                startTimeValue = value!;
+                              });
+                            },
+                            items: hoursAM
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 135),
+                                  child: Text(value),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: DropdownButton<String>(
+                            menuMaxHeight: 200,
+                            iconEnabledColor: const Color(0xFFB8B8B8),
+                            iconSize: 20,
+                            style: const TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12),
+                            underline: Container(),
+                            value: endTimeValue,
+                            onChanged: (String? value) {
+                              setState(() {
+                                endTimeValue = value!;
+                              });
+                            },
+                            items: hoursPM
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 135),
+                                  child: Text(value),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xFFEDEDED)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: DropdownButton<Stop>(
+                        menuMaxHeight: 200,
+                        iconEnabledColor: const Color(0xFFB8B8B8),
+                        iconSize: 20,
+                        style: const TextStyle(
+                            color: Color(0xFFB8B8B8),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12),
+                        underline: Container(),
+                        value: selectedStop,
+                        onChanged: (Stop? newValue) {
+                          setState(() {
+                            selectedStop = newValue!;
+                          });
+                        },
+                        items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
+                          return DropdownMenuItem<Stop>(
+                            value: stop,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 255),
+                              child: Text(stop.name),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  CustomButton(
+                    textButton: 'Actualizar',
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 40,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF01142B),
+                    colorText: const Color(0xFFFFFFFF),
+                    onPressed: () {
+                      _updateBusRoute();
+                    },
+                  )
+                ],
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyTextFieldWidget(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  controllerTextField: _routeNameController,
-                  text: 'Nombre(s)',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa un nombre de usuario';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyTextFieldWidget(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  controllerTextField: _routePriceController,
-                  text: 'Precio',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa un nombre de usuario';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyTextFieldWidget(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  controllerTextField: _routeStartTimeController,
-                  text: 'Hora de Inicio',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa un nombre de usuario';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyTextFieldWidget(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  controllerTextField: _routeEndTimeController,
-                  text: 'Hora de Termino',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa un nombre de usuario';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            if (list.isNotEmpty)
-              DropdownMenu<String>(
-                initialSelection: dropdownValue ?? '',
-                controller: _routeBusStopController,
-                width: MediaQuery.of(context).size.width * 0.9,
-                menuStyle: const MenuStyle(
-                  backgroundColor: WidgetStatePropertyAll(Color(0xFFEDEDED)),
-                ),
-                menuHeight: 150,
-                textStyle: const TextStyle(
-                    color: Color(0xFFB8B8B8),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
-                inputDecorationTheme: const InputDecorationTheme(
-                    iconColor: Color(0xFFB8B8B8),
-                    border: InputBorder.none,
-                    filled: true,
-                    fillColor: Color(0xFFEDEDED)),
-                onSelected: (String? value) {
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                dropdownMenuEntries:
-                    list.map<DropdownMenuEntry<String>>((String value) {
-                  return DropdownMenuEntry<String>(value: value, label: value);
-                }).toList(),
-              )
-            else
-              const CircularProgressIndicator(),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomButton(
-              textButton: 'Actualizar',
-              width: MediaQuery.of(context).size.width * 0.438,
-              height: 40,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF01142B),
-              colorText: const Color(0xFFFFFFFF),
-              onPressed: () {
-                _updateBusRoute();
-              },
-            )
-          ],
-        ),
-      ),
     );
   }
 }

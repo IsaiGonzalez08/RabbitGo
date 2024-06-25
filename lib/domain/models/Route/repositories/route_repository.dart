@@ -12,13 +12,14 @@ abstract class RouteRepository {
       String routeBusStopUuid,
       String token);
   Future<void> updateBusRoute(
+      String routeId,
       String routeName,
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopId,
       String token,
-      String id);
+      );
   Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
   Future<List<LatLng>> getRouteBusPath(String token, String busRouteId);
 }

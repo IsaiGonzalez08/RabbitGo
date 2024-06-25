@@ -43,15 +43,15 @@ class UpdateBusRouteUseCase {
   UpdateBusRouteUseCase(this._routeRepository);
 
   Future<void> updateBusStop(
+      String routeUuid,
       String routeName,
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
-      String token,
-      String id) async {
-    await _routeRepository.updateBusRoute(routeName, routePrice, routeStartTime,
-        routeEndTime, routeBusStop, token, id);
+      String routeBusStopUuid,
+      String token) async {
+    await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
+        routeStartTime, routeEndTime, routeBusStopUuid, token);
   }
 }
 
