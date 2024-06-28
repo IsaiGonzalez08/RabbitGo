@@ -18,8 +18,6 @@ class PlaceProvider extends ChangeNotifier {
       if (query.isNotEmpty) {
         _hereMarkers = await _placeRepository.onResults(query);
         notifyListeners();
-      } else {
-        _placeRepository.cancel();
       }
     } catch (e) {
       throw ('El error es $e');

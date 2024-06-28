@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/infraestructure/helpers/security_checker.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
@@ -20,8 +21,6 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserProvider>(
-            create: (context) => UserProvider()),
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
         ChangeNotifierProvider<PlaceProvider>(
@@ -88,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const MyLoginSignPage(),
+          builder: (context) => const SecurityCheckScreen(),
         ),
       );
     });
@@ -104,3 +103,49 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
+class SecurityCheckScreen extends StatefulWidget {
+  const SecurityCheckScreen({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SecurityCheckScreenState createState() => _SecurityCheckScreenState();
+}
+
+class _SecurityCheckScreenState extends State<SecurityCheckScreen> {
+  bool _isSecure = false;
+  final SecurityChecker _securityChecker = SecurityChecker();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSecurity();
+  }
+
+  Future<void> _checkSecurity() async {
+    bool isSecure = await _securityChecker.isDeviceSecure();
+    if (isSecure) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MyLoginSignPage(),
+        ),
+      );
+    } else {
+      setState(() {
+        _isSecure = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: _isSecure
+            ? Container() 
+            : const Text("Please set a code of access to use this app."),
+      ),
+    );
+  }
+}
+

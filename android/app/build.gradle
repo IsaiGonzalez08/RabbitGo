@@ -49,7 +49,7 @@ android {
         applicationId "vji_com.example.rabbit_go"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion                      // Update from 16 to 20
+        minSdkVersion 23                    // Update from 16 to 20
         targetSdkVersion 33
         compileSdkVersion 34
         versionCode 2
