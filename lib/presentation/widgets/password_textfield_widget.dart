@@ -22,6 +22,7 @@ class MyPasswordTextFieldWidget extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextFormField(
+        autocorrect: false,
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),

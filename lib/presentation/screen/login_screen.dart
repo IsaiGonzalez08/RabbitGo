@@ -32,6 +32,22 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   bool _isPasswordInValid = false;
   bool _showPassword = true;
 
+  String _errorMessage = '';
+
+  void _validatePassword() {
+    String password = _passwordController.text;
+
+    if (isValidPassword(password)) {
+      setState(() {
+        _errorMessage = 'Contraseña válida';
+      });
+    } else {
+      setState(() {
+        _errorMessage = 'La contraseña debe tener entre 6 y 16 caracteres.';
+      });
+    }
+  }
+
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
@@ -42,21 +58,27 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     if (_isEmailInValid) {
       return "El email no existe";
     }
+    _validatePassword();
     return null;
   }
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 4) {
-      return "La contraseña debe tener al menos 4 caracteres";
-    } else if (value.length > 15) {
-      return "La contraseña no puede ser mayor a 15 caracteres";
+    } else if (value.length < 6) {
+      return "La contraseña debe tener al menos 6 caracteres";
+    } else if (value.length > 16) {
+      return "La contraseña no puede ser mayor a 16 caracteres";
     } else if (_isPasswordInValid) {
       return "La contraseña no existe";
     } else {
       return null;
     }
+  }
+
+  bool isValidPassword(String password) {
+    final regex = RegExp(r'^.{6,16}$');
+    return regex.hasMatch(password);
   }
 
   void providerUserData() {
@@ -96,6 +118,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _errorMessage;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

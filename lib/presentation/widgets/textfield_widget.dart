@@ -23,7 +23,7 @@ class MyTextFieldWidget extends StatelessWidget {
       width: width,
       child: TextFormField(
         textInputAction: textInput,
-        
+        autocorrect: false,
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),

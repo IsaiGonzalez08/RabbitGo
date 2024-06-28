@@ -89,7 +89,8 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
 
   Future<void> _createBusRoute() async {
     try {
-      final routeName = _routeNameController.text;
+      final routeName = _routeNameController.text[0].toUpperCase() +
+          _routeNameController.text.substring(1);
       final routePrice = int.tryParse(_routePriceController.text);
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
@@ -113,17 +114,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Image.asset(
-            'assets/images/ForwardLeft.png',
-            width: 20,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Color(0xFF979797)),
         title: const Text(
           'Agregar Ruta',
           style: TextStyle(
@@ -277,7 +268,8 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                             value: stop,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 255),
-                              child: Text(stop.name),
+                              child: Text(stop.name[0].toUpperCase() +
+                                  stop.name.substring(1)),
                             ),
                           );
                         }).toList(),

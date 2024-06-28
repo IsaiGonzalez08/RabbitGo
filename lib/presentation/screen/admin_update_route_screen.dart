@@ -94,7 +94,8 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
         id = widget.id;
       });
       final routeUuid = id;
-      final routeName = _routeNameController.text;
+      final routeName = _routeNameController.text[0].toUpperCase() +
+          _routeNameController.text.substring(1);
       final routePrice = _routePriceController.text;
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
@@ -293,7 +294,8 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                             value: stop,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 255),
-                              child: Text(stop.name),
+                              child: Text(stop.name[0].toUpperCase() +
+                                  stop.name.substring(1)),
                             ),
                           );
                         }).toList(),

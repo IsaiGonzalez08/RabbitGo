@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/screen/admin_add_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/admin_find_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/admin_screen.dart';
+
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 
 class MyTapBarAdminWidget extends StatefulWidget {
   const MyTapBarAdminWidget({Key? key}) : super(key: key);
@@ -30,9 +34,12 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
-          setState(() {
-            _currentIndex = newIndex;
-          });
+          if (!Provider.of<RouteProvider>(context, listen: false).loading &&
+              !Provider.of<BusStopProvider>(context, listen: false).loading) {
+            setState(() {
+              _currentIndex = newIndex;
+            });
+          } 
         },
         items: [
           BottomNavigationBarItem(

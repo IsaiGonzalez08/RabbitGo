@@ -42,16 +42,16 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
+  final bool? isLoggedIn;
   final String? token;
   final String? rol;
   const MyApp(
-      {Key? key, required this.isLoggedIn, this.token, required this.rol})
+      {Key? key, this.isLoggedIn, this.token, this.rol})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     Widget homeScreen;
-    if (isLoggedIn) {
+    if (isLoggedIn!) {
       if (rol == 'admin') {
         homeScreen = const MyTapBarAdminWidget();
       } else if (rol == 'user') {
