@@ -75,9 +75,4 @@ class RouteProvider extends ChangeNotifier {
     routes.removeWhere((route) => route.uuid == busRouteUuid);
     notifyListeners();
   }
-
-  void cleanListRoutes() {
-    _routes = [];
-    notifyListeners();
-  }
 }

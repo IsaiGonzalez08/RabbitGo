@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/infraestructure/helpers/security_checker.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
@@ -23,6 +22,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
+        ChangeNotifierProvider<UserProvider>(
+            create: (context) => UserProvider()),
         ChangeNotifierProvider<PlaceProvider>(
           create: (context) => PlaceProvider(),
         ),
@@ -38,6 +39,32 @@ void main() async {
       ),
     ),
   );
+}
+
+Future<void> checkDataExpiration(SharedPreferences prefs) async {
+  final int? storedTimestamp = prefs.getInt('storedTimestamp');
+  if (storedTimestamp != null) {
+    final DateTime storedDate = DateTime.fromMillisecondsSinceEpoch(storedTimestamp);
+    final DateTime now = DateTime.now();
+    if (now.difference(storedDate).inDays > 30) {
+      await prefs.clear();
+    }
+  }
+}
+
+Future<void> saveDataWithTimestamp(SharedPreferences prefs, String key, dynamic value) async {
+  if (value is int) {
+    await prefs.setInt(key, value);
+  } else if (value is double) {
+    await prefs.setDouble(key, value);
+  } else if (value is bool) {
+    await prefs.setBool(key, value);
+  } else if (value is String) {
+    await prefs.setString(key, value);
+  } else if (value is List<String>) {
+    await prefs.setStringList(key, value);
+  }
+  await prefs.setInt('storedTimestamp', DateTime.now().millisecondsSinceEpoch);
 }
 
 class MyApp extends StatelessWidget {
@@ -87,7 +114,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const SecurityCheckScreen(),
+          builder: (context) => const MyLoginSignPage(),
         ),
       );
     });
@@ -103,49 +130,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
-class SecurityCheckScreen extends StatefulWidget {
-  const SecurityCheckScreen({Key? key}) : super(key: key);
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _SecurityCheckScreenState createState() => _SecurityCheckScreenState();
-}
-
-class _SecurityCheckScreenState extends State<SecurityCheckScreen> {
-  bool _isSecure = false;
-  final SecurityChecker _securityChecker = SecurityChecker();
-
-  @override
-  void initState() {
-    super.initState();
-    _checkSecurity();
-  }
-
-  Future<void> _checkSecurity() async {
-    bool isSecure = await _securityChecker.isDeviceSecure();
-    if (isSecure) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const MyLoginSignPage(),
-        ),
-      );
-    } else {
-      setState(() {
-        _isSecure = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _isSecure
-            ? Container() 
-            : const Text("Please set a code of access to use this app."),
-      ),
-    );
-  }
-}
-

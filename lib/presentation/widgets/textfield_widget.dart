@@ -8,6 +8,7 @@ class MyTextFieldWidget extends StatelessWidget {
     required this.width,
     required this.controllerTextField,
     required this.validator,
+    this.onChanged,
     this.onSaved,
   }) : super(key: key);
   final String? text;
@@ -16,12 +17,14 @@ class MyTextFieldWidget extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextEditingController controllerTextField;
   final void Function(String?)? onSaved;
+  final void Function(String?)? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       child: TextFormField(
+        onChanged: onChanged,
         textInputAction: textInput,
         autocorrect: false,
         decoration: InputDecoration(

@@ -22,31 +22,13 @@ class MyLoginScreen extends StatefulWidget {
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   late User _user;
   late String _role;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
   bool _showPassword = true;
-
-  String _errorMessage = '';
-
-  void _validatePassword() {
-    String password = _passwordController.text;
-
-    if (isValidPassword(password)) {
-      setState(() {
-        _errorMessage = 'Contraseña válida';
-      });
-    } else {
-      setState(() {
-        _errorMessage = 'La contraseña debe tener entre 6 y 16 caracteres.';
-      });
-    }
-  }
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -58,7 +40,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     if (_isEmailInValid) {
       return "El email no existe";
     }
-    _validatePassword();
     return null;
   }
 
@@ -76,30 +57,28 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  bool isValidPassword(String password) {
-    final regex = RegExp(r'^.{6,16}$');
-    return regex.hasMatch(password);
-  }
-
   void providerUserData() {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
   void _loginUser() async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
     if (_formKey.currentState!.validate()) {
-      final String email = _emailController.text;
-      final String password = _passwordController.text;
       await Provider.of<UserProvider>(context, listen: false)
           .loginUser(email, password);
       providerUserData();
       _role = _user.role;
-      _emailController.clear();
-      _passwordController.clear();
       navigateUser(_role);
     } else {
-      _isEmailInValid = true;
-      _isPasswordInValid = true;
+      setState(() {
+        _isEmailInValid = true;
+        _isPasswordInValid = true;
+      });
     }
+    _emailController.clear();
+    _passwordController.clear();
   }
 
   void navigateUser(String role) async {
@@ -118,7 +97,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _errorMessage;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -177,7 +155,12 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     text: 'Correo Electrónico',
                     controllerTextField: _emailController,
                     validator: (value) {
-                      return validateEmail(value);
+                      return validateEmail(value?.trim());
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _isEmailInValid = false;
+                      });
                     },
                   ),
                   const SizedBox(
@@ -188,9 +171,14 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     controllerTextField: _passwordController,
                     text: 'Contraseña',
                     validator: (value) {
-                      return validatePassword(value);
+                      return validatePassword(value?.trim());
                     },
                     obscureText: _showPassword,
+                    onChanged: (value) {
+                      setState(() {
+                        _isPasswordInValid = false;
+                      });
+                    },
                   ),
                   MyCheckboxWidget(
                     value: _showPassword,

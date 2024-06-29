@@ -10,6 +10,11 @@ class UserProvider extends ChangeNotifier {
       User(uuid: '', name: '', lastName: '', email: '', role: '', token: '');
   User get userData => _user;
 
+  Future<void> createUser(
+      String name, String lastname, String email, String password) async {
+    await _userRepository.createUser(name, lastname, email, password);
+  }
+
   Future<void> loginUser(String email, String password) async {
     User userData = await _userRepository.userLogin(email, password);
     _user = userData;

@@ -8,28 +8,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> createUser(
-      String name, String lastName, String email, String password) async {
+      String name, String lastname, String email, String password) async {
     try {
       String url = ('https://rabbitgo.sytes.net/user');
       final userData = {
         'name': name,
-        'lastname': lastName,
+        'lastname': lastname,
         'email': email,
         'password': password,
       };
-      final response = await http.post(
+      await http.post(
         Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(userData),
       );
-      if (response.statusCode == 400) {
-        final jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status'] == 'error') {
-          throw Exception('Failed to login: ${jsonResponse['message']}');
-        }
-      }
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
     }
@@ -88,6 +82,7 @@ class UserRepositoryImpl implements UserRepository {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('token');
     }
+
     String? token = await getToken();
     try {
       String url = ('https://rabbitgo.sytes.net/user/$userId');

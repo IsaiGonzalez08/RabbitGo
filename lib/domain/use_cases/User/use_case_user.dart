@@ -5,8 +5,8 @@ class CreateUserUseCase {
   final UserRepository _userRepository;
   CreateUserUseCase(this._userRepository);
   Future<void> createUser(
-      String name, String lastName, String email, String password) async {
-    await _userRepository.createUser(name, lastName, email, password);
+      String name, String lastname, String email, String password) async {
+    await _userRepository.createUser(name, lastname, email, password);
   }
 
   Future<User> userLogin(String email, String password) async {

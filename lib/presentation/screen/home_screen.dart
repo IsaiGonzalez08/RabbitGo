@@ -27,7 +27,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late Polyline polyline;
   late WaitProvider _waitProvider;
   List<Stop> _busStopMarkers = [];
-  List<Marker> hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;

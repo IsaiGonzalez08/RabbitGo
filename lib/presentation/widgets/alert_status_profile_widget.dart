@@ -4,6 +4,7 @@ import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAlertStatusProfile extends StatefulWidget {
   const MyAlertStatusProfile({super.key});
@@ -81,8 +82,14 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
               textButton: 'Eliminar',
               color: const Color(0xFFAB0000),
               colorText: const Color(0xFFFFFFFF),
-              onPressed: () {
+              onPressed: () async {
                 _deleteAccount(_token, _userId);
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('isLoggedIn');
+                await prefs.remove('name');
+                await prefs.remove('lastname');
+                await prefs.remove('email');
+                await prefs.remove('rol');
               },
             ),
             const SizedBox(

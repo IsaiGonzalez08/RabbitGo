@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:rabbit_go/domain/use_cases/User/use_case_user.dart';
-import 'package:rabbit_go/infraestructure/repositories/User/user_repository_impl.dart';
+import 'package:provider/provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -22,10 +22,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final CreateUserUseCase _createUserUseCase =
-      CreateUserUseCase(UserRepositoryImpl());
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _showPassword = true;
 
@@ -59,23 +56,25 @@ class _MySignScreenState extends State<MySignUpScreen> {
   }
 
   Future<void> _createUser() async {
+    final String name = _usernameController.text.trim();
+    final String lastname = _lastnameController.text.trim();
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+    final String confirmPassword = _confirmPasswordController.text.trim();
+
     if (_formKey.currentState!.validate()) {
-      if (_passwordController.text != _confirmPasswordController.text) {
+      if (password != confirmPassword) {
         return;
       } else {
-        final String name = _usernameController.text;
-        final String lastName = _lastnameController.text;
-        final String email = _emailController.text;
-        final String password = _passwordController.text;
-        await _createUserUseCase.createUser(name, lastName, email, password);
-        _usernameController.clear();
-        _lastnameController.clear();
-        _emailController.clear();
-        _passwordController.clear();
-        _confirmPasswordController.clear();
-        navigateLoginScreen();
+        await Provider.of<UserProvider>(context, listen: false)
+            .createUser(name, lastname, email, password);
       }
-      return;
+      _usernameController.clear();
+      _lastnameController.clear();
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      navigateLoginScreen();
     }
   }
 
@@ -86,166 +85,170 @@ class _MySignScreenState extends State<MySignUpScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Image.asset(
-                'assets/images/LeftArrow.png',
-                width: 30,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Image.asset(
+              'assets/images/LeftArrow.png',
+              width: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Text(
+                    'Ingresa tus datos',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF01142B),
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'Recuerda colocar tus datos correctamente.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF979797),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyTextFieldWidget(
+                        text: 'Nombre(s)',
+                        width: MediaQuery.of(context).size.width * 0.442,
+                        controllerTextField: _usernameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingresa un nombre de usuario';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      MyTextFieldWidget(
+                        text: 'Apellidos',
+                        width: MediaQuery.of(context).size.width * 0.442,
+                        controllerTextField: _lastnameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingresa un apellido';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  MyTextFieldWidget(
+                    controllerTextField: _emailController,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    text: 'Correo Eletcrónico',
+                    validator: (value) {
+                      return validateEmail(value?.trim());
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  MyPasswordTextFieldWidget(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    text: 'Contraseña',
+                    controllerTextField: _passwordController,
+                    validator: (value) {
+                      return validatePassword(value?.trim());
+                    },
+                    obscureText: _showPassword,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  MyPasswordTextFieldWidget(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    controllerTextField: _confirmPasswordController,
+                    text: 'Confirmar contraseña',
+                    validator: (value) {
+                      return validatePassword(value?.trim());
+                    },
+                    obscureText: _showPassword,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyCheckboxWidget(
+                    value: _showPassword,
+                    onChanged: (value) {
+                      setState(() {
+                        _showPassword = value ?? true;
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/images/CheckmarkYes.png',
+                        width: 15,
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Al registrarte aceptas todos los términos y condiciones \nde la aplicación.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFC7C7C7),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 25),
+                  CustomButton(
+                    textButton: "Comenzar",
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 40,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF01142B),
+                    colorText: const Color(0xFFFFFFFF),
+                    onPressed: () {
+                      _createUser();
+                    },
+                  ),
+                ],
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             ),
           ),
-          body: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    const Text(
-                      'Ingresa tus datos',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF01142B),
-                          fontSize: 24),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      'Recuerda colocar tus datos correctamente.',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF979797),
-                          fontSize: 12),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MyTextFieldWidget(
-                          text: 'Nombre(s)',
-                          width: MediaQuery.of(context).size.width * 0.442,
-                          controllerTextField: _usernameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa un nombre de usuario';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        MyTextFieldWidget(
-                          text: 'Apellidos',
-                          width: MediaQuery.of(context).size.width * 0.442,
-                          controllerTextField: _lastnameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa un apellido';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    MyTextFieldWidget(
-                      controllerTextField: _emailController,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      text: 'Correo Eletcrónico',
-                      validator: (value) {
-                        return validateEmail(value);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    MyPasswordTextFieldWidget(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      text: 'Contraseña',
-                      controllerTextField: _passwordController,
-                      validator: (value) {
-                        return validatePassword(value);
-                      },
-                      obscureText: _showPassword,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    MyPasswordTextFieldWidget(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      controllerTextField: _confirmPasswordController,
-                      text: 'Confirmar contraseña',
-                      validator: (value) {
-                        return validatePassword(value);
-                      },
-                      obscureText: _showPassword,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    MyCheckboxWidget(
-                      value: _showPassword,
-                      onChanged: (value) {
-                        setState(() {
-                          _showPassword = value ?? true;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.03)),
-                        Image.asset(
-                          'assets/images/CheckmarkYes.png',
-                          width: 15,
-                        ),
-                        const SizedBox(width: 5),
-                        const Text(
-                          'Al registrarte aceptas todos los términos y condiciones \nde la aplicación.',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFC7C7C7),
-                            fontSize: 11,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 25),
-                    CustomButton(
-                      textButton: "Comenzar",
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 40,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF01142B),
-                      colorText: const Color(0xFFFFFFFF),
-                      onPressed: () {
-                        _createUser();
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-          )),
+        ),
+      ),
     );
   }
 }
