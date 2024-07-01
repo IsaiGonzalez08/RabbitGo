@@ -22,8 +22,6 @@ void main() async {
       providers: [
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
-        ChangeNotifierProvider<UserProvider>(
-            create: (context) => UserProvider()),
         ChangeNotifierProvider<PlaceProvider>(
           create: (context) => PlaceProvider(),
         ),
