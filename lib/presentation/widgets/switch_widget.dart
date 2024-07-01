@@ -8,7 +8,7 @@ class MySwitchWidget extends StatefulWidget {
 }
 
 class _MySwitchWidgetState extends State<MySwitchWidget> {
-  bool light = true;
+  bool light = false;
 
   @override
   Widget build(BuildContext context) {

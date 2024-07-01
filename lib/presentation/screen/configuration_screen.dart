@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
@@ -7,6 +8,7 @@ import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_configuration.dart';
 import 'package:rabbit_go/presentation/widgets/button_configuration_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyConfigurationScreen extends StatefulWidget {
   const MyConfigurationScreen({super.key});
@@ -16,21 +18,31 @@ class MyConfigurationScreen extends StatefulWidget {
 }
 
 class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
-  String? _name;
-  String? _lastname;
-  String? _email;
-  String? userId;
-  String? token;
+  late User _user;
+  late String _name;
+  late String _lastname;
+  late String _email;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _name = Provider.of<UserProvider>(context).name;
-    _lastname = Provider.of<UserProvider>(context).lastname;
-    _email = Provider.of<UserProvider>(context).email;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _name = _user.name;
+    _lastname = _user.lastName;
+    _email = _user.email;
+    _loadUserData();
   }
 
-  void _showConfirmDialog() {
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+      _lastname = prefs.getString('lastname') ?? '';
+      _email = prefs.getString('email') ?? '';
+    });
+  }
+
+  void _showDialogLogout() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -80,7 +92,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
                                 fontSize: 18),
                           ),
                           Text(
-                            _email ?? '',
+                            _email,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF737373),
@@ -136,7 +148,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
             ),
             InkWell(
                 onTap: () {
-                  _showConfirmDialog();
+                  _showDialogLogout();
                 },
                 child: SizedBox(
                   height: 80,

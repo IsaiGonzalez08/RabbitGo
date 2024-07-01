@@ -5,13 +5,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceRepositoryImpl implements PlaceRepository {
   final _dio = Dio();
-  CancelToken? _cancelToken;
 
   @override
   Future<List<Marker>> onResults(String query) async {
     List<Marker> hereMarkers = [];
     try {
-      _cancelToken = CancelToken();
       final response = await _dio.get(
         'https://discover.search.hereapi.com/v1/discover',
         queryParameters: {
@@ -19,7 +17,6 @@ class PlaceRepositoryImpl implements PlaceRepository {
           "q": query,
           "in": "bbox:-93.226372,16.719187,-93.050247,16.804001"
         },
-        cancelToken: _cancelToken,
       );
       final results = (response.data['items'] as List)
           .map(
@@ -36,17 +33,9 @@ class PlaceRepositoryImpl implements PlaceRepository {
             infoWindow:
                 InfoWindow(title: place.title, snippet: place.address)));
       }
-      _cancelToken = null;
       return hereMarkers;
     } catch (e) {
       throw ('el error es $e');
-    }
-  }
-
-  void cancel() {
-    if (_cancelToken != null) {
-      _cancelToken!.cancel();
-      _cancelToken = null;
     }
   }
   

@@ -9,7 +9,4 @@ class GetPlaceUseCase {
      return await _placeRepository.onResults(query);
   } 
   
-  void cancel() {
-    _placeRepository.cancel();
-  }
 }

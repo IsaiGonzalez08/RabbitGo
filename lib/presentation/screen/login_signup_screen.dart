@@ -30,12 +30,12 @@ class _MyLoginPage extends State<MyLoginSignPage> {
             Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: MediaQuery.of(context).size.height * 0.1)),
-            Text(
+            const Text(
               '¡Bienvenido!',
               style: TextStyle(
-                color: const Color(0xFF01142B),
+                color: Color(0xFF01142B),
                 fontWeight: FontWeight.w700,
-                fontSize: MediaQuery.of(context).size.width * 0.1,
+                fontSize: 40,
               ),
             ),
             const SizedBox(height: 5),
@@ -45,15 +45,15 @@ class _MyLoginPage extends State<MyLoginSignPage> {
               style: TextStyle(
                 color: Color(0xFF6C6C6C),
                 fontWeight: FontWeight.w500,
-                fontSize: 12,
+                fontSize: 14,
               ),
             ),
             const SizedBox(height: 10),
             CustomButton(
               textButton: 'Tengo una cuenta',
               width: MediaQuery.of(context).size.width * 0.9,
-              height: 40,
-              fontSize: MediaQuery.of(context).size.width * 0.04,
+              height: 45,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
@@ -77,7 +77,7 @@ class _MyLoginPage extends State<MyLoginSignPage> {
             const SizedBox(height: 5),
             Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: 40,
+              height: 45,
               decoration: BoxDecoration(
                   color: const Color(0xFFFFFFFF),
                   borderRadius: BorderRadius.circular(5),
@@ -94,13 +94,13 @@ class _MyLoginPage extends State<MyLoginSignPage> {
                       'assets/images/Google.png',
                       width: 25,
                     ),
-                    Text(
+                    const Text(
                       'Continuar con Google',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: const Color(0xFF9F9F9F),
+                        color: Color(0xFF9F9F9F),
                         fontWeight: FontWeight.w600,
-                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                        fontSize: 16,
                       ),
                     ),
                     Padding(

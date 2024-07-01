@@ -2,44 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class MyAlertStatusProfile extends StatefulWidget {
-  const MyAlertStatusProfile({super.key});
+class MyConfirmUpdateDataWidget extends StatefulWidget {
+  final String name, lastname, email, password;
+
+  const MyConfirmUpdateDataWidget(
+      {super.key,
+      required this.name,
+      required this.lastname,
+      required this.email,
+      required this.password});
 
   @override
-  State<MyAlertStatusProfile> createState() => _MyAlertStatusProfileState();
+  State<MyConfirmUpdateDataWidget> createState() =>
+      _MyConfirmUpdateDataWidgetState();
 }
 
-class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
+class _MyConfirmUpdateDataWidgetState extends State<MyConfirmUpdateDataWidget> {
   late User _user;
   late String _userId;
   late String _token;
+  late String name;
+  late String lastname;
+  late String email;
+  late String password;
 
   @override
   void initState() {
-    super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _userId = _user.uuid;
     _token = _user.token;
+    name = widget.name;
+    lastname = widget.lastname;
+    email = widget.email;
+    password = widget.password;
+    super.initState();
   }
 
-  void navigateSignUpScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
-    );
-    Navigator.popUntil(context, (route) => route.isFirst);
+  navigateConfigurationScreen() {
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
-  void _deleteAccount(String token, String id) async {
+  void _updateUser(String userId, String name, String lastname, String email,
+      String password, String token) async {
     await Provider.of<UserProvider>(context, listen: false)
-        .deleteAccount(token, id);
-    navigateSignUpScreen();
+        .updateUser(userId, name, lastname, email, password, token);
+    navigateConfigurationScreen();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +61,10 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
       title: const Center(
         child: Text(
           textAlign: TextAlign.center,
-          "¿Estas seguro que quieres eliminar\ntú cuenta?",
+          "¿Estas seguro de\nactualizar tus datos?",
           style: TextStyle(
-              color: Color(0xFF01142B),
-              fontSize: 16,
+              color: Color(0xFF777777),
+              fontSize: 20,
               fontWeight: FontWeight.w700),
         ),
       ),
@@ -61,8 +72,7 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            textAlign: TextAlign.center,
-            "Al eliminar tu cuenta, tu información será\nborrada completamente y no podrás acceder\nla próxima vez que quieras entrar a tu cuenta.",
+            "Recuerda que tus datos personales son muy\nimportantes.",
             style: TextStyle(
                 color: Color(0xFFACACAC),
                 fontSize: 11,
@@ -77,29 +87,20 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
             CustomButton(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              width: MediaQuery.of(context).size.width * 0.29,
-              height: 35,
-              textButton: 'Eliminar',
-              color: const Color(0xFFAB0000),
+              width: MediaQuery.of(context).size.width * 0.27,
+              height: 40,
+              textButton: 'Actualizar',
+              color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
-              onPressed: () async {
-                _deleteAccount(_token, _userId);
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.remove('isLoggedIn');
-                await prefs.remove('name');
-                await prefs.remove('lastname');
-                await prefs.remove('email');
-                await prefs.remove('rol');
+              onPressed: () {
+                _updateUser(_userId, name, lastname, email, password, _token);
               },
-            ),
-            const SizedBox(
-              width: 10,
             ),
             CustomButton(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              width: MediaQuery.of(context).size.width * 0.29,
-              height: 35,
+              width: MediaQuery.of(context).size.width * 0.27,
+              height: 40,
               textButton: 'Cancelar',
               color: const Color(0xFFB6B6B6),
               colorText: const Color(0xFFFFFFFF),

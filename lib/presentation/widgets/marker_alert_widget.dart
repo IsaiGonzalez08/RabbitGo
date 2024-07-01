@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyAlertMarker extends StatefulWidget {
-  final String? markerId;
+  final String markerId;
   const MyAlertMarker({Key? key, required this.markerId}) : super(key: key);
 
   @override
@@ -18,92 +15,45 @@ class MyAlertMarker extends StatefulWidget {
 }
 
 class _MyAlertMarkerState extends State<MyAlertMarker> {
-  late String? markerId;
-  String? token;
-  late Future<List<RouteModel>> futureRoutes;
-  bool isButtonEnabled = false;
-  late String? routeId;
-  List<LatLng>? listCordinates = [];
+  String? selectedBusRouteId;
+  List<LatLng> listCordinates = [];
+  late String markerId;
+  late User _user;
+  late String _token;
+  late String busRouteId;
 
-  void providerCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinatesProvider>(context, listen: false)
-        .setDataCoordinates(coordinates);
+  @override
+  void initState() {
+    markerId = widget.markerId;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    Provider.of<RouteProvider>(context, listen: false)
+        .getRouteByBusStopId(_token, markerId);
+    super.initState();
   }
 
   void navigateMap() {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
     );
   }
 
-  Future<List<RouteModel>> _getBusRoute(String? markerId) async {
-    try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/at/$markerId');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final dynamic jsonResponse = json.decode(response.body);
-
-        if (jsonResponse.containsKey('data')) {
-          List<dynamic> routeJson = jsonResponse['data'];
-          List<RouteModel> routes =
-              routeJson.map((route) => RouteModel.fromJson(route)).toList();
-          for (var dataRoute in routes) {
-            routeId = dataRoute.uuid;
-          }
-          return routes;
-        } else {
-          throw Exception('Response does not contain "data"');
-        }
+  void _selectRoute(String routeId) {
+    setState(() {
+      if (selectedBusRouteId == routeId) {
+        selectedBusRouteId =
+            null; // Deselecciona la ruta si ya está seleccionada
       } else {
-        throw ('error en la petición: ${response.statusCode}');
+        selectedBusRouteId = routeId; // Selecciona la nueva ruta
       }
-    } catch (error) {
-      throw ('Error al conectar con el servidor: $error');
-    }
+    });
   }
 
-  _getRoutePath() async {
-    try {
-      listCordinates?.clear();
-
-      String url = ('https://rabbitgo.sytes.net/path/route/$routeId');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
-        if (responseData != null && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          listCordinates = data.expand((element) {
-            final path = element['path'] as List<dynamic>;
-            return path.map((coord) => LatLng(coord[0], coord[1]));
-          }).toList();
-          providerCoordinates(listCordinates!);
-          navigateMap();
-        } else {
-          throw ('Los datos recibidos de la API no son válidos.');
-        }
-      }
-    } catch (error) {
-      throw ('Error al conectar con el servidor: $error');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    markerId = widget.markerId;
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    futureRoutes = _getBusRoute(markerId);
+  Future<void> _getRoutePath(String token, String busRouteId) async {
+    await Provider.of<RouteProvider>(context, listen: false)
+        .getRouteBusPath(token, busRouteId);
+    navigateMap();
   }
 
   @override
@@ -131,28 +81,25 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                 ],
               ),
             ),
-            FutureBuilder<List<RouteModel>>(
-              future: futureRoutes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data!.map((route) {
+            Consumer<RouteProvider>(
+              builder: (_, routeProvider, __) {
+                if (routeProvider.loading) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: routeProvider.routesAlert.length,
+                    itemBuilder: (context, index) {
+                      final route = routeProvider.routesAlert[index];
+                      final isSelected = route.uuid == selectedBusRouteId;
                       return InkWell(
-                        onTap: () {
-                          setState(() {
-                            if (isButtonEnabled) {
-                              isButtonEnabled = false;
-                            } else {
-                              isButtonEnabled = true;
-                            }
-                          });
-                        },
+                        onTap: () => _selectRoute(route.uuid),
                         child: Container(
                           padding: EdgeInsets.only(
                               right: MediaQuery.of(context).size.width * 0.07,
                               left: MediaQuery.of(context).size.width * 0.07),
                           decoration: BoxDecoration(
-                              color: isButtonEnabled
+                              color: isSelected
                                   ? const Color(0xFFE0E0E0)
                                   : const Color(0xFF),
                               border: Border.all(
@@ -225,12 +172,9 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    },
                   );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return const CircularProgressIndicator();
+                } 
               },
             ),
           ],
@@ -242,15 +186,15 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
             width: MediaQuery.of(context).size.width * 0.9,
             height: 40,
             decoration: BoxDecoration(
-              color: isButtonEnabled
+              color: selectedBusRouteId != null
                   ? const Color(0xFF01142B)
                   : const Color(0xFFB6B6B6),
               borderRadius: BorderRadius.circular(5),
             ),
             child: TextButton(
-                onPressed: isButtonEnabled
+                onPressed: selectedBusRouteId != null
                     ? () {
-                        _getRoutePath();
+                        _getRoutePath(_token, selectedBusRouteId!);
                       }
                     : null,
                 child: const Text('Comenzar',

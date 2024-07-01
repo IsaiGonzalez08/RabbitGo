@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
@@ -11,7 +11,6 @@ import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
@@ -23,12 +22,10 @@ class MyLoginScreen extends StatefulWidget {
 
 class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  String? uuid;
-  String? token;
+  late User _user;
+  late String _role;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
   bool _showPassword = true;
@@ -46,27 +43,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     return null;
   }
 
-  void navigateTapBar() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
-    );
-  }
-
-  void navigateAdminScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
-    );
-  }
-
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 4) {
-      return "La contraseña debe tener al menos 4 caracteres";
-    } else if (value.length > 15) {
-      return "La contraseña no puede ser mayor a 15 caracteres";
+    } else if (value.length < 6) {
+      return "La contraseña debe tener al menos 6 caracteres";
+    } else if (value.length > 16) {
+      return "La contraseña no puede ser mayor a 16 caracteres";
     } else if (_isPasswordInValid) {
       return "La contraseña no existe";
     } else {
@@ -74,60 +57,41 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void provider(
-      String uuid, String token, String name, String lastname, String email) {
-    Provider.of<UserProvider>(context, listen: false)
-        .setDataUser(uuid, token, name, lastname, email);
+  void providerUserData() {
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
-  Future<void> _loginUser() async {
+  void _loginUser() async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
     if (_formKey.currentState!.validate()) {
-      try {
-        String url = 'https://rabbitgo.sytes.net/user/login';
+      await Provider.of<UserProvider>(context, listen: false)
+          .loginUser(email, password);
+      providerUserData();
+      _role = _user.role;
+      navigateUser(_role);
+    } else {
+      setState(() {
+        _isEmailInValid = true;
+        _isPasswordInValid = true;
+      });
+    }
+    _emailController.clear();
+    _passwordController.clear();
+  }
 
-        final userData = {
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        };
-
-        final response = await http.post(
-          Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(userData),
-        );
-
-        if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-          final uuid = responseData['data']['uuid'];
-          final token = responseData['data']['token'];
-          final name = responseData['data']['name'];
-          final lastname = responseData['data']['lastname'];
-          final email = responseData['data']['email'];
-          final role = responseData['data']['rol'];
-          provider(uuid, token, name, lastname, email);
-          if (role == 'admin') {
-            navigateAdminScreen();
-          } else {
-            navigateTapBar();
-          }
-          setState(() {
-            _isEmailInValid = false;
-            _isPasswordInValid = false;
-          });
-        } else if (response.statusCode == 400) {
-          setState(() {
-            _isEmailInValid = true;
-            _isPasswordInValid = true;
-            _emailController.clear();
-            _passwordController.clear();
-          });
-          _formKey.currentState?.validate();
-        }
-      } catch (error) {
-        throw ('Error al conectar con el servidor: $error');
-      }
+  void navigateUser(String role) async {
+    if (role == 'admin') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarAdminWidget()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+      );
     }
   }
 
@@ -191,7 +155,12 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     text: 'Correo Electrónico',
                     controllerTextField: _emailController,
                     validator: (value) {
-                      return validateEmail(value);
+                      return validateEmail(value?.trim());
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _isEmailInValid = false;
+                      });
                     },
                   ),
                   const SizedBox(
@@ -202,9 +171,14 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     controllerTextField: _passwordController,
                     text: 'Contraseña',
                     validator: (value) {
-                      return validatePassword(value);
+                      return validatePassword(value?.trim());
                     },
                     obscureText: _showPassword,
+                    onChanged: (value) {
+                      setState(() {
+                        _isPasswordInValid = false;
+                      });
+                    },
                   ),
                   MyCheckboxWidget(
                     value: _showPassword,
@@ -224,6 +198,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
                     color: const Color(0xFF01142B),
                     colorText: const Color(0xFFFFFFFF),
                     onPressed: () {
+                      _isPasswordInValid = false;
+                      _isEmailInValid = false;
                       _formKey.currentState!.save();
                       _loginUser();
                     },

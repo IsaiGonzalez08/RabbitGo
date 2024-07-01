@@ -15,11 +15,9 @@ class PlaceProvider extends ChangeNotifier {
 
   Future<void> handleSubmitted(String query) async {
     try {
-      if (query.length >= 3) {
+      if (query.isNotEmpty) {
         _hereMarkers = await _placeRepository.onResults(query);
         notifyListeners();
-      } else {
-        _placeRepository.cancel();
       }
     } catch (e) {
       throw ('El error es $e');

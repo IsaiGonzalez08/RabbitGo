@@ -5,7 +5,7 @@ class GetAllRoutesUseCase {
   final RouteRepository _routeRepository;
   GetAllRoutesUseCase(this._routeRepository);
 
-  Future<List<RouteModel>> execute(String token) async {
+  Future<List<RouteModel>> getAllRoutes(String token) async {
     return await _routeRepository.getAllRoutes(token);
   }
 }
@@ -15,8 +15,8 @@ class DeleteRouteById {
 
   DeleteRouteById(this._routeRepository);
 
-  Future<void> deleteRouteById(String token, String id) async {
-    return await _routeRepository.deleteRouteById(token, id);
+  Future<void> deleteRouteById(String token, String busRouteUuid) async {
+    return await _routeRepository.deleteRouteById(token, busRouteUuid);
   }
 }
 
@@ -25,15 +25,15 @@ class CreateBusRouteUseCase {
 
   CreateBusRouteUseCase(this._routeRepository);
 
-  Future<void> createBusStop(
+  Future<RouteModel> createBusStop(
       String routeName,
-      String routePrice,
+      int routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopUuid,
       String token) async {
-    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
-        routeEndTime, routeBusStop, token);
+    return await _routeRepository.createBusRoute(routeName, routePrice,
+        routeStartTime, routeEndTime, routeBusStopUuid, token);
   }
 }
 
@@ -43,28 +43,32 @@ class UpdateBusRouteUseCase {
   UpdateBusRouteUseCase(this._routeRepository);
 
   Future<void> updateBusStop(
+      String routeUuid,
       String routeName,
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
-      String token,
-      String id) async {
-    await _routeRepository.updateBusRoute(routeName, routePrice, routeStartTime,
-        routeEndTime, routeBusStop, token, id);
+      String routeBusStopUuid,
+      String token) async {
+    await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
+        routeStartTime, routeEndTime, routeBusStopUuid, token);
   }
 }
 
-class GetRouteByNameUseCase {
+class GetRouteByBusStopIdUseCase {
   final RouteRepository _routeRepository;
 
-  GetRouteByNameUseCase(this._routeRepository);
+  GetRouteByBusStopIdUseCase(this._routeRepository);
 
-  Future<void> getRouteByName(String token, String query) async {
-    await _routeRepository.getRouteByName(token, query);
+  Future<void> getRouteByBusStopId(String token, String busStopId) async {
+    await _routeRepository.getRouteByBusStopId(token, busStopId);
   }
+}
 
-  void cancel() {
-    _routeRepository.cancel();
+class GetRouteBusPath {
+  final RouteRepository _routeRepository;
+  GetRouteBusPath(this._routeRepository);
+  Future<void> getRouteBusPath(String token, String busRouteId) async {
+    await _routeRepository.getRouteBusPath(token, busRouteId);
   }
 }

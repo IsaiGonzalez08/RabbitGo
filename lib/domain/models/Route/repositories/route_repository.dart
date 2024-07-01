@@ -1,23 +1,25 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 
 abstract class RouteRepository {
   Future<List<RouteModel>> getAllRoutes(String token);
-  Future<void> deleteRouteById(String token, String id);
-  Future<void> createBusRoute(
+  Future<void> deleteRouteById(String token, String busRouteUuid);
+  Future<RouteModel> createBusRoute(
       String routeName,
-      String routePrice,
+      int routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopUuid,
       String token);
   Future<void> updateBusRoute(
+      String routeId,
       String routeName,
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStop,
+      String routeBusStopId,
       String token,
-      String id);
-  Future<List<RouteModel>> getRouteByName(String? token, String query);
-  void cancel();
+      );
+  Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
+  Future<List<LatLng>> getRouteBusPath(String token, String busRouteId);
 }

@@ -1,33 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/domain/use_cases/Route/use_case_route.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
 import 'package:rabbit_go/presentation/screen/admin_update_route_screen.dart';
 import 'package:rabbit_go/presentation/widgets/alert_admin_delete_route_widget.dart';
+import 'package:rabbit_go/presentation/widgets/alert_configuration.dart';
+import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/route_admin_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAdminScreen extends StatefulWidget {
-  final BuildContext context;
-  const MyAdminScreen({Key? key, required this.context}) : super(key: key);
+  const MyAdminScreen({Key? key}) : super(key: key);
 
   @override
   State<MyAdminScreen> createState() => _MyAdminScreenState();
 }
 
 class _MyAdminScreenState extends State<MyAdminScreen> {
-  late Future<List<RouteModel>> futureRoutes;
-  String? _name;
+  late User _user;
+  late String _token;
+  late String _name;
 
   @override
   void initState() {
     super.initState();
-    _name = Provider.of<UserProvider>(context, listen: false).name;
-    final token = Provider.of<UserProvider>(context, listen: false).token;
-    final getAllRoutesUseCase =
-        GetAllRoutesUseCase(RouteRepositoryImpl(context));
-    futureRoutes = getAllRoutesUseCase.execute(token);
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    _name = _user.name;
+    Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+    });
   }
 
   void navigateUpdateScreen(String id) {
@@ -35,7 +44,8 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
       context,
       MaterialPageRoute(
           builder: (context) => MyAdminUpdateRouteScreen(
-                id: id, context: context,
+                id: id,
+                context: context,
               )),
     );
   }
@@ -52,6 +62,15 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     );
   }
 
+  void _showDialogLogout() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MyAlertConfiguration();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,21 +83,42 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.07),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Bienvenido',
-                  style: TextStyle(
-                      color: Color(0xFF707070),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  '$_name',
-                  style: const TextStyle(
-                      fontSize: 22,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Bienvenido',
+                          style: TextStyle(
+                              color: Color(0xFF707070),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        Text(
+                          _name,
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF131313)),
+                        ),
+                      ],
+                    ),
+                    CustomButton(
+                      onPressed: () {
+                        _showDialogLogout();
+                      },
+                      textButton: 'Cerrar',
+                      width: MediaQuery.of(context).size.width * 0.26,
+                      height: 40,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF131313)),
+                      color: const Color(0xFFAB0000),
+                      colorText: const Color(0xFFF2F2F2),
+                    )
+                  ],
                 ),
                 const Divider(
                   color: Colors.grey,
@@ -90,38 +130,32 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: FutureBuilder<List<RouteModel>>(
-              future: futureRoutes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final route = snapshot.data![index];
-                      return RouteCard(
-                        name: route.name,
-                        startTime: route.startTime,
-                        endTime: route.endTime,
-                        price: route.price.toString(),
-                        onEdit: () {
-                          final idRoute = route.uuid;
-                          navigateUpdateScreen(idRoute);
-                        },
-                        onDelete: () {
-                          final idRoute = route.uuid;
-                          openDeleteAlert(idRoute);
-                        },
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
-          ),
+          Expanded(child: Consumer<RouteProvider>(builder: (_, controller, __) {
+            if (controller.loading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return ListView.builder(
+                  itemCount: controller.routes.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final route = controller.routes[index];
+                    return RouteCard(
+                      name: route.name,
+                      startTime: route.startTime,
+                      endTime: route.endTime,
+                      price: route.price.toString(),
+                      onEdit: () {
+                        final idRoute = route.uuid;
+                        navigateUpdateScreen(idRoute);
+                      },
+                      onDelete: () {
+                        final idRoute = route.uuid;
+                        openDeleteAlert(idRoute);
+                      },
+                    );
+                  });
+            }
+          })),
           const SizedBox(
             height: 20,
           )

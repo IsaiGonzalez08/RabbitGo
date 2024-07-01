@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
+import 'package:rabbit_go/domain/models/Route/route.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
 class MyFindRouteScreen extends StatefulWidget {
@@ -17,134 +14,121 @@ class MyFindRouteScreen extends StatefulWidget {
 }
 
 class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
-  String? token;
-  List<LatLng>? listCordinates;
+  late User _user;
+  late String _token;
+  List<RouteModel> _routes = [];
+  List<RouteModel> _filteredRoutes = [];
+  final TextEditingController _searchController = TextEditingController();
 
-  void providerRouteCoordinates(List<LatLng>? coordinates) {
-    Provider.of<RouteCoordinatesProvider>(context, listen: false)
-        .setDataCoordinates(coordinates);
+  void navigateHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MyTapBarWidget(),
+      ),
+    );
   }
 
-  navigateHome() {
-    Provider.of<RouteProvider>(context, listen: false).cleanListRoutes();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const MyTapBarWidget(),
-    ));
+  Future<void> _getRoutePath(String token, String busRouteId) async {
+    await Provider.of<RouteProvider>(context, listen: false)
+        .getRouteBusPath(token, busRouteId);
+    navigateHome();
   }
 
-  getRouteCoordinates(String id) async {
-    try {
-      String url = 'https://rabbitgo.sytes.net/path/route/$id';
-      
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Authorization': token!,
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-      if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
-        if (responseData != null && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          listCordinates = data.expand((element) {
-            final path = element['path'] as List<dynamic>;
-            return path.map((coord) => LatLng(coord[0], coord[1]));
-          }).toList();
-          providerRouteCoordinates(listCordinates!);
-          navigateHome();
-        } else {
-          throw ('Los datos recibidos de la API no son válidos.');
-        }
-      }
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.cancel) {}
-    }
+  void _filterRoutes(String query) {
+    setState(() {
+      _filteredRoutes = _routes
+          .where((route) =>
+              route.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    token = Provider.of<UserProvider>(context, listen: false).token;
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          iconTheme: const IconThemeData(color: Color(0xFF979797)),
-          toolbarHeight: MediaQuery.of(context).size.height * 0.14,
-          title: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: 40,
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 1),
-              )
-            ]),
-            child: Builder(builder: (context) {
-              return TextField(
-                onChanged: (value) {
-                  Provider.of<RouteProvider>(context, listen: false)
-                      .queryChanged(token, value);
-                },
-                textAlignVertical: TextAlignVertical.center,
-                cursorHeight: 25.0,
-                cursorColor: const Color(0xFF01142B),
-                style: const TextStyle(
-                    color: Color(0xFF01142B), fontWeight: FontWeight.w500),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  hintText: 'Buscar ruta',
-                  hintStyle: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFFE0E0E0),
-                      fontWeight: FontWeight.w500),
-                  filled: true,
-                  fillColor: const Color(0xFFFFFFFF),
-                  prefixIcon: Image.asset(
-                    'assets/images/Search.png',
-                    width: 20,
-                  ),
-                ),
-              );
-            }),
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        iconTheme: const IconThemeData(color: Color(0xFF979797)),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.14,
+        title: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: 40,
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 1),
+            )
+          ]),
+          child: TextField(
+            onChanged: _filterRoutes,
+            controller: _searchController,
+            textAlignVertical: TextAlignVertical.center,
+            cursorHeight: 25.0,
+            cursorColor: const Color(0xFF01142B),
+            style: const TextStyle(
+                color: Color(0xFF01142B), fontWeight: FontWeight.w500),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4.0),
+                borderSide: BorderSide.none,
+              ),
+              hintText: 'Buscar ruta',
+              hintStyle: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFFE0E0E0),
+                  fontWeight: FontWeight.w500),
+              filled: true,
+              fillColor: const Color(0xFFFFFFFF),
+              prefixIcon: Image.asset(
+                'assets/images/Search.png',
+                width: 20,
+              ),
+            ),
           ),
         ),
-        body: Consumer<RouteProvider>(builder: (_, controller, __) {
-          final routes = controller.routes;
-          if (routes == null) {
-          } else if (routes.isEmpty) {}
+      ),
+      body: Consumer<RouteProvider>(builder: (_, controller, __) {
+        if (controller.loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          _routes = controller.routes;
+          _filteredRoutes = _searchController.text.isEmpty
+              ? _routes
+              : _filteredRoutes;
+
           return ListView.builder(
+            itemCount: _filteredRoutes.length,
             itemBuilder: (_, index) {
-              final route = routes[index];
+              final route = _filteredRoutes[index];
               return InkWell(
                 onTap: () {
-                  final id = route.uuid;
-                  getRouteCoordinates(id);
-                  listCordinates?.clear();
+                  final busRouteId = route.uuid;
+                  _getRoutePath(_token, busRouteId);
                 },
                 child: Container(
-                  padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * 0.07,
-                      left: MediaQuery.of(context).size.width * 0.07),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.07),
                   decoration: BoxDecoration(
-                      border: Border.all(
-                    color: const Color(0xFFF5F5F5),
-                    width: 2,
-                  )),
+                    border: Border.all(
+                      color: const Color(0xFFF5F5F5),
+                      width: 2,
+                    ),
+                  ),
                   height: 80,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
@@ -152,9 +136,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                             'assets/images/Bus.png',
                             width: 50,
                           ),
-                          const SizedBox(
-                            width: 5,
-                          ),
+                          const SizedBox(width: 5),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,9 +159,6 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 50,
-                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -198,18 +177,19 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                                     color: Color(0xFFAEAEAE),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700),
-                              )
+                              ),
                             ],
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
               );
             },
-            itemCount: routes!.length,
           );
-        }));
+        }
+      }),
+    );
   }
 }

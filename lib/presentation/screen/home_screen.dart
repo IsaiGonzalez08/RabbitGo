@@ -1,20 +1,19 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rabbit_go/domain/use_cases/Place/use_case_place.dart';
+import 'package:rabbit_go/domain/models/Stop/stop.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
-import 'package:rabbit_go/presentation/providers/route_coordinates_provider.dart';
-import 'package:rabbit_go/presentation/providers/home_controller.dart';
+import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
-import 'package:rabbit_go/infraestructure/helpers/gradient_polyline.dart';
-import 'package:rabbit_go/infraestructure/repositories/Place/place_repository_impl.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -26,64 +25,67 @@ class MyHomeScreen extends StatefulWidget {
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
-  late Polyline polylineFromAlert;
   late WaitProvider _waitProvider;
-  late HomeController _homeController;
-  String? token;
-  Iterable markers = [];
-  List<Marker> hereMarkers = [];
+  List<Stop> _busStopMarkers = [];
+  Set<Marker> _markers = {};
   LatLng? userLocation;
-  final onResults = GetPlaceUseCase(PlaceRepositoryImpl());
+  late User _user;
+  late String? _token;
 
-  List<Color> gradientColors = [
-    const Color(0xFF01142B),
-  ];
-
-  _showDialogBusStops(String markerId) {
-    showBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return MyAlertMarker(markerId: markerId);
-        },
-        constraints: const BoxConstraints(
-            minWidth: 0.0,
-            maxWidth: double.infinity,
-            minHeight: 0.0,
-            maxHeight: 500));
+  @override
+  void initState() {
+    super.initState();
+    _waitProvider = WaitProvider(Permission.location);
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    polyline = const Polyline(
+      polylineId: PolylineId('route'),
+      points: [],
+      width: 3,
+    );
+    _initializeData();
   }
 
-  getBusStops(String? token) async {
-    try {
-      if (token == null) {
-        throw Exception('El token es nulo');
-      }
-      final icon = BitmapDescriptor.fromBytes(
-          await assetToBytes('assets/images/MapMarker.png'));
-      final response = await http.get(
-          Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
-          headers: {'Authorization': token});
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body)['data'];
-        Iterable generatedMarkers = data.map((item) {
-          String markerId = item['uuid'];
-          double latitude = item["latitude"];
-          double longitude = item["longitude"];
-          LatLng latLngMarker = LatLng(latitude, longitude);
-          return Marker(
-              onTap: () {
-                _showDialogBusStops(markerId);
-              },
-              markerId: MarkerId(markerId),
-              position: latLngMarker,
-              icon: icon);
-        });
-        setState(() {
-          markers = generatedMarkers;
-        });
-      }
-    } catch (error) {
-      throw Exception('Error con el servidor: $error');
-    }
+  Future<void> _initializeData() async {
+    await _loadUserData();
+    await _loadBusStops();
+    await _showAlertPermissionsLocation();
+    _loadRouteCoordinates();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('token') ?? '';
+    });
+  }
+
+  Future<void> _loadBusStops() async {
+    await Provider.of<BusStopProvider>(context, listen: false)
+        .getAllBusStops(_token);
+    getBusStops();
+  }
+
+  Future<void> getBusStops() async {
+    _busStopMarkers =
+        Provider.of<BusStopProvider>(context, listen: false).stops;
+    final icon = BitmapDescriptor.fromBytes(
+        await assetToBytes('assets/images/MapMarker.png'));
+    Set<Marker> newMarkers = _busStopMarkers.map((stop) {
+      final markerId = stop.id;
+      final latLngMarker = LatLng(stop.latitude, stop.longitude);
+      return Marker(
+        onTap: () {
+          _showDialogBusStops(markerId);
+        },
+        markerId: MarkerId(markerId),
+        position: latLngMarker,
+        icon: icon,
+      );
+    }).toSet();
+    setState(() {
+      _markers = newMarkers;
+    });
   }
 
   Future<void> _showAlertPermissionsLocation() async {
@@ -100,23 +102,14 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _waitProvider = WaitProvider(Permission.location);
-    _homeController = HomeController();
-    _showAlertPermissionsLocation();
-    token = Provider.of<UserProvider>(context, listen: false).token;
-    getBusStops(token);
-    List<LatLng>? coordinates =
-        Provider.of<RouteCoordinatesProvider>(context, listen: false)
-            .coordinates;
-    polyline = GradientPolyline(
-      polylineId: const PolylineId('route'),
-      points: coordinates!,
-      gradientColors: gradientColors,
-      width: 3,
-    );
+  void _loadRouteCoordinates() {
+    setState(() {
+      polyline = Polyline(
+        polylineId: const PolylineId('route'),
+        points: Provider.of<RouteProvider>(context, listen: false).routePath,
+        width: 3,
+      );
+    });
   }
 
   Future<void> _getPlace(String query) async {
@@ -128,6 +121,16 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
+  Future<LatLng?> getUserLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      return LatLng(position.latitude, position.longitude);
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -135,8 +138,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
           return GoogleMap(
             onMapCreated: (GoogleMapController controller) async {
-              _homeController.onMapCreated(controller);
-              LatLng? location = await _homeController.getUserLocation();
+              LatLng? location = await getUserLocation();
               if (location != null) {
                 if (mounted) {
                   setState(() {
@@ -150,10 +152,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               }
             },
             polylines: {polyline},
-            markers: Set.from({
-              ...markers,
-              ...placeProvider.hereMarkers
-            }), // ---AQUÍ NECESITO LA LISTA DE MARCADORES
+            markers: Set.from({..._markers, ...placeProvider.hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),
@@ -167,49 +166,71 @@ class _MyHomeScreenState extends State<MyHomeScreen>
           );
         }),
         Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05,
-                vertical: MediaQuery.of(context).size.height * 0.08),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: 40,
-              decoration: BoxDecoration(boxShadow: [
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: MediaQuery.of(context).size.height * 0.08,
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 40,
+            decoration: BoxDecoration(
+              boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: const Offset(0, 1),
-                )
-              ]),
-              child: Builder(builder: (context) {
-                return TextField(
-                  onSubmitted: (value) => _getPlace(value),
-                  textAlignVertical: TextAlignVertical.center,
-                  cursorHeight: 25.0,
-                  cursorColor: const Color(0xFF01142B),
-                  style: const TextStyle(
-                      color: Color(0xFF01142B), fontWeight: FontWeight.w500),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: 'Buscar un lugar',
-                    hintStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE0E0E0),
-                        fontWeight: FontWeight.w500),
-                    filled: true,
-                    fillColor: const Color(0xFFFFFFFF),
-                    prefixIcon: Image.asset(
-                      'assets/images/Search.png',
-                      width: 10,
-                    ), // Icono dentro del campo de texto
+                ),
+              ],
+            ),
+            child: Builder(builder: (context) {
+              return TextField(
+                onSubmitted: (value) => _getPlace(value),
+                textAlignVertical: TextAlignVertical.center,
+                cursorHeight: 25.0,
+                cursorColor: const Color(0xFF01142B),
+                style: const TextStyle(
+                  color: Color(0xFF01142B),
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    borderSide: BorderSide.none,
                   ),
-                );
-              }),
-            )),
+                  hintText: 'Buscar un lugar',
+                  hintStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFFE0E0E0),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFFFFFFFF),
+                  prefixIcon: Image.asset(
+                    'assets/images/Search.png',
+                    width: 10,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _showDialogBusStops(String markerId) {
+    showBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return MyAlertMarker(markerId: markerId);
+      },
+      constraints: const BoxConstraints(
+        minWidth: 0.0,
+        maxWidth: double.infinity,
+        minHeight: 0.0,
+        maxHeight: 500,
+      ),
     );
   }
 }
