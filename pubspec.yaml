@@ -30,12 +30,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.22.0
+  flutter_svg: ^2.0.10+1
+  email_validator: '^2.1.16'  
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  google_maps_flutter: ^2.5.3
+  permission_handler: ^11.3.0
+  shared_preferences: ^2.0.8
+  http: ^1.2.0
+  provider: ^6.1.2
+  geolocator: ^11.0.0
+  dio: ^5.4.2+1
+  flutter_launcher_icons: ^0.13.1
+  connectivity_plus: ^6.0.3
+  url_launcher: ^6.3.0
+  local_auth: ^2.2.0
+  
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +60,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/images/LogoRabbit.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -54,10 +70,33 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/images/AlertLocation.png
     - assets/images/bg-bienvenida.png
+    - assets/images/Bus.png
+    - assets/images/CheckmarkYes.png
+    - assets/images/Forward.png
+    - assets/images/ForwardLeft.png
     - assets/images/Google.png
+    - assets/images/home.svg
+    - assets/images/homewhite.svg
     - assets/images/LeftArrow.png
-    - assets/images/LoginLogo.png
+    - assets/images/LoginLogo.svg
+    - assets/images/Logo.svg
+    - assets/images/LogoRabbit.png
+    - assets/images/LogoRabbitGo1.svg
+    - assets/images/Logout.png
+    - assets/images/love.svg
+    - assets/images/MapMarker.png
+    - assets/images/marker.svg
+    - assets/images/profile.svg
+    - assets/images/profile2.svg
+    - assets/images/Route.svg
+    - assets/images/Search.png
+    - assets/images/search_active.png
+    - assets/images/Add.png
+    - assets/images/Add_active.png
+    - assets/images/Settings.png
+    - assets/images/Delete.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
