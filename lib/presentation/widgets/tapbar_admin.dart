@@ -31,6 +31,7 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
@@ -39,7 +40,7 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
             setState(() {
               _currentIndex = newIndex;
             });
-          } 
+          }
         },
         items: [
           BottomNavigationBarItem(

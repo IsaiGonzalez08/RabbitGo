@@ -31,6 +31,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   LatLng? userLocation;
   late User _user;
   late String? _token;
+  List<LatLng> myList = [];
 
   @override
   void initState() {
@@ -103,9 +104,10 @@ class _MyHomeScreenState extends State<MyHomeScreen>
 
   void _loadRouteCoordinates() {
     setState(() {
+      myList = Provider.of<RouteProvider>(context, listen: false).routePath;
       polyline = Polyline(
         polylineId: const PolylineId('route'),
-        points: Provider.of<RouteProvider>(context, listen: false).routePath,
+        points: myList,
         width: 3,
       );
     });
@@ -136,6 +138,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
       children: [
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
           return GoogleMap(
+            zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) async {
               LatLng? location = await getUserLocation();
               if (location != null) {
@@ -159,9 +162,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             ),
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
-            padding: const EdgeInsets.only(
-              top: 100.0,
-            ),
+            padding: const EdgeInsets.only(top: 100.0, right: 6),
           );
         }),
         Padding(
@@ -214,6 +215,50 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             }),
           ),
         ),
+        myList.isEmpty
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              myList.clear();
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: const Color(0xFF01142B),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.6),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/images/close.png',
+                                width: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
       ],
     );
   }

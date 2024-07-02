@@ -29,6 +29,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
