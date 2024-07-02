@@ -63,11 +63,15 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
     navigateMap();
   }
 
-  void _showDialogReportBusRoute(String routeName) {
+  void _showDialogReportBusRoute(String routeName, String routeId, int price) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertReportBusRoute(name: routeName);
+        return MyAlertReportBusRoute(
+          name: routeName,
+          routeId: routeId,
+          price: price,
+        );
       },
       constraints: const BoxConstraints(
         minWidth: 0.0,
@@ -239,7 +243,8 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                 ),
                 child: CustomButton(
                   onPressed: () {
-                    _showDialogReportBusRoute(widget.name);
+                    _showDialogReportBusRoute(
+                        widget.name, widget.routeId, widget.price);
                   },
                   textButton: 'Reporte de queja',
                   width: MediaQuery.of(context).size.width * 0.9,

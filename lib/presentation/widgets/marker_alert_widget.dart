@@ -52,16 +52,21 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(30), topLeft: Radius.circular(30))),
+        color: Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(
+            height: 30,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.07,
-                vertical: MediaQuery.of(context).size.width * 0.07),
+                horizontal: MediaQuery.of(context).size.width * 0.07),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -81,116 +86,114 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Text(
                   'Rutas que puedes abordar aquí.',
                   style: TextStyle(
-                      color: Color(0xFF01142B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600),
-                )
+                    color: Color(0xFF01142B),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
           ),
-          Consumer<RouteProvider>(
-            builder: (_, routeProvider, __) {
-              if (routeProvider.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: routeProvider.routesAlert.length,
-                  itemBuilder: (context, index) {
-                    final route = routeProvider.routesAlert[index];
-                    final isSelected = route.uuid == selectedBusRouteId;
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _showDialogBusRoute(
-                            route.name, route.uuid, route.price);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.07,
-                            left: MediaQuery.of(context).size.width * 0.07),
-                        decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFFE0E0E0)
-                                : const Color(0xFF),
-                            border: const Border(
-                                bottom: BorderSide(
-                                    color: Color(0xFFEDEDED), width: 2))),
-                        height: 80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/Bus.png',
-                                  width: 50,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      route.name,
-                                      style: const TextStyle(
+          Expanded(
+            child: Consumer<RouteProvider>(
+              builder: (_, routeProvider, __) {
+                if (routeProvider.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return ListView.builder(
+                    itemCount: routeProvider.routesAlert.length,
+                    itemBuilder: (context, index) {
+                      final route = routeProvider.routesAlert[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showDialogBusRoute(
+                              route.name, route.uuid, route.price);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.07,
+                          ),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom:
+                                      BorderSide(color: Color(0xFFEDEDED)))),
+                          height: 80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/Bus.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        route.name,
+                                        style: const TextStyle(
                                           color: Color(0xFF01142B),
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Text(
-                                      '${route.startTime}-${route.endTime}',
-                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${route.startTime}-${route.endTime}',
+                                        style: const TextStyle(
                                           color: Color(0xFF8B8B8B),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              width: 50,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Costo ',
-                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 50),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Costo ',
+                                        style: TextStyle(
                                           color: Color(0xFFAEAEAE),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    Text(
-                                      '\$${route.price}',
-                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      Text(
+                                        '\$${route.price}',
+                                        style: const TextStyle(
                                           color: Color(0xFFAEAEAE),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  ],
-                                )
-                              ],
-                            )
-                          ],
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              }
-            },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),

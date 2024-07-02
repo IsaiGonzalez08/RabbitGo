@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
     required this.fontWeight,
     required this.color,
     required this.colorText,
+    this.border,
     this.onPressed,
   }) : super(key: key);
   final String textButton;
@@ -19,6 +20,7 @@ class CustomButton extends StatelessWidget {
   final FontWeight fontWeight;
   final Color color;
   final Color colorText;
+  final BoxBorder? border;
   final Function()? onPressed;
 
   @override
@@ -28,6 +30,7 @@ class CustomButton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: color,
+        border: border,
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextButton(
