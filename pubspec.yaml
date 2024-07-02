@@ -100,6 +100,10 @@ flutter:
     - assets/images/paid.png
     - assets/images/upward.png
     - assets/images/arrow_right.png
+    - assets/images/arrow_down.png
+    - assets/images/acute.png
+    - assets/images/fork_right.png
+    - assets/images/traffic_jam.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
