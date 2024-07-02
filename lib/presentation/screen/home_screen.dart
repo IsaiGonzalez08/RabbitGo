@@ -72,13 +72,12 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
-      final stopId = stop.id;
       final latLngMarker = LatLng(stop.latitude, stop.longitude);
       return Marker(
         onTap: () {
-          _showDialogBusStops(stopId);
+          _showDialogBusStops(stop.id);
         },
-        markerId: MarkerId(stopId),
+        markerId: MarkerId(stop.id),
         position: latLngMarker,
         icon: icon,
       );
