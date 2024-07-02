@@ -1,7 +1,7 @@
 class User {
   final String uuid;
   final String name;
-  final String lastName;
+  final String lastname;
   final String email;
   final String role;
   final String token;
@@ -9,7 +9,7 @@ class User {
   User({
     required this.uuid,
     required this.name,
-    required this.lastName,
+    required this.lastname,
     required this.email,
     this.role = '',
     this.token = ''
@@ -19,7 +19,7 @@ class User {
     return User(
       uuid: json['uuid'],
       name: json['name'],
-      lastName: json['lastname'],
+      lastname: json['lastname'],
       email: json['email'],
       role: json['rol'] ?? '',
       token: json['token'] ?? '',

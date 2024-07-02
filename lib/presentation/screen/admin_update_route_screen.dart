@@ -219,7 +219,9 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 135),
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.252),
                                   child: Text(value),
                                 ),
                               );
@@ -228,7 +230,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                         ),
                       ),
                       const SizedBox(
-                        width: 20,
+                        width: 10,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -257,7 +259,9 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 135),
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.252),
                                   child: Text(value),
                                 ),
                               );
@@ -293,7 +297,9 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                           return DropdownMenuItem<Stop>(
                             value: stop,
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 255),
+                              padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.46),
                               child: Text(stop.name[0].toUpperCase() +
                                   stop.name.substring(1)),
                             ),
@@ -303,7 +309,7 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   CustomButton(
                     textButton: 'Actualizar',

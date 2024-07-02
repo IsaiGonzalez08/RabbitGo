@@ -193,7 +193,9 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 135),
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.252),
                                   child: Text(value),
                                 ),
                               );
@@ -202,7 +204,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                         ),
                       ),
                       const SizedBox(
-                        width: 20,
+                        width: 10,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -231,7 +233,9 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: 135),
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.252),
                                   child: Text(value),
                                 ),
                               );
@@ -267,7 +271,9 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                           return DropdownMenuItem<Stop>(
                             value: stop,
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 255),
+                              padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.46),
                               child: Text(stop.name[0].toUpperCase() +
                                   stop.name.substring(1)),
                             ),

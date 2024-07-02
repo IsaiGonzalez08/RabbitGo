@@ -28,7 +28,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
     super.didChangeDependencies();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _name = _user.name;
-    _lastname = _user.lastName;
+    _lastname = _user.lastname;
     _email = _user.email;
     _loadUserData();
   }

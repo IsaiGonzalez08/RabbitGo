@@ -21,6 +21,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
   late User _user;
   late String _token;
   late String _name;
+  late String _lastname;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
     _name = _user.name;
+    _lastname = _user.lastname;
     Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
     _loadUserData();
   }
@@ -36,6 +38,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? '';
+      _lastname = prefs.getString('lastname') ?? '';
     });
   }
 
@@ -98,7 +101,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                               fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          _name,
+                          '$_name $_lastname',
                           style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w600,
