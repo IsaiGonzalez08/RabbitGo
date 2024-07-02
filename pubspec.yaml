@@ -97,6 +97,9 @@ flutter:
     - assets/images/Add_active.png
     - assets/images/Settings.png
     - assets/images/Delete.png
+    - assets/images/paid.png
+    - assets/images/upward.png
+    - assets/images/arrow_right.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

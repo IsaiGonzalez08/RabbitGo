@@ -72,13 +72,13 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
-      final markerId = stop.id;
+      final stopId = stop.id;
       final latLngMarker = LatLng(stop.latitude, stop.longitude);
       return Marker(
         onTap: () {
-          _showDialogBusStops(markerId);
+          _showDialogBusStops(stopId);
         },
-        markerId: MarkerId(markerId),
+        markerId: MarkerId(stopId),
         position: latLngMarker,
         icon: icon,
       );
@@ -219,11 +219,11 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     );
   }
 
-  void _showDialogBusStops(String markerId) {
+  void _showDialogBusStops(String stopId) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertMarker(markerId: markerId);
+        return MyAlertMarker(stopId: stopId);
       },
       constraints: const BoxConstraints(
         minWidth: 0.0,

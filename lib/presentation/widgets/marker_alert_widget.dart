@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
-import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
+import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
 
 class MyAlertMarker extends StatefulWidget {
-  final String markerId;
-  const MyAlertMarker({Key? key, required this.markerId}) : super(key: key);
+  final String stopId;
+  const MyAlertMarker({Key? key, required this.stopId}) : super(key: key);
 
   @override
   State<MyAlertMarker> createState() => _MyAlertMarkerState();
@@ -17,66 +17,81 @@ class MyAlertMarker extends StatefulWidget {
 class _MyAlertMarkerState extends State<MyAlertMarker> {
   String? selectedBusRouteId;
   List<LatLng> listCordinates = [];
-  late String markerId;
+  late String stopId;
   late User _user;
   late String _token;
   late String busRouteId;
 
   @override
   void initState() {
-    markerId = widget.markerId;
+    stopId = widget.stopId;
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
     Provider.of<RouteProvider>(context, listen: false)
-        .getRouteByBusStopId(_token, markerId);
+        .getRouteByBusStopId(_token, stopId);
     super.initState();
   }
 
-  void navigateMap() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+  void _showDialogBusRoute(String routeName, String routeId, int price) {
+    showBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return MyAlertBusRoute(
+          name: routeName,
+          routeId: routeId,
+          price: price,
+        );
+      },
+      constraints: const BoxConstraints(
+        minWidth: 0.0,
+        maxWidth: double.infinity,
+        minHeight: 210.0,
+        maxHeight: 500,
+      ),
     );
-  }
-
-  void _selectRoute(String routeId) {
-    setState(() {
-      if (selectedBusRouteId == routeId) {
-        selectedBusRouteId =
-            null; // Deselecciona la ruta si ya está seleccionada
-      } else {
-        selectedBusRouteId = routeId; // Selecciona la nueva ruta
-      }
-    });
-  }
-
-  Future<void> _getRoutePath(String token, String busRouteId) async {
-    await Provider.of<RouteProvider>(context, listen: false)
-        .getRouteBusPath(token, busRouteId);
-    navigateMap();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.06,
-                  vertical: MediaQuery.of(context).size.height * 0.04),
-              child: const Row(
+                  horizontal: MediaQuery.of(context).size.width * 0.09,
+                  vertical: MediaQuery.of(context).size.width * 0.07),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Rutas cercanas',
+                    'Parada de ascenso y descenso.',
                     style: TextStyle(
                       fontSize: 20.0,
                       color: Color(0xFF3B3B3B),
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                  Text(
+                    '[Dirección de la parada de ascenso y descenso].',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Color(0xFF3B3B3B),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Rutas que puedes abordar aquí.',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
                   )
                 ],
               ),
@@ -84,7 +99,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
             Consumer<RouteProvider>(
               builder: (_, routeProvider, __) {
                 if (routeProvider.loading) {
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 } else {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -93,7 +108,11 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                       final route = routeProvider.routesAlert[index];
                       final isSelected = route.uuid == selectedBusRouteId;
                       return InkWell(
-                        onTap: () => _selectRoute(route.uuid),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showDialogBusRoute(
+                              route.name, route.uuid, route.price);
+                        },
                         child: Container(
                           padding: EdgeInsets.only(
                               right: MediaQuery.of(context).size.width * 0.07,
@@ -102,10 +121,9 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                               color: isSelected
                                   ? const Color(0xFFE0E0E0)
                                   : const Color(0xFF),
-                              border: Border.all(
-                                color: const Color(0xFFE0E0E0),
-                                width: 1,
-                              )),
+                              border: const Border(
+                                  bottom: BorderSide(
+                                      color: Color(0xFFEDEDED), width: 2))),
                           height: 80,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,16 +145,16 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                                       Text(
                                         route.name,
                                         style: const TextStyle(
-                                            color: Color(0xFF8D8D8D),
-                                            fontSize: 24,
+                                            color: Color(0xFF01142B),
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w600),
                                       ),
                                       Text(
                                         '${route.startTime}-${route.endTime}',
                                         style: const TextStyle(
-                                            color: Color(0xFFAEAEAE),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500),
+                                            color: Color(0xFF8B8B8B),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                     ],
                                   ),
@@ -174,35 +192,10 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                       );
                     },
                   );
-                } 
+                }
               },
             ),
           ],
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.width * 0.05),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: 40,
-            decoration: BoxDecoration(
-              color: selectedBusRouteId != null
-                  ? const Color(0xFF01142B)
-                  : const Color(0xFFB6B6B6),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: TextButton(
-                onPressed: selectedBusRouteId != null
-                    ? () {
-                        _getRoutePath(_token, selectedBusRouteId!);
-                      }
-                    : null,
-                child: const Text('Comenzar',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFFFFFFF)))),
-          ),
         ),
       ],
     );
