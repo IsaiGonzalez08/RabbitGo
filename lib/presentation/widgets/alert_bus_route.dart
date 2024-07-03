@@ -93,7 +93,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
               topRight: Radius.circular(30), topLeft: Radius.circular(30))),
       constraints: BoxConstraints(
         minHeight: 210.0,
-        maxHeight: _isExpanded ? 420 : 210.0,
+        maxHeight: _isExpanded ? 430 : 210.0,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -138,11 +138,13 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                       onTap: () {
                         if (isFavorite) {
                           setState(() {
-                            isFavorite = false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
+                            isFavorite =
+                                false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
                           });
                         } else {
                           setState(() {
-                            isFavorite = true; //AQUI SE HARA EL METODO REMOVE PARA QUITAR DE FAVORITOS
+                            isFavorite =
+                                true; //AQUI SE HARA EL METODO REMOVE PARA QUITAR DE FAVORITOS
                           });
                         }
                       },
@@ -286,9 +288,12 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                       fontWeight: FontWeight.w600),
                 )
               ]),
+              const SizedBox(
+                height: 15,
+              ),
               Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.width * 0.04,
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.width * 0.02,
                 ),
                 child: CustomButton(
                   onPressed: () {
@@ -305,9 +310,6 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                 ),
               ),
             ],
-            const SizedBox(
-              height: 5,
-            ),
             CustomButton(
               onPressed: () {
                 _getRoutePath(_token, widget.routeId);
