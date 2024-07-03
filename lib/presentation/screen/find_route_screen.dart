@@ -4,7 +4,9 @@ import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/widgets/button_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyFindRouteScreen extends StatefulWidget {
   const MyFindRouteScreen({Key? key}) : super(key: key);
@@ -19,6 +21,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   List<RouteModel> _routes = [];
   List<RouteModel> _filteredRoutes = [];
   final TextEditingController _searchController = TextEditingController();
+  final Map<String, bool> _favoriteStatus = {};
 
   void navigateHome() {
     Navigator.push(
@@ -49,7 +52,29 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
-    Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
+    Provider.of<RouteProvider>(context, listen: false)
+        .getAllRoutes(_token)
+        .then((_) {
+      _routes = Provider.of<RouteProvider>(context, listen: false).routes;
+      _loadFavoriteStatus();
+    });
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      for (var route in _routes) {
+        _favoriteStatus[route.uuid] = prefs.getBool(route.uuid) ?? false;
+      }
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus(String uuid) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _favoriteStatus[uuid] = !(_favoriteStatus[uuid] ?? false);
+    });
+    await prefs.setBool(uuid, _favoriteStatus[uuid]!);
   }
 
   @override
@@ -108,84 +133,22 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           _routes = controller.routes;
           _filteredRoutes =
               _searchController.text.isEmpty ? _routes : _filteredRoutes;
-
           return ListView.builder(
             itemCount: _filteredRoutes.length,
             itemBuilder: (_, index) {
               final route = _filteredRoutes[index];
-              return InkWell(
+              bool isFavorite = _favoriteStatus[route.uuid] ?? false;
+              return MyButtonRoute(
                 onTap: () {
-                  final busRouteId = route.uuid;
-                  _getRoutePath(_token, busRouteId);
+                  _getRoutePath(_token, route.uuid);
                 },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFFF5F5F5),
-                      width: 2,
-                    ),
-                  ),
-                  height: 80,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/Bus.png',
-                            width: 50,
-                          ),
-                          const SizedBox(width: 5),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                route.name,
-                                style: const TextStyle(
-                                    color: Color(0xFF8D8D8D),
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                '${route.startTime}-${route.endTime}',
-                                style: const TextStyle(
-                                    color: Color(0xFFE0E0E0),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                'Costo ',
-                                style: TextStyle(
-                                    color: Color(0xFFAEAEAE),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              Text(
-                                '\$${route.price}',
-                                style: const TextStyle(
-                                    color: Color(0xFFAEAEAE),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                onTapLikeButton: () {
+                  _toggleFavoriteStatus(route.uuid);
+                },
+                isFavorite: isFavorite,
+                routeName: route.name,
+                routeStartTime: route.startTime,
+                routeEndTime: route.endTime,
               );
             },
           );

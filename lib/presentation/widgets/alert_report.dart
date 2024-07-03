@@ -224,7 +224,7 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                   textButton: 'Regresar',
                   width: MediaQuery.of(context).size.width * 0.9,
                   border: Border.all(color: const Color(0xFFE8E8E8)),
-                  height: 32,
+                  height: 34,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: const Color(0xFFFFFFFF),

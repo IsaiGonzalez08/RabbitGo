@@ -20,7 +20,7 @@ class RouteProvider extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
-  void getAllRoutes(String token) async {
+  Future<void> getAllRoutes(String token) async {
     _loading = true;
     List<RouteModel> routes = await _routeRepository.getAllRoutes(token);
     _routes = routes;
