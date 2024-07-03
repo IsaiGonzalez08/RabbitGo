@@ -22,7 +22,8 @@ class _MySignScreenState extends State<MySignUpScreen> {
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _showPassword = true;
 
@@ -85,7 +86,9 @@ class _MySignScreenState extends State<MySignUpScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
+          backgroundColor: const Color(0xFFFFFFFF),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/LeftArrow.png',

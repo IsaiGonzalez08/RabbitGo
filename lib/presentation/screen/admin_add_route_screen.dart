@@ -113,8 +113,11 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: const Text(
           'Agregar Ruta',
           style: TextStyle(

@@ -38,8 +38,8 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   void _filterRoutes(String query) {
     setState(() {
       _filteredRoutes = _routes
-          .where((route) =>
-              route.name.toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (route) => route.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -55,7 +55,9 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         centerTitle: true,
         automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Color(0xFF979797)),
@@ -104,9 +106,8 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           return const Center(child: CircularProgressIndicator());
         } else {
           _routes = controller.routes;
-          _filteredRoutes = _searchController.text.isEmpty
-              ? _routes
-              : _filteredRoutes;
+          _filteredRoutes =
+              _searchController.text.isEmpty ? _routes : _filteredRoutes;
 
           return ListView.builder(
             itemCount: _filteredRoutes.length,

@@ -122,210 +122,219 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Image.asset(
-            'assets/images/ForwardLeft.png',
-            width: 20,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFFFFFFF),
+          leading: IconButton(
+            icon: Image.asset(
+              'assets/images/ForwardLeft.png',
+              width: 20,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Color(0xFF979797)),
+          title: const Text(
+            'Actualizar Ruta',
+            style: TextStyle(
+                fontSize: 14,
+                color: Color(0xFFB5B5B5),
+                fontWeight: FontWeight.w600),
+          ),
         ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Color(0xFF979797)),
-        title: const Text(
-          'Actualizar Ruta',
-          style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFFB5B5B5),
-              fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routeNameController,
-                        text: 'Nombre(s)',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routePriceController,
-                        text: 'Precio',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color(0xFFEDEDED),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyTextFieldWidget(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          controllerTextField: _routeNameController,
+                          text: 'Nombre(s)',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa un nombre de usuario';
+                            }
+                            return null;
+                          },
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: DropdownButton<String>(
-                            menuMaxHeight: 200,
-                            iconEnabledColor: const Color(0xFFB8B8B8),
-                            iconSize: 20,
-                            style: const TextStyle(
-                                color: Color(0xFFB8B8B8),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12),
-                            underline: Container(),
-                            value: startTimeValue,
-                            onChanged: (String? value) {
-                              setState(() {
-                                startTimeValue = value!;
-                              });
-                            },
-                            items: hoursAM
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
-                                          0.252),
-                                  child: Text(value),
-                                ),
-                              );
-                            }).toList(),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyTextFieldWidget(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          controllerTextField: _routePriceController,
+                          text: 'Precio',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa un nombre de usuario';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xFFEDEDED),
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color(0xFFEDEDED),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: DropdownButton<String>(
-                            menuMaxHeight: 200,
-                            iconEnabledColor: const Color(0xFFB8B8B8),
-                            iconSize: 20,
-                            style: const TextStyle(
-                                color: Color(0xFFB8B8B8),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12),
-                            underline: Container(),
-                            value: endTimeValue,
-                            onChanged: (String? value) {
-                              setState(() {
-                                endTimeValue = value!;
-                              });
-                            },
-                            items: hoursPM
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
-                                          0.252),
-                                  child: Text(value),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: const Color(0xFFEDEDED)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: DropdownButton<Stop>(
-                        menuMaxHeight: 200,
-                        iconEnabledColor: const Color(0xFFB8B8B8),
-                        iconSize: 20,
-                        style: const TextStyle(
-                            color: Color(0xFFB8B8B8),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12),
-                        underline: Container(),
-                        value: selectedStop,
-                        onChanged: (Stop? newValue) {
-                          setState(() {
-                            selectedStop = newValue!;
-                          });
-                        },
-                        items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
-                          return DropdownMenuItem<Stop>(
-                            value: stop,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.46),
-                              child: Text(stop.name[0].toUpperCase() +
-                                  stop.name.substring(1)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: DropdownButton<String>(
+                              menuMaxHeight: 200,
+                              iconEnabledColor: const Color(0xFFB8B8B8),
+                              iconSize: 20,
+                              style: const TextStyle(
+                                  color: Color(0xFFB8B8B8),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12),
+                              underline: Container(),
+                              value: startTimeValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  startTimeValue = value!;
+                                });
+                              },
+                              items: hoursAM.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                0.252),
+                                    child: Text(value),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xFFEDEDED),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: DropdownButton<String>(
+                              menuMaxHeight: 200,
+                              iconEnabledColor: const Color(0xFFB8B8B8),
+                              iconSize: 20,
+                              style: const TextStyle(
+                                  color: Color(0xFFB8B8B8),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12),
+                              underline: Container(),
+                              value: endTimeValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  endTimeValue = value!;
+                                });
+                              },
+                              items: hoursPM.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                0.252),
+                                    child: Text(value),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: DropdownButton<Stop>(
+                          menuMaxHeight: 200,
+                          iconEnabledColor: const Color(0xFFB8B8B8),
+                          iconSize: 20,
+                          style: const TextStyle(
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12),
+                          underline: Container(),
+                          value: selectedStop,
+                          onChanged: (Stop? newValue) {
+                            setState(() {
+                              selectedStop = newValue!;
+                            });
+                          },
+                          items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
+                            return DropdownMenuItem<Stop>(
+                              value: stop,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.46),
+                                child: Text(stop.name[0].toUpperCase() +
+                                    stop.name.substring(1)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomButton(
-                    textButton: 'Actualizar',
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 40,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF01142B),
-                    colorText: const Color(0xFFFFFFFF),
-                    onPressed: () {
-                      _updateBusRoute();
-                    },
-                  )
-                ],
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CustomButton(
+                      textButton: 'Actualizar',
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 40,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF01142B),
+                      colorText: const Color(0xFFFFFFFF),
+                      onPressed: () {
+                        _updateBusRoute();
+                      },
+                    )
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

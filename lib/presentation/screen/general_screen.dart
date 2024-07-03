@@ -23,7 +23,9 @@ class MyGeneralScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         leading: IconButton(
           icon: Image.asset(
             'assets/images/ForwardLeft.png',

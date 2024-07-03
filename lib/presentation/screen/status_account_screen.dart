@@ -53,7 +53,9 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Image.asset(

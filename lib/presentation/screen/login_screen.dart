@@ -102,7 +102,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
+          backgroundColor: const Color(0xFFFFFFFF),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/LeftArrow.png',

@@ -77,6 +77,7 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Column(
         children: [
           const SizedBox(

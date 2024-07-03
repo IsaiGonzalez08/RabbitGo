@@ -62,7 +62,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     _name = _user.name;
     _lastname = _user.lastname;
     _email = _user.email;
-    
+
     _usernameController = TextEditingController(text: _name);
     _lastnameController = TextEditingController(text: _lastname);
     _emailController = TextEditingController(text: _email);
@@ -118,7 +118,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         leading: IconButton(
           icon: Image.asset(
             'assets/images/ForwardLeft.png',
@@ -180,7 +182,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
-                            controllerTextField: _usernameController = TextEditingController(text: _name),
+                            controllerTextField: _usernameController =
+                                TextEditingController(text: _name),
                             text: 'Nombre(s)',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
