@@ -27,6 +27,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
   bool _isExpanded = false;
   bool _iconToggled = false;
   bool _buttonVisible = false;
+  bool isFavorite = false;
 
   final List<String> stringList = [
     'Elemento 1',
@@ -106,25 +107,58 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                     bottom: BorderSide(color: Color(0xFFEDEDED), width: 2)),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset('assets/images/Bus.png', width: 50),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Row(
                     children: [
-                      Text(
-                        widget.name,
-                        style: const TextStyle(
-                          color: Color(0xFF01142B),
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Image.asset('assets/images/Bus.png', width: 50),
+                      const SizedBox(
+                        width: 20,
                       ),
-                      const Text('[Dirección de la ruta].'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.name,
+                            style: const TextStyle(
+                              color: Color(0xFF01142B),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Text('[Dirección de la ruta].'),
+                        ],
+                      ),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20, bottom: 15),
+                    child: InkWell(
+                      onTap: () {
+                        if (isFavorite) {
+                          setState(() {
+                            isFavorite = false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
+                          });
+                        } else {
+                          setState(() {
+                            isFavorite = true; //AQUI SE HARA EL METODO REMOVE PARA QUITAR DE FAVORITOS
+                          });
+                        }
+                      },
+                      child: Image.asset(
+                        isFavorite
+                            ? 'assets/images/favorite.png'
+                            : 'assets/images/favorite-border.png',
+                        width: 25,
+                      ),
+                    ),
+                  )
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 5,
             ),
             Row(
               children: [
@@ -138,6 +172,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 5,
             ),
             Row(
               children: [
@@ -154,6 +191,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 5,
             ),
             InkWell(
               onTap: _toggleSizeAndIcon,
@@ -179,6 +219,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Row(children: [
                     const SizedBox(
                       width: 5,
@@ -205,6 +248,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 5,
+              ),
               Row(children: [
                 Image.asset(
                   'assets/images/acute.png',
@@ -221,6 +267,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                       fontWeight: FontWeight.w600),
                 )
               ]),
+              const SizedBox(
+                height: 5,
+              ),
               Row(children: [
                 Image.asset(
                   'assets/images/traffic_jam.png',
@@ -256,6 +305,9 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                 ),
               ),
             ],
+            const SizedBox(
+              height: 5,
+            ),
             CustomButton(
               onPressed: () {
                 _getRoutePath(_token, widget.routeId);

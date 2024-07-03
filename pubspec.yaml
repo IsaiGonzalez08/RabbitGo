@@ -107,6 +107,8 @@ flutter:
     - assets/images/traffic_jam.png
     - assets/images/attach_file_add.png
     - assets/images/close.png
+    - assets/images/favorite.png
+    - assets/images/favorite-border.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

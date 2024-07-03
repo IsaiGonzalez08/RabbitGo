@@ -22,6 +22,7 @@ class MyAlertReportBusRoute extends StatefulWidget {
 class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
   File? _mediaFile;
   final ImagePicker _picker = ImagePicker();
+  bool isFavorite = false;
 
   Future<void> _pickMedia() async {
     final pickedFile = await _picker.pickImage(
@@ -69,23 +70,55 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                     ),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset('assets/images/Bus.png', width: 50),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Row(
                         children: [
-                          Text(
-                            widget.name,
-                            style: const TextStyle(
-                              color: Color(0xFF01142B),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          Image.asset('assets/images/Bus.png', width: 50),
+                          const SizedBox(
+                            width: 20,
                           ),
-                          const Text('[Dirección de la ruta].'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.name,
+                                style: const TextStyle(
+                                  color: Color(0xFF01142B),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Text('[Dirección de la ruta].'),
+                            ],
+                          ),
                         ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20, bottom: 15),
+                        child: InkWell(
+                          onTap: () {
+                            if (isFavorite) {
+                              setState(() {
+                                isFavorite =
+                                    false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
+                              });
+                            } else {
+                              setState(() {
+                                isFavorite =
+                                    true; //AQUI SE HARA EL METODO REMOVE PARA QUITAR DE FAVORITOS
+                              });
+                            }
+                          },
+                          child: Image.asset(
+                            isFavorite
+                                ? 'assets/images/favorite.png'
+                                : 'assets/images/favorite-border.png',
+                            width: 25,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
