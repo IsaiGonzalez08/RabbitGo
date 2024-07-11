@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
+import 'package:rabbit_go/presentation/screen/favorite_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/find_route_screen.dart';
 
@@ -19,6 +20,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   List<Widget> body = const [
     MyHomeScreen(),
     MyFindRouteScreen(),
+    MyFavoriteRoutesScreen(),
     MyConfigurationScreen()
   ];
 
@@ -29,6 +31,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
@@ -43,17 +46,41 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         items: [
           BottomNavigationBarItem(
               label: 'Home',
-              activeIcon: SvgPicture.asset('assets/images/home.svg'),
-              icon: SvgPicture.asset('assets/images/homewhite.svg')),
+              activeIcon: SvgPicture.asset(
+                'assets/images/home.svg',
+                width: 20,
+              ),
+              icon: SvgPicture.asset(
+                'assets/images/homewhite.svg',
+                width: 20,
+              )),
           BottomNavigationBarItem(
             label: 'Rutas',
-            activeIcon: SvgPicture.asset('assets/images/Route.svg'),
-            icon: SvgPicture.asset('assets/images/Route.svg'),
+            activeIcon: SvgPicture.asset(
+              'assets/images/Route.svg',
+            ),
+            icon: SvgPicture.asset(
+              'assets/images/Route.svg',
+            ),
           ),
           BottomNavigationBarItem(
+              label: 'Favoritos',
+              activeIcon: Image.asset(
+                'assets/images/favorite.png',
+                width: 25,
+              ),
+              icon: Image.asset(
+                'assets/images/favorite_border_gray.png',
+                width: 25,
+              )),
+          BottomNavigationBarItem(
               label: 'Perfil',
-              activeIcon: SvgPicture.asset('assets/images/profile2.svg'),
-              icon: SvgPicture.asset('assets/images/profile.svg')),
+              activeIcon: SvgPicture.asset(
+                'assets/images/profile2.svg',
+              ),
+              icon: SvgPicture.asset(
+                'assets/images/profile.svg',
+              )),
         ],
         selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w500,

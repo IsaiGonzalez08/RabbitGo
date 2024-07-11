@@ -109,6 +109,10 @@ flutter:
     - assets/images/close.png
     - assets/images/favorite.png
     - assets/images/favorite-border.png
+    - assets/images/favorite_border_gray.png
+    - assets/images/add_blue.png
+    - assets/images/more_vert.png
+    - assets/images/arrow_back.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
