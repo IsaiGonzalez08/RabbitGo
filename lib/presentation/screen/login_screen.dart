@@ -47,7 +47,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
     } else if (!passwordRegex.hasMatch(value)) {
-      return "La contraseña debe tener entre 6 y 16 caracteres, e incluir al menos una letra mayúscula, una letra minúscula y un número.";
+      return "La contraseña debe tener entre 6 y 16 caracteres, una letra mayúscula, una letra minúscula y un número.";
     } else if (_isPasswordInValid) {
       return "La contraseña no existe";
     } else {
@@ -60,9 +60,8 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   }
 
   void _loginUser() async {
-    final String email = _emailController.text.trim();
-    final String password = _passwordController.text.trim();
-
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
     if (_formKey.currentState!.validate()) {
       await Provider.of<UserProvider>(context, listen: false).loginUser(email, password);
       providerUserData();

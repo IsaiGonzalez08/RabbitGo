@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
@@ -183,6 +184,12 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
                           width: MediaQuery.of(context).size.width * 0.9,
                           controllerTextField: _routePriceController,
                           text: 'Precio',
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d*')),
+                          ],
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa un nombre de usuario';

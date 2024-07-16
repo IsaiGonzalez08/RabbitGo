@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
@@ -19,6 +20,7 @@ class MyAdminAddRouteScreen extends StatefulWidget {
 class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   late User _user;
   late String _token;
   List<Stop> stops = [];
@@ -88,10 +90,11 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   }
 
   Future<void> _createBusRoute() async {
+    if (!_formKey.currentState!.validate()) return;
     try {
       final routeName = _routeNameController.text[0].toUpperCase() +
           _routeNameController.text.substring(1);
-      final routePrice = int.tryParse(_routePriceController.text);
+      final routePrice = int.parse(_routePriceController.text);
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
       final routeBusStopUuid = selectedStop?.id ?? '';
@@ -129,176 +132,190 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routeNameController,
-                        text: 'Nombre(s)',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un nombre de usuario';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyTextFieldWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _routePriceController,
-                        text: 'Precio',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor ingresa un precio';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color(0xFFEDEDED),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 50),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyTextFieldWidget(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          controllerTextField: _routeNameController,
+                          text: 'Nombre(s)',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa un nombre de usuario';
+                            }
+                            return null;
+                          },
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: DropdownButton<String>(
-                            menuMaxHeight: 200,
-                            iconEnabledColor: const Color(0xFFB8B8B8),
-                            iconSize: 20,
-                            style: const TextStyle(
-                                color: Color(0xFFB8B8B8),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12),
-                            underline: Container(),
-                            value: startTimeValue,
-                            onChanged: (String? value) {
-                              setState(() {
-                                startTimeValue = value!;
-                              });
-                            },
-                            items: hoursAM
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
-                                          0.252),
-                                  child: Text(value),
-                                ),
-                              );
-                            }).toList(),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyTextFieldWidget(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          controllerTextField: _routePriceController,
+                          text: 'Precio',
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d*')),
+                          ],
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa un precio';
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Por favor ingresa un número válido';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xFFEDEDED),
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color(0xFFEDEDED),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: DropdownButton<String>(
-                            menuMaxHeight: 200,
-                            iconEnabledColor: const Color(0xFFB8B8B8),
-                            iconSize: 20,
-                            style: const TextStyle(
-                                color: Color(0xFFB8B8B8),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12),
-                            underline: Container(),
-                            value: endTimeValue,
-                            onChanged: (String? value) {
-                              setState(() {
-                                endTimeValue = value!;
-                              });
-                            },
-                            items: hoursPM
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
-                                          0.252),
-                                  child: Text(value),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: const Color(0xFFEDEDED)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: DropdownButton<Stop>(
-                        menuMaxHeight: 200,
-                        iconEnabledColor: const Color(0xFFB8B8B8),
-                        iconSize: 20,
-                        style: const TextStyle(
-                            color: Color(0xFFB8B8B8),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12),
-                        underline: Container(),
-                        value: selectedStop,
-                        onChanged: (Stop? newValue) {
-                          setState(() {
-                            selectedStop = newValue!;
-                          });
-                        },
-                        items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
-                          return DropdownMenuItem<Stop>(
-                            value: stop,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.46),
-                              child: Text(stop.name[0].toUpperCase() +
-                                  stop.name.substring(1)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: DropdownButton<String>(
+                              menuMaxHeight: 200,
+                              iconEnabledColor: const Color(0xFFB8B8B8),
+                              iconSize: 20,
+                              style: const TextStyle(
+                                  color: Color(0xFFB8B8B8),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12),
+                              underline: Container(),
+                              value: startTimeValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  startTimeValue = value!;
+                                });
+                              },
+                              items: hoursAM.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                0.252),
+                                    child: Text(value),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color(0xFFEDEDED),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: DropdownButton<String>(
+                              menuMaxHeight: 200,
+                              iconEnabledColor: const Color(0xFFB8B8B8),
+                              iconSize: 20,
+                              style: const TextStyle(
+                                  color: Color(0xFFB8B8B8),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12),
+                              underline: Container(),
+                              value: endTimeValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  endTimeValue = value!;
+                                });
+                              },
+                              items: hoursPM.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                0.252),
+                                    child: Text(value),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: DropdownButton<Stop>(
+                          menuMaxHeight: 200,
+                          iconEnabledColor: const Color(0xFFB8B8B8),
+                          iconSize: 20,
+                          style: const TextStyle(
+                              color: Color(0xFFB8B8B8),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12),
+                          underline: Container(),
+                          value: selectedStop,
+                          onChanged: (Stop? newValue) {
+                            setState(() {
+                              selectedStop = newValue!;
+                            });
+                          },
+                          items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
+                            return DropdownMenuItem<Stop>(
+                              value: stop,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.46),
+                                child: Text(stop.name[0].toUpperCase() +
+                                    stop.name.substring(1)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  CustomButton(
-                    textButton: 'Agregar',
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 40,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF01142B),
-                    colorText: const Color(0xFFFFFFFF),
-                    onPressed: () {
-                      _createBusRoute();
-                    },
-                  )
-                ],
+                    const SizedBox(height: 20),
+                    CustomButton(
+                      textButton: 'Agregar',
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 40,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF01142B),
+                      colorText: const Color(0xFFFFFFFF),
+                      onPressed: () {
+                        _createBusRoute();
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
     );
