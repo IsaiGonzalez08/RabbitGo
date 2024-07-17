@@ -28,7 +28,7 @@ class RouteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getRouteByBusStopId(String token, String busStopId) async {
+  Future<void> getRouteByBusStopId(String token, String busStopId) async {
     _loading = true;
     List<RouteModel> routesAlert =
         await _routeRepository.getRouteByBusStopId(token, busStopId);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
@@ -67,10 +68,10 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.07),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Parada de ascenso y descenso.',
                   style: TextStyle(
                     fontSize: 20.0,
@@ -78,16 +79,23 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Text(
-                  '[Dirección de la parada de ascenso y descenso].',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Color(0xFF3B3B3B),
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
+                Consumer<AddressProvider>(builder: (_, addressProvider, __) {
+                  final address = addressProvider.address;
+                  if (addressProvider.loading) {
+                    return Center(child: Container());
+                  } else {
+                    return Text(
+                      '${address.district}, ${address.street}, ${address.postalCode}.',
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        color: Color(0xFF3B3B3B),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    );
+                  }
+                }),
+                const SizedBox(height: 20),
+                const Text(
                   'Rutas que puedes abordar aquí.',
                   style: TextStyle(
                     color: Color(0xFF01142B),

@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.3.0
   local_auth: ^2.2.0
   image_picker: ^1.1.2
+  flutter_dotenv: ^5.1.0
   
 
 dev_dependencies:
@@ -71,6 +72,7 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/.env
     - assets/images/AlertLocation.png
     - assets/images/bg-bienvenida.png
     - assets/images/Bus.png

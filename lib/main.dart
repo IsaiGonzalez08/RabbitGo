@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
@@ -11,7 +13,8 @@ import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+Future<void> main() async {
+  await dotenv.load(fileName: "assets/.env");
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -28,7 +31,8 @@ void main() async {
         ChangeNotifierProvider<RouteProvider>(
             create: (context) => RouteProvider()),
         ChangeNotifierProvider<BusStopProvider>(
-            create: (context) => BusStopProvider())
+            create: (context) => BusStopProvider()),
+        ChangeNotifierProvider(create: (context) => AddressProvider())
       ],
       child: MyApp(
         isLoggedIn: isLoggedIn,
@@ -42,7 +46,8 @@ void main() async {
 Future<void> checkDataExpiration(SharedPreferences prefs) async {
   final int? storedTimestamp = prefs.getInt('storedTimestamp');
   if (storedTimestamp != null) {
-    final DateTime storedDate = DateTime.fromMillisecondsSinceEpoch(storedTimestamp);
+    final DateTime storedDate =
+        DateTime.fromMillisecondsSinceEpoch(storedTimestamp);
     final DateTime now = DateTime.now();
     if (now.difference(storedDate).inDays > 30) {
       await prefs.clear();
@@ -50,7 +55,8 @@ Future<void> checkDataExpiration(SharedPreferences prefs) async {
   }
 }
 
-Future<void> saveDataWithTimestamp(SharedPreferences prefs, String key, dynamic value) async {
+Future<void> saveDataWithTimestamp(
+    SharedPreferences prefs, String key, dynamic value) async {
   if (value is int) {
     await prefs.setInt(key, value);
   } else if (value is double) {
@@ -69,8 +75,7 @@ class MyApp extends StatelessWidget {
   final bool? isLoggedIn;
   final String? token;
   final String? rol;
-  const MyApp(
-      {Key? key, this.isLoggedIn, this.token, this.rol})
+  const MyApp({Key? key, this.isLoggedIn, this.token, this.rol})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

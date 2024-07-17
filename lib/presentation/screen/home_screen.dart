@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
@@ -78,7 +79,8 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
       return Marker(
         onTap: () {
-          _showDialogBusStops(stop.id);
+          _showDialogBusStops(
+              stop.id, stop.latitude.toString(), stop.longitude.toString());
         },
         markerId: MarkerId(stop.id),
         position: LatLng(stop.latitude, stop.longitude),
@@ -315,7 +317,9 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     );
   }
 
-  void _showDialogBusStops(String stopId) {
+  void _showDialogBusStops(String stopId, String latitude, String longitude) {
+    Provider.of<AddressProvider>(context, listen: false)
+        .getAddress(latitude, longitude);
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {

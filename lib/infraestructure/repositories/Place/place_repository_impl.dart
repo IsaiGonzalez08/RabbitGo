@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rabbit_go/domain/models/Place/place.dart';
 import 'package:rabbit_go/domain/models/Place/repositories/place_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceRepositoryImpl implements PlaceRepository {
   final _dio = Dio();
+  final String token = dotenv.env['HERE_MAPS_API_TOKEN'] ?? '';
 
   @override
   Future<List<Marker>> onResults(String query) async {
@@ -13,7 +15,7 @@ class PlaceRepositoryImpl implements PlaceRepository {
       final response = await _dio.get(
         'https://discover.search.hereapi.com/v1/discover',
         queryParameters: {
-          "apiKey": 'gKmQKAgOGGi4sP8OgC1vc5WK2z_ZLv7KLLqQqNFfhE0',
+          "apiKey": token.toString(),
           "q": query,
           "in": "bbox:-93.226372,16.719187,-93.050247,16.804001"
         },
