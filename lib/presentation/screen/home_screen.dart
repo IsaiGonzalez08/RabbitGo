@@ -27,11 +27,14 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late Polyline polyline;
   late WaitProvider _waitProvider;
   List<Stop> _busStopMarkers = [];
+  List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;
   late String? _token;
   List<LatLng> myList = [];
+
+  final TextEditingController _searchPlaceController = TextEditingController();
 
   @override
   void initState() {
@@ -73,13 +76,12 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
-      final latLngMarker = LatLng(stop.latitude, stop.longitude);
       return Marker(
         onTap: () {
           _showDialogBusStops(stop.id);
         },
         markerId: MarkerId(stop.id),
-        position: latLngMarker,
+        position: LatLng(stop.latitude, stop.longitude),
         icon: icon,
       );
     }).toSet();
@@ -117,6 +119,11 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     try {
       await Provider.of<PlaceProvider>(context, listen: false)
           .handleSubmitted(query);
+      setState(() {
+        _hereMarkers =
+            Provider.of<PlaceProvider>(context, listen: false).hereMarkers;
+        _searchPlaceController.clear();
+      });
     } catch (e) {
       throw ('el error es $e');
     }
@@ -137,6 +144,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     return Stack(
       children: [
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
+          _hereMarkers = placeProvider.hereMarkers;
           return GoogleMap(
             zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) async {
@@ -154,7 +162,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               }
             },
             polylines: {polyline},
-            markers: Set.from({..._markers, ...placeProvider.hereMarkers}),
+            markers: Set.from({..._markers, ..._hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),
@@ -171,23 +179,23 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             vertical: MediaQuery.of(context).size.height * 0.08,
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: 40,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Builder(builder: (context) {
-              return TextField(
-                onSubmitted: (value) => _getPlace(value),
-                textAlignVertical: TextAlignVertical.center,
-                cursorHeight: 25.0,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 40,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: TextField(
+                onSubmitted: (value) {
+                  _getPlace(value);
+                },
+                controller: _searchPlaceController,
                 cursorColor: const Color(0xFF01142B),
                 style: const TextStyle(
                   color: Color(0xFF01142B),
@@ -211,14 +219,58 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     width: 10,
                   ),
                 ),
-              );
-            }),
-          ),
+              )),
         ),
+        _hereMarkers.isEmpty
+            ? Container()
+            : Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 75),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _hereMarkers.clear();
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: const Color(0xFFAB0000),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.6),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/images/close.png',
+                                width: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
         myList.isEmpty
             ? Container()
             : Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
