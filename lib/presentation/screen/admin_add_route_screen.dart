@@ -9,6 +9,7 @@ import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class MyAdminAddRouteScreen extends StatefulWidget {
   const MyAdminAddRouteScreen({super.key});
@@ -24,7 +25,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   late User _user;
   late String _token;
   List<Stop> stops = [];
-  Stop? selectedStop;
+  List<Stop> selectedStops = [];
   bool _isLoading = true;
   String? startTimeValue;
   String? endTimeValue;
@@ -71,9 +72,6 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
           Provider.of<BusStopProvider>(context, listen: false).stops;
       setState(() {
         stops = fetchedStops;
-        if (stops.isNotEmpty) {
-          selectedStop = stops.first;
-        }
         _isLoading = false;
       });
     } catch (e) {
@@ -97,13 +95,13 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
       final routePrice = int.parse(_routePriceController.text);
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
-      final routeBusStopUuid = selectedStop?.id ?? '';
+      final routeBusStopUuids = selectedStops.map((stop) => stop.id).toList();
       await Provider.of<RouteProvider>(context, listen: false).createBusRoute(
           routeName,
           routePrice,
           routeStartTime,
           routeEndTime,
-          routeBusStopUuid,
+          routeBusStopUuids,
           _token);
       _routeNameController.clear();
       _routePriceController.clear();
@@ -266,38 +264,49 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                     ),
                     const SizedBox(height: 10),
                     Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: selectedStops.isNotEmpty ? 110 : 50,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: const Color(0xFFEDEDED)),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: DropdownButton<Stop>(
-                          menuMaxHeight: 200,
-                          iconEnabledColor: const Color(0xFFB8B8B8),
-                          iconSize: 20,
-                          style: const TextStyle(
-                              color: Color(0xFFB8B8B8),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12),
-                          underline: Container(),
-                          value: selectedStop,
-                          onChanged: (Stop? newValue) {
+                        padding:
+                            const EdgeInsets.only(top: 5, left: 5, right: 5),
+                        child: MultiSelectDialogField(
+                          buttonIcon: const Icon(
+                            Icons.arrow_drop_down,
+                            size: 20,
+                            color: Color(0xFFB8B8B8),
+                          ),
+                          items: stops
+                              .map((stop) =>
+                                  MultiSelectItem<Stop>(stop, stop.name))
+                              .toList(),
+                          title: const Text("Seleccionar Paradas"),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide.none)),
+                          selectedColor: const Color(0xFF01142B),
+                          buttonText: const Text(
+                            "Seleccionar Paradas",
+                            style: TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          onConfirm: (results) {
                             setState(() {
-                              selectedStop = newValue!;
+                              selectedStops = results.cast<Stop>();
                             });
                           },
-                          items: stops.map<DropdownMenuItem<Stop>>((Stop stop) {
-                            return DropdownMenuItem<Stop>(
-                              value: stop,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    right: MediaQuery.of(context).size.width *
-                                        0.46),
-                                child: Text(stop.name[0].toUpperCase() +
-                                    stop.name.substring(1)),
-                              ),
-                            );
-                          }).toList(),
+                          chipDisplay: MultiSelectChipDisplay(
+                            scroll: true,
+                            scrollBar: HorizontalScrollBar(isAlwaysShown: true),
+                            onTap: (item) {
+                              setState(() {
+                                selectedStops.remove(item);
+                              });
+                            },
+                          ),
                         ),
                       ),
                     ),

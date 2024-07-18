@@ -13,7 +13,6 @@ class MyAlertConfiguration extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
       );
-      Navigator.popUntil(context, (route) => route.isFirst);
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
       await prefs.remove('name');
