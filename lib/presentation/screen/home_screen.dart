@@ -79,7 +79,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
       return Marker(
         onTap: () {
-          _showDialogBusStops(
+          _loadBusStopButtomSheet(
               stop.id, stop.latitude.toString(), stop.longitude.toString());
         },
         markerId: MarkerId(stop.id),
@@ -317,13 +317,33 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     );
   }
 
-  void _showDialogBusStops(String stopId, String latitude, String longitude) {
-    Provider.of<AddressProvider>(context, listen: false)
+  Future<void> _loadBusStopButtomSheet(
+      String stopId, String latitude, String longitude) async {
+    await Provider.of<AddressProvider>(context, listen: false)
         .getAddress(latitude, longitude);
+    providerAddress(stopId);
+  }
+
+  Future<void> providerAddress(String stopId) async {
+    final address =
+        Provider.of<AddressProvider>(context, listen: false).address;
+    final district = address.district;
+    final street = address.street;
+    final postalCode = address.postalCode;
+    showDialogBusStops(stopId, district, street, postalCode);
+  }
+
+  Future<void> showDialogBusStops(
+      String stopId, String district, String street, String postalCode) async {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertMarker(stopId: stopId);
+        return MyAlertMarker(
+          stopId: stopId,
+          district: district,
+          street: street,
+          postalCode: postalCode,
+        );
       },
       constraints: const BoxConstraints(
         minWidth: 0.0,

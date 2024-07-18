@@ -9,9 +9,10 @@ class MyAlertConfiguration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void navigateLogin() async {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+        (Route<dynamic> route) => false,
       );
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
@@ -21,7 +22,6 @@ class MyAlertConfiguration extends StatelessWidget {
       await prefs.remove('rol');
       await prefs.remove('token');
     }
-
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusDirectional.circular(10.0)),

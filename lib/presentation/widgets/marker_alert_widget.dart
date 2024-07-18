@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
 
 class MyAlertMarker extends StatefulWidget {
-  final String stopId;
-  const MyAlertMarker({Key? key, required this.stopId}) : super(key: key);
+  final String stopId, district, street, postalCode;
+  const MyAlertMarker(
+      {Key? key,
+      required this.stopId,
+      required this.district,
+      required this.street,
+      required this.postalCode})
+      : super(key: key);
 
   @override
   State<MyAlertMarker> createState() => _MyAlertMarkerState();
@@ -20,11 +25,17 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
   List<LatLng> listCordinates = [];
   late User _user;
   late String _token;
+  late String district;
+  late String street;
+  late String postalCode;
 
   @override
   void initState() {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
+    district = widget.district;
+    street = widget.street;
+    postalCode = widget.postalCode;
     Provider.of<RouteProvider>(context, listen: false)
         .getRouteByBusStopId(_token, widget.stopId);
     super.initState();
@@ -79,21 +90,14 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Consumer<AddressProvider>(builder: (_, addressProvider, __) {
-                  final address = addressProvider.address;
-                  if (addressProvider.loading) {
-                    return Center(child: Container());
-                  } else {
-                    return Text(
-                      '${address.district}, ${address.street}, ${address.postalCode}.',
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Color(0xFF3B3B3B),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    );
-                  }
-                }),
+                Text(
+                  '$district, $street, $postalCode.',
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Color(0xFF3B3B3B),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 const Text(
                   'Rutas que puedes abordar aquí.',
