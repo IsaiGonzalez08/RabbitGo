@@ -9,13 +9,13 @@ class PlaceRepositoryImpl implements PlaceRepository {
   final String token = dotenv.env['HERE_MAPS_API_TOKEN'] ?? '';
 
   @override
-  Future<List<Marker>> onResults(String query) async {
+  Future<List<Marker>> getPlaceByName(String query) async {
     List<Marker> hereMarkers = [];
     try {
       final response = await _dio.get(
         'https://discover.search.hereapi.com/v1/discover',
         queryParameters: {
-          "apiKey": token.toString(),
+          "apiKey": token,
           "q": query,
           "in": "bbox:-93.226372,16.719187,-93.050247,16.804001"
         },
