@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
+import 'package:rabbit_go/presentation/providers/flow_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
@@ -32,7 +33,8 @@ Future<void> main() async {
             create: (context) => RouteProvider()),
         ChangeNotifierProvider<BusStopProvider>(
             create: (context) => BusStopProvider()),
-        ChangeNotifierProvider(create: (context) => AddressProvider())
+        ChangeNotifierProvider(create: (context) => AddressProvider()),
+        ChangeNotifierProvider(create: (context) => FlowProvider())
       ],
       child: MyApp(
         isLoggedIn: isLoggedIn,

@@ -26,6 +26,7 @@ class MyHomeScreen extends StatefulWidget {
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
+  late Polyline polyline2;
   late WaitProvider _waitProvider;
   List<Stop> _busStopMarkers = [];
   List<Marker> _hereMarkers = [];
@@ -79,7 +80,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     Set<Marker> newMarkers = _busStopMarkers.map((stop) {
       return Marker(
         onTap: () {
-          _loadBusStopButtomSheet(
+          _showDialogBusStop(
               stop.id, stop.latitude.toString(), stop.longitude.toString());
         },
         markerId: MarkerId(stop.id),
@@ -163,7 +164,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
             },
-            polylines: {polyline},
+            polylines: {polyline, polyline2},
             markers: Set.from({..._markers, ..._hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
@@ -317,7 +318,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     );
   }
 
-  Future<void> _loadBusStopButtomSheet(
+  Future<void> _showDialogBusStop(
       String stopId, String latitude, String longitude) async {
     await Provider.of<AddressProvider>(context, listen: false)
         .getAddress(latitude, longitude);

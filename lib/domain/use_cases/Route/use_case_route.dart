@@ -69,6 +69,6 @@ class GetRouteBusPath {
   final RouteRepository _routeRepository;
   GetRouteBusPath(this._routeRepository);
   Future<void> getRouteBusPath(String token, String busRouteId) async {
-    await _routeRepository.getRouteBusPath(token, busRouteId);
+    await _routeRepository.getBusRoutePath(token, busRouteId);
   }
 }

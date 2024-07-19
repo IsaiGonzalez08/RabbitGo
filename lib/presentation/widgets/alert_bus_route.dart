@@ -60,7 +60,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
 
   Future<void> _getRoutePath(String token, String busRouteId) async {
     await Provider.of<RouteProvider>(context, listen: false)
-        .getRouteBusPath(token, busRouteId);
+        .getBusRoutePath(token, busRouteId);
     navigateMap();
   }
 

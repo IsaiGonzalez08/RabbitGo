@@ -34,7 +34,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
 
   Future<void> _getRoutePath(String token, String busRouteId) async {
     await Provider.of<RouteProvider>(context, listen: false)
-        .getRouteBusPath(token, busRouteId);
+        .getBusRoutePath(token, busRouteId);
     navigateHome();
   }
 

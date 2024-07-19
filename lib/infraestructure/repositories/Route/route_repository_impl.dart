@@ -151,13 +151,12 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<List<LatLng>> getRouteBusPath(String token, String busRouteId) async {
+  Future<List<LatLng>> getBusRoutePath(String token, String busRouteId) async {
     String? token = await getToken();
     try {
       List<LatLng> listCordinates = [];
       listCordinates.clear();
       String url = ('https://rabbitgo.sytes.net/path/route/$busRouteId');
-
       final response = await http.get(
         Uri.parse(url),
         headers: {'Authorization': token!, 'Content-Type': 'application/json'},
@@ -181,4 +180,6 @@ class RouteRepositoryImpl implements RouteRepository {
       throw ('Error al conectar con el servidor: $error');
     }
   }
+
+  
 }

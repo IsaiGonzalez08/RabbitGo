@@ -17,6 +17,7 @@ class RouteProvider extends ChangeNotifier {
 
   List<LatLng> _routePath = [];
   List<LatLng> get routePath => _routePath;
+  
   bool _loading = false;
   bool get loading => _loading;
 
@@ -58,9 +59,9 @@ class RouteProvider extends ChangeNotifier {
         routeStartTime, routeEndTime, routeBusStopUuid, token);
   }
 
-  Future<void> getRouteBusPath(String token, String busRouteId) async {
+  Future<void> getBusRoutePath(String token, String busRouteId) async {
     List<LatLng> routePath =
-        await _routeRepository.getRouteBusPath(token, busRouteId);
+        await _routeRepository.getBusRoutePath(token, busRouteId);
     _routePath = routePath;
     notifyListeners();
   }
