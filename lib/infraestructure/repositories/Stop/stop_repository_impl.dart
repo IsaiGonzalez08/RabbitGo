@@ -22,7 +22,6 @@ class StopRepositoryImpl implements StopRepository {
             json.decode(response.body) as Map<String, dynamic>;
         final stopsJson = decodedResponse['data'] as List<dynamic>;
         final stops = stopsJson.map((json) => Stop.fromJson(json)).toList();
-        print('las paradas son: $stops');
         return stops;
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');

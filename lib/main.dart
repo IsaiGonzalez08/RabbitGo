@@ -45,34 +45,6 @@ Future<void> main() async {
   );
 }
 
-Future<void> checkDataExpiration(SharedPreferences prefs) async {
-  final int? storedTimestamp = prefs.getInt('storedTimestamp');
-  if (storedTimestamp != null) {
-    final DateTime storedDate =
-        DateTime.fromMillisecondsSinceEpoch(storedTimestamp);
-    final DateTime now = DateTime.now();
-    if (now.difference(storedDate).inDays > 30) {
-      await prefs.clear();
-    }
-  }
-}
-
-Future<void> saveDataWithTimestamp(
-    SharedPreferences prefs, String key, dynamic value) async {
-  if (value is int) {
-    await prefs.setInt(key, value);
-  } else if (value is double) {
-    await prefs.setDouble(key, value);
-  } else if (value is bool) {
-    await prefs.setBool(key, value);
-  } else if (value is String) {
-    await prefs.setString(key, value);
-  } else if (value is List<String>) {
-    await prefs.setStringList(key, value);
-  }
-  await prefs.setInt('storedTimestamp', DateTime.now().millisecondsSinceEpoch);
-}
-
 class MyApp extends StatelessWidget {
   final bool? isLoggedIn;
   final String? token;

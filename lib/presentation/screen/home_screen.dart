@@ -27,7 +27,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
   late WaitProvider _waitProvider;
-  List<Stop> _busStopMarkers = [];
   List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
@@ -66,17 +65,17 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> _loadBusStops() async {
-    Provider.of<BusStopProvider>(context, listen: false)
+    await Provider.of<BusStopProvider>(context, listen: false)
         .getAllBusStops(_token);
     getBusStops();
   }
 
   Future<void> getBusStops() async {
-    _busStopMarkers =
+    List<Stop> busStopMarkers =
         Provider.of<BusStopProvider>(context, listen: false).stops;
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
-    Set<Marker> newMarkers = _busStopMarkers.map((stop) {
+    Set<Marker> newMarkers = busStopMarkers.map((stop) {
       return Marker(
         onTap: () {
           _showDialogBusStop(

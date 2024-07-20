@@ -15,7 +15,7 @@ class Stop {
 
   factory Stop.fromJson(Map<String, dynamic> json) {
     return Stop(
-      id: json['uuid'] as String? ?? '',
+      id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
