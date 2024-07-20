@@ -146,7 +146,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                         onTap: () {
                           Navigator.pop(context);
                           _showDialogBusRoute(
-                              route.name, route.uuid, route.price);
+                              route.name, route.id, route.price);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(

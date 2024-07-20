@@ -73,7 +73,7 @@ class RouteProvider extends ChangeNotifier {
   }
 
   void _removeRouteLocally(String busRouteUuid) {
-    routes.removeWhere((route) => route.uuid == busRouteUuid);
+    routes.removeWhere((route) => route.id == busRouteUuid);
     notifyListeners();
   }
 }

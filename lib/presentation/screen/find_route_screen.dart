@@ -64,7 +64,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       for (var route in _routes) {
-        _favoriteStatus[route.uuid] = prefs.getBool(route.uuid) ?? false;
+        _favoriteStatus[route.id] = prefs.getBool(route.id) ?? false;
       }
     });
   }
@@ -137,13 +137,13 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
             itemCount: _filteredRoutes.length,
             itemBuilder: (_, index) {
               final route = _filteredRoutes[index];
-              bool isFavorite = _favoriteStatus[route.uuid] ?? false;
+              bool isFavorite = _favoriteStatus[route.id] ?? false;
               return MyButtonRoute(
                 onTap: () {
-                  _getRoutePath(_token, route.uuid);
+                  _getRoutePath(_token, route.id);
                 },
                 onTapLikeButton: () {
-                  _toggleFavoriteStatus(route.uuid);
+                  _toggleFavoriteStatus(route.id);
                 },
                 isFavorite: isFavorite,
                 routeName: route.name,

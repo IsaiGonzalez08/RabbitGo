@@ -149,11 +149,11 @@ class _MyAdminScreenState extends State<MyAdminScreen> {
                       endTime: route.endTime,
                       price: route.price.toString(),
                       onEdit: () {
-                        final idRoute = route.uuid;
+                        final idRoute = route.id;
                         navigateUpdateScreen(idRoute);
                       },
                       onDelete: () {
-                        final idRoute = route.uuid;
+                        final idRoute = route.id;
                         openDeleteAlert(idRoute);
                       },
                     );

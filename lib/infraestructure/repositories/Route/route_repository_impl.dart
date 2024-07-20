@@ -124,16 +124,13 @@ class RouteRepositoryImpl implements RouteRepository {
       String token, String busStopId) async {
     String? token = await getToken();
     try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/at/$busStopId');
-
+      String url = ('https://rabbit-go.sytes.net/shuttle_mcs/shuttle/from/$busStopId');
       final response = await http.get(
         Uri.parse(url),
         headers: {'Authorization': token!, 'Content-Type': 'application/json'},
       );
-
       if (response.statusCode == 200) {
         final dynamic jsonResponse = json.decode(response.body);
-
         if (jsonResponse.containsKey('data')) {
           List<dynamic> routeJson = jsonResponse['data'];
           List<RouteModel> routes =

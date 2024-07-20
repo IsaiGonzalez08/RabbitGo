@@ -1,31 +1,32 @@
 class RouteModel {
-  final String uuid, name, startTime, endTime, busStopId;
+  final String id, name, startTime, endTime;
   final int price;
+  final List<dynamic> colonies;
 
   RouteModel(
-      {required this.uuid,
+      {required this.id,
       required this.name,
+      required this.price,
       required this.startTime,
       required this.endTime,
-      required this.price,
-      required this.busStopId});
+      required this.colonies,});
 
   Map<String, dynamic> toJson() => {
-    'uuid': uuid,
+    'id': id,
     'name': name,
     'price': price,
     'startTime': startTime,
     'endTime': endTime,
-    'busStopId': busStopId
+    'colonies': colonies,
   };
 
   factory RouteModel.fromJson(Map<String, dynamic> json) {
     return RouteModel(
-        uuid: json['uuid'],
+        id: json['id'],
         name: json['name'],
+        price: json['price'],
         startTime: json['startTime'],
         endTime: json['endTime'],
-        price: json['price'],
-        busStopId: json['busStopId']);
+        colonies: json['colonies'],);
   }
 }
