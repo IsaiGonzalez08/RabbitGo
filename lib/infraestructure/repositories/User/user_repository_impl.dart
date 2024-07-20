@@ -6,16 +6,23 @@ import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepositoryImpl implements UserRepository {
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
   @override
   Future<void> createUser(
       String name, String lastname, String email, String password) async {
     try {
-      String url = ('https://rabbitgo.sytes.net/user');
+      String url = ('https://rabbitgo.sytes.net/user_mcs/user/sign-up');
       final userData = {
         'name': name,
         'lastname': lastname,
-        'email': email,
-        'password': password,
+        'credencials': {
+          'email': email,
+          'password': password,
+        }
       };
       await http.post(
         Uri.parse(url),
@@ -27,14 +34,13 @@ class UserRepositoryImpl implements UserRepository {
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
     }
-
     return;
   }
 
   @override
   Future<User> userLogin(String email, String password) async {
     try {
-      String url = 'https://rabbitgo.sytes.net/user/login';
+      String url = 'https://rabbitgo.sytes.net/user_mcs/user/sign-in';
       final userData = {
         'email': email,
         'password': password,
@@ -48,20 +54,14 @@ class UserRepositoryImpl implements UserRepository {
       );
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status'] == 'success' &&
+        if (jsonResponse['status'] == 'Success' &&
             jsonResponse['data'] != null) {
-          final token = jsonResponse['data']['token'];
-          final name = jsonResponse['data']['name'];
-          final lastname = jsonResponse['data']['lastname'];
-          final email = jsonResponse['data']['email'];
-          final rol = jsonResponse['data']['rol'];
+          final userData = jsonResponse['data'];
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('token', token);
-          await prefs.setString('name', name);
-          await prefs.setString('lastname', lastname);
-          await prefs.setString('email', email);
-          await prefs.setString('rol', rol);
+          for (var key in ['token', 'name', 'lastname', 'email', 'rol']) {
+            await prefs.setString(key, userData[key]);
+          }
           return User.fromJson(jsonResponse['data']);
         } else {
           throw Exception('Failed to login: ${jsonResponse['message']}');
@@ -78,11 +78,6 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> updateUser(String userId, String name, String lastname,
       String email, String password, String token) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     try {
       String url = ('https://rabbitgo.sytes.net/user/$userId');
@@ -119,11 +114,6 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> deleteAccount(String token, String id) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
     String? token = await getToken();
     try {
       String url = 'https://rabbitgo.sytes.net/user/$id';
