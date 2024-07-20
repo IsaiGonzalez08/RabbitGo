@@ -20,7 +20,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   final String? token = prefs.getString('token');
-  final String? rol = prefs.getString('rol');
+  final String? rol = prefs.getString('role');
   runApp(
     MultiProvider(
       providers: [

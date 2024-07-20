@@ -31,7 +31,7 @@ class _MyConfirmUpdateDataWidgetState extends State<MyConfirmUpdateDataWidget> {
   @override
   void initState() {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _userId = _user.uuid;
+    _userId = _user.id;
     _token = _user.token;
     name = widget.name;
     lastname = widget.lastname;

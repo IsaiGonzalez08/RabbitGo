@@ -7,7 +7,7 @@ import '../../domain/models/User/user.dart';
 class UserProvider extends ChangeNotifier {
   final UserRepository _userRepository = UserRepositoryImpl();
   late User _user =
-      User(uuid: '', name: '', lastname: '', email: '', role: '', token: '', type: '');
+      User(id: '', name: '', lastname: '', email: '', role: '', token: '', type: '');
   User get userData => _user;
 
   Future<void> createUser(

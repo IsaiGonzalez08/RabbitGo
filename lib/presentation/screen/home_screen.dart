@@ -26,14 +26,13 @@ class MyHomeScreen extends StatefulWidget {
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
   late Polyline polyline;
-  late Polyline polyline2;
   late WaitProvider _waitProvider;
   List<Stop> _busStopMarkers = [];
   List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;
-  late String? _token;
+  late String _token;
   List<LatLng> myList = [];
 
   final TextEditingController _searchPlaceController = TextEditingController();
@@ -67,7 +66,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> _loadBusStops() async {
-    await Provider.of<BusStopProvider>(context, listen: false)
+    Provider.of<BusStopProvider>(context, listen: false)
         .getAllBusStops(_token);
     getBusStops();
   }
@@ -164,7 +163,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
             },
-            polylines: {polyline, polyline2},
+            polylines: {polyline},
             markers: Set.from({..._markers, ..._hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
