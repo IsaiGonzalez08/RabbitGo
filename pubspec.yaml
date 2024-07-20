@@ -117,6 +117,7 @@ flutter:
     - assets/images/add_blue.png
     - assets/images/more_vert.png
     - assets/images/arrow_back.png
+    - assets/images/check_mark.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

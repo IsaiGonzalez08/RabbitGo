@@ -58,7 +58,7 @@ class UserRepositoryImpl implements UserRepository {
           final userData = jsonResponse['data'];
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          for (var key in ['token', 'name', 'lastName', 'email', 'role']) {
+          for (var key in ['token', 'id', 'name', 'lastName', 'email', 'role']) {
             await prefs.setString(key, userData[key]);
           }
           return User.fromJson(jsonResponse['data']);

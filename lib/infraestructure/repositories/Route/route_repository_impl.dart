@@ -35,7 +35,6 @@ class RouteRepositoryImpl implements RouteRepository {
   @override
   Future<void> deleteRouteById(String token, String busRouteUuid) async {
     String? token = await getToken();
-    print('El token es : $token');
     try {
       String url = 'https://rabbitgo.sytes.net/bus/route/$busRouteUuid';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
@@ -53,7 +52,6 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeBusStopUuid,
       String token) async {
     String? token = await getToken();
-    print('El token es : $token');
     try {
       final userData = {
         'name': routeName,
@@ -70,10 +68,8 @@ class RouteRepositoryImpl implements RouteRepository {
           },
           body: jsonEncode(userData));
       if (response.statusCode == 201) {
-        print('Ruta Creada Correctamente');
         final data = jsonDecode(response.body);
         final routeData = data['data'];
-        print('La data de la ruta es: $routeData');
         return RouteModel.fromJson(routeData);
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');
@@ -93,7 +89,6 @@ class RouteRepositoryImpl implements RouteRepository {
       String routeBusStopUuid,
       String token) async {
     String? token = await getToken();
-    print('El token desde impl es: $token');
     try {
       final userData = {
         'name': routeName,
@@ -102,18 +97,13 @@ class RouteRepositoryImpl implements RouteRepository {
         'endTime': routeEndTime,
         'busStopId': routeBusStopUuid
       };
-      final response = await http.put(
+      await http.put(
           Uri.parse('https://rabbitgo.sytes.net/bus/route/$routeUuid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!
           },
           body: jsonEncode(userData));
-      if (response.statusCode == 200) {
-        print('Ruta Actualizada Correctamente');
-      } else {
-        throw Exception('Error con el servidor: ${response.statusCode}');
-      }
     } catch (error) {
       throw Exception('Error con el servidor: $error');
     }
