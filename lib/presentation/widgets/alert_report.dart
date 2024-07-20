@@ -8,11 +8,13 @@ import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 class MyAlertReportBusRoute extends StatefulWidget {
   final String name, routeId;
   final int price;
+  final List<dynamic> colonies;
   const MyAlertReportBusRoute(
       {Key? key,
       required this.name,
       required this.routeId,
-      required this.price})
+      required this.price,
+      required this.colonies})
       : super(key: key);
 
   @override
@@ -217,6 +219,7 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                           name: widget.name,
                           routeId: widget.routeId,
                           price: widget.price,
+                          colonies: widget.colonies,
                         ),
                       );
                     });

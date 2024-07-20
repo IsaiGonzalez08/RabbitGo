@@ -10,11 +10,13 @@ import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 class MyAlertBusRoute extends StatefulWidget {
   final String name, routeId;
   final int price;
+  final List<dynamic> colonies;
   const MyAlertBusRoute(
       {Key? key,
       required this.name,
       required this.routeId,
-      required this.price})
+      required this.price,
+      required this.colonies})
       : super(key: key);
 
   @override
@@ -29,18 +31,14 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
   bool _buttonVisible = false;
   bool isFavorite = false;
 
-  final List<String> stringList = [
-    'Elemento 1',
-    'Elemento 2',
-    'Elemento 3',
-    'Elemento 4'
-  ];
+  late List<dynamic> stringList;
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
+    stringList = widget.colonies;
   }
 
   void _toggleSizeAndIcon() {
@@ -64,7 +62,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
     navigateMap();
   }
 
-  void _showDialogReportBusRoute(String routeName, String routeId, int price) {
+  void _showDialogReportBusRoute(String routeName, String routeId, int price, List<dynamic> colonies) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -72,6 +70,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
           name: routeName,
           routeId: routeId,
           price: price,
+          colonies: colonies,
         );
       },
       constraints: const BoxConstraints(
@@ -298,7 +297,7 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                 child: CustomButton(
                   onPressed: () {
                     _showDialogReportBusRoute(
-                        widget.name, widget.routeId, widget.price);
+                        widget.name, widget.routeId, widget.price, widget.colonies);
                   },
                   textButton: 'Reporte de queja',
                   width: MediaQuery.of(context).size.width * 0.9,

@@ -1,10 +1,8 @@
-import 'package:flexible_polyline_dart/flutter_flexible_polyline.dart';
 import 'package:flexible_polyline_dart/latlngz.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/flow_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
@@ -51,19 +49,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
         .toList();
   }
 
-  void _showDialogBusRoute(String routeName, String routeId, int price) {
-    Provider.of<RouteProvider>(context, listen: false)
-        .getBusRoutePath(_token, routeId);
-    final coordinates =
-        Provider.of<RouteProvider>(context, listen: false).routePath;
-    final newCoordinates = convertToLatLngZ(coordinates);
-    String coordinatesEncoded =
-        FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
-    Provider.of<FlowProvider>(context, listen: false)
-        .getTrafficFlow(coordinatesEncoded);
-    final flows = Provider.of<FlowProvider>(context, listen: false).flows;
-    final jamFactors = flows.map((flow) => flow.jamFactor).toList();
-    print(jamFactors);
+  void _showDialogBusRoute(String routeName, String routeId, int price, List<dynamic> colonies) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -71,6 +57,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
           name: routeName,
           routeId: routeId,
           price: price,
+          colonies: colonies,
         );
       },
       constraints: const BoxConstraints(
@@ -146,7 +133,7 @@ class _MyAlertMarkerState extends State<MyAlertMarker> {
                         onTap: () {
                           Navigator.pop(context);
                           _showDialogBusRoute(
-                              route.name, route.id, route.price);
+                              route.name, route.id, route.price, route.colonies);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
