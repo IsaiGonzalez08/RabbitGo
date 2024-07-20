@@ -16,7 +16,7 @@ class RouteRepositoryImpl implements RouteRepository {
     String? token = await getToken();
     try {
       final response = await http.get(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route/time/18:00'),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle'),
           headers: {'Authorization': token!});
       if (response.statusCode == 200) {
         final Map<String, dynamic> decodedResponse = json.decode(response.body);

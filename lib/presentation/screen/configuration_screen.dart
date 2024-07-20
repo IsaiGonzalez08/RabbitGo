@@ -37,7 +37,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? '';
-      _lastname = prefs.getString('lastname') ?? '';
+      _lastname = prefs.getString('lastName') ?? '';
       _email = prefs.getString('email') ?? '';
     });
   }

@@ -31,7 +31,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? '';
-      _lastname = prefs.getString('lastname') ?? '';
+      _lastname = prefs.getString('lastName') ?? '';
     });
   }
 

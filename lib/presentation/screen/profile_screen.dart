@@ -72,7 +72,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? _name;
-      _lastname = prefs.getString('lastname') ?? _lastname;
+      _lastname = prefs.getString('lastName') ?? _lastname;
       _email = prefs.getString('email') ?? _email;
 
       _usernameController.text = _name;
