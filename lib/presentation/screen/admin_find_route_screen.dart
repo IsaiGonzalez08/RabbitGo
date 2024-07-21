@@ -119,7 +119,7 @@ class _MyAdminFindRouteScreenState extends State<MyAdminFindRouteScreen> {
                       filled: true,
                       fillColor: const Color(0xFFFFFFFF),
                       prefixIcon: Image.asset(
-                        'assets/images/Search.png',
+                        'assets/images/search2.png',
                         width: 20,
                       ),
                     ),

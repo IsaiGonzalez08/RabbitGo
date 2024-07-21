@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/favorite_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
 import 'package:rabbit_go/presentation/screen/find_route_screen.dart';
+import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyTapBarWidget extends StatefulWidget {
   const MyTapBarWidget({Key? key}) : super(key: key);
@@ -17,20 +20,58 @@ class MyTapBarWidget extends StatefulWidget {
 
 class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   int _currentIndex = 0;
-  List<Widget> body = const [
-    MyHomeScreen(),
-    MyFindRouteScreen(),
-    MyFavoriteRoutesScreen(),
-    MyConfigurationScreen()
-  ];
+  String? type;
+  late User user;
+  List<Widget> body = [const SizedBox.shrink()];
+  bool isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNavigation();
+  }
+
+  Future<void> _initializeNavigation() async {
+    try {
+      await _loadUserData();
+      setState(() {
+        body = [
+          const MyHomeScreen(),
+          const MyFindRouteScreen(),
+          const MyFavoriteRoutesScreen(),
+          const MyConfigurationScreen()
+        ];
+        isInitialized = true;
+      });
+    } catch (e) {
+      throw ("Error en _initializeNavigation: $e");
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      type = prefs.getString('type') ?? 'unsubscribe';
+      user = Provider.of<UserProvider>(context, listen: false).userData;
+      type = user.type;
+    } catch (e) {
+      throw ("Error en _loadUserData: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       body: Center(
-        child: body[_currentIndex],
+        child: body.isNotEmpty ? body[_currentIndex] : const SizedBox.shrink(),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 24,
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
@@ -38,48 +79,58 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         onTap: (int newIndex) {
           if (!Provider.of<BusStopProvider>(context, listen: false).loading &&
               !Provider.of<RouteProvider>(context, listen: false).loading) {
-            setState(() {
-              _currentIndex = newIndex;
-            });
+            if (newIndex == 2 && type != 'subscribe') {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MySuscriptionScreen()));
+            } else {
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            }
           }
         },
         items: [
           BottomNavigationBarItem(
               label: 'Home',
-              activeIcon: SvgPicture.asset(
-                'assets/images/home.svg',
-                width: 20,
+              activeIcon: Image.asset(
+                'assets/images/active_home.png',
+                width: 24,
               ),
-              icon: SvgPicture.asset(
-                'assets/images/homewhite.svg',
-                width: 20,
+              icon: Image.asset(
+                'assets/images/home.png',
+                width: 24,
               )),
           BottomNavigationBarItem(
-            label: 'Rutas',
-            activeIcon: SvgPicture.asset(
-              'assets/images/Route.svg',
-            ),
-            icon: SvgPicture.asset(
-              'assets/images/Route.svg',
-            ),
-          ),
+              label: 'Buscar',
+              activeIcon: Image.asset(
+                'assets/images/active_search.png',
+                width: 24,
+              ),
+              icon: Image.asset(
+                'assets/images/search.png',
+                width: 24,
+              )),
           BottomNavigationBarItem(
               label: 'Favoritos',
               activeIcon: Image.asset(
-                'assets/images/favorite.png',
-                width: 25,
+                'assets/images/active_favorite.png',
+                width: 24,
               ),
               icon: Image.asset(
-                'assets/images/favorite_border_gray.png',
-                width: 25,
+                'assets/images/favorite.png',
+                width: 24,
               )),
           BottomNavigationBarItem(
-              label: 'Perfil',
-              activeIcon: SvgPicture.asset(
-                'assets/images/profile2.svg',
+              label: 'Configuración',
+              activeIcon: Image.asset(
+                'assets/images/active_settings.png',
+                width: 24,
               ),
-              icon: SvgPicture.asset(
-                'assets/images/profile.svg',
+              icon: Image.asset(
+                'assets/images/settings.png',
+                width: 24,
               )),
         ],
         selectedLabelStyle: const TextStyle(

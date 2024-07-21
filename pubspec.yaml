@@ -82,8 +82,8 @@ flutter:
     - assets/images/Forward.png
     - assets/images/ForwardLeft.png
     - assets/images/Google.png
-    - assets/images/home.svg
-    - assets/images/homewhite.svg
+    - assets/images/active_home.png
+    - assets/images/home.png
     - assets/images/LeftArrow.png
     - assets/images/LoginLogo.svg
     - assets/images/Logo.svg
@@ -93,14 +93,12 @@ flutter:
     - assets/images/love.svg
     - assets/images/MapMarker.png
     - assets/images/marker.svg
-    - assets/images/profile.svg
-    - assets/images/profile2.svg
-    - assets/images/Route.svg
-    - assets/images/Search.png
-    - assets/images/search_active.png
+    - assets/images/search.png
+    - assets/images/active_search.png
     - assets/images/Add.png
     - assets/images/Add_active.png
-    - assets/images/Settings.png
+    - assets/images/settings.png
+    - assets/images/active_settings.png
     - assets/images/Delete.png
     - assets/images/paid.png
     - assets/images/upward.png
@@ -112,12 +110,12 @@ flutter:
     - assets/images/attach_file_add.png
     - assets/images/close.png
     - assets/images/favorite.png
+    - assets/images/active_favorite.png
     - assets/images/favorite-border.png
-    - assets/images/favorite_border_gray.png
     - assets/images/add_blue.png
     - assets/images/more_vert.png
     - assets/images/arrow_back.png
-    - assets/images/check_mark.png
+    - assets/images/search2.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

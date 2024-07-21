@@ -55,7 +55,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void providerUserData() {
+  Future<void> providerUserData() async {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
@@ -64,7 +64,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     String password = _passwordController.text.trim();
     if (_formKey.currentState!.validate()) {
       await Provider.of<UserProvider>(context, listen: false).loginUser(email, password);
-      providerUserData();
+      await providerUserData();
       _role = _user.role;
       navigateUser(_role);
     } else {
