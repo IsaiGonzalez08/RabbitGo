@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/route_provider.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_report.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -57,8 +57,8 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   }
 
   Future<void> _getRoutePath(String token, String busRouteId) async {
-    await Provider.of<RouteProvider>(context, listen: false)
-        .getBusRoutePath(token, busRouteId);
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(token, busRouteId);
     navigateMap();
   }
 
@@ -138,7 +138,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                       onTap: () {
                         if (isFavorite) {
                           setState(() {
-                            
                             isFavorite =
                                 false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
                           });

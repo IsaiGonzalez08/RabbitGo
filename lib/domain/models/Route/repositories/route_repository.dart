@@ -1,4 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 
 abstract class RouteRepository {
@@ -21,5 +20,4 @@ abstract class RouteRepository {
       String token,
       );
   Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
-  Future<List<LatLng>> getBusRoutePath(String token, String busRouteId);
 }

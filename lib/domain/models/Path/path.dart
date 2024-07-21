@@ -1,19 +1,26 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Path {
-  final List<LatLng> ida;
-  final List<LatLng> vuelta;
+class PathModel {
+  final String pathId;
+  final List<LatLng> routeCoordinates;
+  final String shuttleId;
+  final String estimatedTripTime;
 
-  Path({required this.ida, required this.vuelta});
+  PathModel({
+    required this.pathId,
+    required this.routeCoordinates,
+    required this.shuttleId,
+    required this.estimatedTripTime,
+  });
 
-  factory Path.fromJson(Map<String, dynamic> json) {
-    return Path(
-      ida: (json['ida'] as List<dynamic>)
-          .map((coord) => LatLng(coord[0], coord[1]))
+  factory PathModel.fromJson(Map<String, dynamic> json) {
+    return PathModel(
+      pathId: json['id'],
+      routeCoordinates: (json['route'] as List)
+          .map((coordinate) => LatLng(coordinate[0], coordinate[1]))
           .toList(),
-      vuelta: (json['vuelta'] as List<dynamic>)
-          .map((coord) => LatLng(coord[0], coord[1]))
-          .toList(),
+      shuttleId: json['shuttleId'],
+      estimatedTripTime: json['estimatedTripTime'],
     );
   }
 }

@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
-import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_stop_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rabbit_go/presentation/widgets/clear_button_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomeScreen extends StatefulWidget {
@@ -25,14 +27,14 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
-  late Polyline polyline;
+  Set<Polyline> _polylines = {};
   late WaitProvider _waitProvider;
   List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
   late User _user;
   late String _token;
-  List<LatLng> myList = [];
+  List<PathModel> paths = [];
   late List<Stop> busStopMarkers;
   final TextEditingController _searchPlaceController = TextEditingController();
 
@@ -42,11 +44,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     _waitProvider = WaitProvider(Permission.location);
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
-    polyline = const Polyline(
-      polylineId: PolylineId('route'),
-      points: [],
-      width: 3,
-    );
     _initializeData();
   }
 
@@ -109,13 +106,22 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   void _loadRouteCoordinates() {
-    setState(() {
-      myList = Provider.of<RouteProvider>(context, listen: false).routePath;
-      polyline = Polyline(
-        polylineId: const PolylineId('route'),
-        points: myList,
-        width: 3,
+    paths = Provider.of<PathProvider>(context, listen: false).paths;
+    Set<Polyline> polylines = {};
+    List<Color> colors = [const Color(0xFF01142B), Colors.red];
+    for (var i = 0; i < paths.length; i++) {
+      var path = paths[i];
+      List<LatLng> routeCoordinates = path.routeCoordinates;
+      Polyline polyline = Polyline(
+        polylineId: PolylineId(path.pathId),
+        points: routeCoordinates,
+        width: 2,
+        color: colors[i % colors.length],
       );
+      polylines.add(polyline);
+    }
+    setState(() {
+      _polylines = polylines;
     });
   }
 
@@ -145,6 +151,11 @@ class _MyHomeScreenState extends State<MyHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    bool hasBluePolyline =
+        _polylines.any((polyline) => polyline.color == const Color(0xFF01142B));
+    bool hasRedPolyline =
+        _polylines.any((polyline) => polyline.color == Colors.red);
+
     return Stack(
       children: [
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
@@ -165,7 +176,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
             },
-            polylines: {polyline},
+            polylines: _polylines,
             markers: Set.from({..._markers, ..._hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
@@ -227,94 +238,37 @@ class _MyHomeScreenState extends State<MyHomeScreen>
         ),
         _hereMarkers.isEmpty
             ? Container()
-            : Padding(
+            : ClearButton(
+                onTap: () {
+                  setState(() {
+                    _hereMarkers.clear();
+                  });
+                },
+                buttonColor: const Color(0xFFAB0000),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 75),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _hereMarkers.clear();
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: const Color(0xFFAB0000),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.6),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'assets/images/close.png',
-                                width: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-        myList.isEmpty
-            ? Container()
-            : Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              myList.clear();
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: const Color(0xFF01142B),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.6),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'assets/images/close.png',
-                                width: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 140)),
+        if (hasBluePolyline)
+          ClearButton(
+              onTap: () {
+                setState(() {
+                  _polylines.removeWhere(
+                      (polyline) => polyline.color == const Color(0xFF01142B));
+                });
+              },
+              buttonColor: const Color(0xFF01142B),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 80)),
+        if (hasRedPolyline)
+          ClearButton(
+              onTap: () {
+                setState(() {
+                  _polylines
+                      .removeWhere((polyline) => polyline.color == Colors.red);
+                });
+              },
+              buttonColor: Colors.red,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 20)),
       ],
     );
   }

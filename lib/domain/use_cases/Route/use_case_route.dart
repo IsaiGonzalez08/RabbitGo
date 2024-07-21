@@ -64,11 +64,3 @@ class GetRouteByBusStopIdUseCase {
     await _routeRepository.getRouteByBusStopId(token, busStopId);
   }
 }
-
-class GetRouteBusPath {
-  final RouteRepository _routeRepository;
-  GetRouteBusPath(this._routeRepository);
-  Future<void> getRouteBusPath(String token, String busRouteId) async {
-    await _routeRepository.getBusRoutePath(token, busRouteId);
-  }
-}

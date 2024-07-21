@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
@@ -15,9 +14,6 @@ class RouteProvider extends ChangeNotifier {
   List<RouteModel> _routesAlert = [];
   List<RouteModel> get routesAlert => _routesAlert;
 
-  List<LatLng> _routePath = [];
-  List<LatLng> get routePath => _routePath;
-  
   bool _loading = false;
   bool get loading => _loading;
 
@@ -57,13 +53,6 @@ class RouteProvider extends ChangeNotifier {
   ) async {
     await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
         routeStartTime, routeEndTime, routeBusStopUuid, token);
-  }
-
-  Future<void> getBusRoutePath(String token, String busRouteId) async {
-    List<LatLng> routePath =
-        await _routeRepository.getBusRoutePath(token, busRouteId);
-    _routePath = routePath;
-    notifyListeners();
   }
 
   void deleteRouteByUuid(String token, String busRouteUuid) async {

@@ -2,7 +2,9 @@ import 'package:flexible_polyline_dart/latlngz.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
@@ -24,7 +26,7 @@ class MyBusStopAlert extends StatefulWidget {
 
 class _MyBusStopAlertState extends State<MyBusStopAlert> {
   String? selectedBusRouteId;
-  List<LatLng> listCordinates = [];
+  late List<PathModel> listCordinates = [];
   late User _user;
   late String _token;
   late String district;
@@ -50,8 +52,8 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
         .toList();
   }
 
-  Future<void> _showDialogBusRoute(
-      String routeName, String routeId, int price, List<dynamic> colonies) async {
+  Future<void> _showDialogBusRoute(String routeName, String routeId, int price,
+      List<dynamic> colonies) async {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -69,6 +71,16 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
         maxHeight: 500,
       ),
     );
+  }
+
+  Future<void> getRoutePathById(String routeId) async {
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(_token, routeId);
+  }
+
+  Future<void> getCoordinates() async {
+    listCordinates =
+        Provider.of<PathProvider>(context, listen: false).paths;
   }
 
   @override

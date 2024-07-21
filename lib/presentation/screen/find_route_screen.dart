@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/button_route_widget.dart';
@@ -33,8 +34,8 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   }
 
   Future<void> _getRoutePath(String token, String busRouteId) async {
-    await Provider.of<RouteProvider>(context, listen: false)
-        .getBusRoutePath(token, busRouteId);
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(token, busRouteId);
     navigateHome();
   }
 
