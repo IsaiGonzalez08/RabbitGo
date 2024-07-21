@@ -12,7 +12,7 @@ import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
-import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
+import 'package:rabbit_go/presentation/widgets/alert_bus_stop_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,7 +33,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   late User _user;
   late String _token;
   List<LatLng> myList = [];
-
+  late List<Stop> busStopMarkers;
   final TextEditingController _searchPlaceController = TextEditingController();
 
   @override
@@ -67,12 +67,15 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   Future<void> _loadBusStops() async {
     await Provider.of<BusStopProvider>(context, listen: false)
         .getAllBusStops(_token);
-    getBusStops();
+    await getBusStops();
+    createBusStopMarkers();
   }
 
   Future<void> getBusStops() async {
-    List<Stop> busStopMarkers =
-        Provider.of<BusStopProvider>(context, listen: false).stops;
+    busStopMarkers = Provider.of<BusStopProvider>(context, listen: false).stops;
+  }
+
+  Future<void> createBusStopMarkers() async {
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
     Set<Marker> newMarkers = busStopMarkers.map((stop) {
@@ -329,15 +332,15 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     final district = address.district;
     final street = address.street;
     final postalCode = address.postalCode;
-    showDialogBusStops(stopId, district, street, postalCode);
+    dialogBusStops(stopId, district, street, postalCode);
   }
 
-  Future<void> showDialogBusStops(
+  Future<void> dialogBusStops(
       String stopId, String district, String street, String postalCode) async {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertMarker(
+        return MyBusStopAlert(
           stopId: stopId,
           district: district,
           street: street,

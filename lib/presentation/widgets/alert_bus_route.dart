@@ -7,11 +7,11 @@ import 'package:rabbit_go/presentation/widgets/alert_report.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
-class MyAlertBusRoute extends StatefulWidget {
+class MyBusRouteAlert extends StatefulWidget {
   final String name, routeId;
   final int price;
   final List<dynamic> colonies;
-  const MyAlertBusRoute(
+  const MyBusRouteAlert(
       {Key? key,
       required this.name,
       required this.routeId,
@@ -20,10 +20,10 @@ class MyAlertBusRoute extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<MyAlertBusRoute> createState() => _MyAlertBusRouteState();
+  State<MyBusRouteAlert> createState() => _MyBusRouteAlertState();
 }
 
-class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
+class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   late User _user;
   late String _token;
   bool _isExpanded = false;
@@ -62,7 +62,8 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
     navigateMap();
   }
 
-  void _showDialogReportBusRoute(String routeName, String routeId, int price, List<dynamic> colonies) {
+  void _showDialogReportBusRoute(
+      String routeName, String routeId, int price, List<dynamic> colonies) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -296,8 +297,8 @@ class _MyAlertBusRouteState extends State<MyAlertBusRoute> {
                 ),
                 child: CustomButton(
                   onPressed: () {
-                    _showDialogReportBusRoute(
-                        widget.name, widget.routeId, widget.price, widget.colonies);
+                    _showDialogReportBusRoute(widget.name, widget.routeId,
+                        widget.price, widget.colonies);
                   },
                   textButton: 'Reporte de queja',
                   width: MediaQuery.of(context).size.width * 0.9,

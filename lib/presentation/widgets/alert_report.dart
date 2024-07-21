@@ -89,7 +89,7 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
     Future.delayed(const Duration(milliseconds: 100), () {
       showBottomSheet(
         context: context,
-        builder: (context) => MyAlertBusRoute(
+        builder: (context) => MyBusRouteAlert(
           name: widget.name,
           routeId: widget.routeId,
           price: widget.price,
