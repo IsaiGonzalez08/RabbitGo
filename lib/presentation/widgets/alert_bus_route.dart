@@ -138,6 +138,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                       onTap: () {
                         if (isFavorite) {
                           setState(() {
+                            
                             isFavorite =
                                 false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
                           });

@@ -69,6 +69,7 @@ class MyFavoriteRoutesScreen extends StatelessWidget {
                           builder: (context) => const MyListFavotiteScreen()));
                 },
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -78,7 +79,7 @@ class MyFavoriteRoutesScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(14.0),
                         child: Image.asset(
-                          'assets/images/favorite.png',
+                          'assets/images/active_favorite.png',
                           width: 20,
                         ),
                       ),
@@ -93,7 +94,7 @@ class MyFavoriteRoutesScreen extends StatelessWidget {
                           'Tus rutas marcadas',
                           style: TextStyle(
                               color: Color(0xFF01142B),
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
