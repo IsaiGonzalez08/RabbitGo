@@ -33,9 +33,9 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     );
   }
 
-  Future<void> _getRoutePath(String token, String busRouteId) async {
+  Future<void> _getRoutePath(String busRouteId) async {
     await Provider.of<PathProvider>(context, listen: false)
-        .getRoutePaths(token, busRouteId);
+        .getRoutePaths(busRouteId);
     navigateHome();
   }
 
@@ -141,7 +141,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
               bool isFavorite = _favoriteStatus[route.id] ?? false;
               return MyButtonRoute(
                 onTap: () {
-                  _getRoutePath(_token, route.id);
+                  _getRoutePath(route.id);
                 },
                 onTapLikeButton: () {
                   _toggleFavoriteStatus(route.id);

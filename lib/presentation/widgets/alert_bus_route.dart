@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/results_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_report.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
@@ -29,8 +27,6 @@ class MyBusRouteAlert extends StatefulWidget {
 }
 
 class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
-  late User _user;
-  late String _token;
   bool _isExpanded = false;
   bool _iconToggled = false;
   bool _buttonVisible = false;
@@ -81,16 +77,15 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     routeId = widget.routeId;
     stringList = widget.colonies;
-    _getRoutePath(_token, routeId);
+    _getRoutePath(routeId);
   }
 
-  Future<void> _getRoutePath(String token, String busRouteId) async {
+  Future<void> _getRoutePath(String busRouteId) async {
     await Provider.of<PathProvider>(context, listen: false)
-        .getRoutePaths(token, busRouteId);
+        .getRoutePaths(busRouteId);
+    print('ya hice el la petición para obtener path por id');
     getCoordinates();
   }
 
@@ -98,11 +93,15 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     paths = Provider.of<PathProvider>(context, listen: false).paths;
     for (var path in paths) {
       estimatedTripTime = path.estimatedTripTime;
+      print(path.routeCoordinates);
     }
     if (paths.isNotEmpty) {
       List<LatLng> firstPathCoordinates = paths.first.routeCoordinates;
       List<LatLng> lastPathCoordinates = paths.last.routeCoordinates;
       List<LatLng> allCoordinates = firstPathCoordinates + lastPathCoordinates;
+      for (var coordinate in allCoordinates) {
+        print('cordenadas unidas: $coordinate');
+      }
       const int maxChunkSize = 200;
       for (int i = 0; i < allCoordinates.length; i += maxChunkSize) {
         List<LatLng> chunk = allCoordinates.sublist(
@@ -112,6 +111,8 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 : i + maxChunkSize);
         encodeCoordinates(chunk);
       }
+    } else {
+      print('La lista de paths esta vacia');
     }
   }
 
@@ -119,6 +120,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     final newCoordinates = convertToLatLngZ(coordinates);
     String coordinatesEncoded =
         FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
+    print('El script es $coordinatesEncoded');
     await getTraficFlow(coordinatesEncoded);
   }
 
@@ -134,8 +136,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     double totalJamFactor = 0.0;
 
     for (var result in results) {
-      print(
-          'JamFactor: ${result.flowModel.jamFactor}, Description: ${result.locationModel.description}');
       totalJamFactor += result.flowModel.jamFactor;
       setState(() {
         description = result.locationModel.description;
@@ -230,7 +230,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                       child: Image.asset(
                         isFavorite
                             ? 'assets/images/favorite.png'
-                            : 'assets/images/favorite-border.png',
+                            : 'assets/images/active_favorite.png',
                         width: 25,
                       ),
                     ),
@@ -382,7 +382,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
             CustomButton(
               onPressed: () async {
                 await Provider.of<PathProvider>(context, listen: false)
-                    .getRoutePaths(_token, routeId);
+                    .getRoutePaths(routeId);
                 navigateMap();
               },
               textButton: 'Trazar ruta',

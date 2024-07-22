@@ -14,7 +14,7 @@ class ResultsRepositoryImpl implements ResultsRepository {
         'https://data.traffic.hereapi.com/v7/flow',
         queryParameters: {
           "apiKey": token,
-          "in": "corridor:$coordinatesEncoded;r=20",
+          "in": "corridor:$coordinatesEncoded;r=100",
           "locationReferencing": "none"
         },
       );
@@ -28,7 +28,7 @@ class ResultsRepositoryImpl implements ResultsRepository {
         throw ('No se encontraron resultados para la ubicación proporcionada');
       }
     } catch (e) {
-      throw ('El error es: $e');
+      throw Exception('El error es: $e');
     }
   }
 }

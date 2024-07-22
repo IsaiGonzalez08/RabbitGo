@@ -11,7 +11,7 @@ class PathRepositoryImpl implements PathRepository {
   }
 
   @override
-  Future<List<PathModel>> getRoutePaths(String token, String busRouteId) async {
+  Future<List<PathModel>> getRoutePaths(String busRouteId) async {
     try {
       String? token = await getToken();
       String url =

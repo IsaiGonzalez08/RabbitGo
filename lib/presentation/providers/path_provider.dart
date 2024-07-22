@@ -12,8 +12,8 @@ class PathProvider extends ChangeNotifier {
   List<PathModel> _paths = [];
   List<PathModel> get paths => _paths;
 
-  Future<void> getRoutePaths(String token, String busStopId) async {
-    List<PathModel> paths = await _pathRepository.getRoutePaths(token, busStopId);
+  Future<void> getRoutePaths(String busStopId) async {
+    List<PathModel> paths = await _pathRepository.getRoutePaths(busStopId);
     _paths = paths;
     notifyListeners();
   }

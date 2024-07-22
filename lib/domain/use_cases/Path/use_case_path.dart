@@ -5,7 +5,7 @@ class GetRoutePathsUseCase {
   final PathRepository _pathRepository;
   GetRoutePathsUseCase(this._pathRepository);
 
-  Future<List<PathModel>> getRoutePaths(String token, String busStopId) async {
-    return await _pathRepository.getRoutePaths(token, busStopId);
+  Future<List<PathModel>> getRoutePaths(String busStopId) async {
+    return await _pathRepository.getRoutePaths(busStopId);
   }
 }
