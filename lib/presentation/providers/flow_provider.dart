@@ -14,6 +14,7 @@ class FlowProvider extends ChangeNotifier {
 
   Future<void> getTrafficFlow(String coordinatesEncoded) async {
     _loading = true;
+    notifyListeners();
     List<FlowModel> flows = await _flowRepository.getTrafficFlow(coordinatesEncoded);
     _flows = flows;
     _loading = false;

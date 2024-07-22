@@ -1,6 +1,11 @@
+import 'package:flexible_polyline_dart/flutter_flexible_polyline.dart';
+import 'package:flexible_polyline_dart/latlngz.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/flow_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_report.dart';
@@ -30,16 +35,9 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   bool _iconToggled = false;
   bool _buttonVisible = false;
   bool isFavorite = false;
-
+  late List<PathModel> paths;
   late List<dynamic> stringList;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
-    stringList = widget.colonies;
-  }
+  late String routeId;
 
   void _toggleSizeAndIcon() {
     setState(() {
@@ -54,12 +52,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
       context,
       MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
     );
-  }
-
-  Future<void> _getRoutePath(String token, String busRouteId) async {
-    await Provider.of<PathProvider>(context, listen: false)
-        .getRoutePaths(token, busRouteId);
-    navigateMap();
   }
 
   void _showDialogReportBusRoute(
@@ -81,6 +73,64 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
         maxHeight: 500,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _token = _user.token;
+    routeId = widget.routeId;
+    stringList = widget.colonies;
+    _getRoutePath(_token, routeId);
+  }
+
+  Future<void> _getRoutePath(String token, String busRouteId) async {
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(token, busRouteId);
+    getCoordinates();
+  }
+
+  Future<void> getCoordinates() async {
+    paths = Provider.of<PathProvider>(context, listen: false).paths;
+    if (paths.isNotEmpty) {
+      List<LatLng> firstPathCoordinates = paths.first.routeCoordinates;
+      List<LatLng> lastPathCoordinates = paths.last.routeCoordinates;
+      List<LatLng> allCoordinates = firstPathCoordinates + lastPathCoordinates;
+      const int maxChunkSize = 200;
+      for (int i = 0; i < allCoordinates.length; i += maxChunkSize) {
+        List<LatLng> chunk = allCoordinates.sublist(
+            i,
+            i + maxChunkSize > allCoordinates.length
+                ? allCoordinates.length
+                : i + maxChunkSize);
+        encodeCoordinates(chunk);
+      }
+    }
+  }
+
+  Future<void> encodeCoordinates(List<LatLng> coordinates) async {
+    final newCoordinates = convertToLatLngZ(coordinates);
+    String coordinatesEncoded =
+        FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
+    print('Las coordenadas encriptadas son: $coordinatesEncoded');
+    await getTraficFlow(coordinatesEncoded);
+  }
+
+  Future<void> getTraficFlow(String coordinatesEncoded) async {
+    await Provider.of<FlowProvider>(context, listen: false)
+        .getTrafficFlow(coordinatesEncoded);
+    final listFlows = Provider.of<FlowProvider>(context, listen: false).flows;
+    for (var flow in listFlows) {
+      print('Flow JamFactor: ${flow.jamFactor}, Flow Speed: ${flow.speed}');
+    }
+  }
+
+  List<LatLngZ> convertToLatLngZ(List<LatLng> coordinates) {
+    return coordinates
+        .map((coordinate) =>
+            LatLngZ(coordinate.latitude, coordinate.longitude, 0))
+        .toList();
   }
 
   @override
@@ -311,8 +361,10 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
               ),
             ],
             CustomButton(
-              onPressed: () {
-                _getRoutePath(_token, widget.routeId);
+              onPressed: () async {
+                await Provider.of<PathProvider>(context, listen: false)
+                    .getRoutePaths(_token, routeId);
+                navigateMap();
               },
               textButton: 'Trazar ruta',
               width: MediaQuery.of(context).size.width * 0.9,

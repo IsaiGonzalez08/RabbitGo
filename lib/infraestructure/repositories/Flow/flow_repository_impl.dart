@@ -10,7 +10,6 @@ class FlowRepositoryImpl implements FlowRepository {
   @override
   Future<List<FlowModel>> getTrafficFlow(String coordinatesEncoded) async {
     try {
-      print('Coodenadas desde impl: $coordinatesEncoded');
       final response = await _dio.get(
         'https://data.traffic.hereapi.com/v7/flow',
         queryParameters: {
