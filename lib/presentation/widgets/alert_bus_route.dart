@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
-import 'package:rabbit_go/presentation/providers/flow_provider.dart';
+import 'package:rabbit_go/presentation/providers/results_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_report.dart';
@@ -38,6 +38,9 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   late List<PathModel> paths;
   late List<dynamic> stringList;
   late String routeId;
+  String estimatedTripTime = '';
+  String description = '';
+  double jamFactor = 0.0;
 
   void _toggleSizeAndIcon() {
     setState(() {
@@ -93,6 +96,9 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
 
   Future<void> getCoordinates() async {
     paths = Provider.of<PathProvider>(context, listen: false).paths;
+    for (var path in paths) {
+      estimatedTripTime = path.estimatedTripTime;
+    }
     if (paths.isNotEmpty) {
       List<LatLng> firstPathCoordinates = paths.first.routeCoordinates;
       List<LatLng> lastPathCoordinates = paths.last.routeCoordinates;
@@ -113,17 +119,32 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     final newCoordinates = convertToLatLngZ(coordinates);
     String coordinatesEncoded =
         FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
-    print('Las coordenadas encriptadas son: $coordinatesEncoded');
     await getTraficFlow(coordinatesEncoded);
   }
 
   Future<void> getTraficFlow(String coordinatesEncoded) async {
-    await Provider.of<FlowProvider>(context, listen: false)
-        .getTrafficFlow(coordinatesEncoded);
-    final listFlows = Provider.of<FlowProvider>(context, listen: false).flows;
-    for (var flow in listFlows) {
-      print('Flow JamFactor: ${flow.jamFactor}, Flow Speed: ${flow.speed}');
+    await Provider.of<ResultsProvider>(context, listen: false)
+        .getTrafficResults(coordinatesEncoded);
+    providerResults();
+  }
+
+  Future<void> providerResults() async {
+    final results =
+        Provider.of<ResultsProvider>(context, listen: false).results;
+    double totalJamFactor = 0.0;
+
+    for (var result in results) {
+      print(
+          'JamFactor: ${result.flowModel.jamFactor}, Description: ${result.locationModel.description}');
+      totalJamFactor += result.flowModel.jamFactor;
+      setState(() {
+        description = result.locationModel.description;
+      });
     }
+
+    setState(() {
+      jamFactor = totalJamFactor;
+    });
   }
 
   List<LatLngZ> convertToLatLngZ(List<LatLng> coordinates) {
@@ -177,7 +198,15 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const Text('[Dirección de la ruta].'),
+                          description.isEmpty
+                              ? const Center(child: CircularProgressIndicator())
+                              : SizedBox(
+                                  width: 200,
+                                  child: Text(
+                                    description,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ))
                         ],
                       ),
                     ],
@@ -208,22 +237,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                   )
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                Image.asset('assets/images/upward.png', width: 26),
-                const Text(
-                  'Esta ruta va de ida.',
-                  style: TextStyle(
-                    color: Color(0xFF01142B),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
             ),
             const SizedBox(
               height: 5,
@@ -296,7 +309,10 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width * 0.07),
-                    child: Text(combinedText),
+                    child: SizedBox(
+                        width: double.infinity,
+                        height: 105,
+                        child: Text(combinedText)),
                   ),
                 ],
               ),
@@ -311,9 +327,9 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 const SizedBox(
                   width: 4,
                 ),
-                const Text(
-                  'Tiempo aproximado de llegada [Tiempo].',
-                  style: TextStyle(
+                Text(
+                  'Tiempo aproximado de llegada: $estimatedTripTime.',
+                  style: const TextStyle(
                       color: Color(0xFF01142B),
                       fontSize: 14,
                       fontWeight: FontWeight.w600),
@@ -330,13 +346,16 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 const SizedBox(
                   width: 4,
                 ),
-                const Text(
-                  'Estado del trafico [Estado].',
-                  style: TextStyle(
-                      color: Color(0xFF01142B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600),
-                )
+                if (jamFactor == 0.0)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  Text(
+                    'Estado del trafico $jamFactor.',
+                    style: const TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  )
               ]),
               const SizedBox(
                 height: 15,

@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rabbit_go/domain/models/Flow/flow.dart';
-import 'package:rabbit_go/domain/models/Flow/repository/flow_repository.dart';
+import 'package:rabbit_go/domain/models/Results/repository/results_repository.dart';
+import 'package:rabbit_go/domain/models/Results/results.dart';
 
-class FlowRepositoryImpl implements FlowRepository {
+class ResultsRepositoryImpl implements ResultsRepository {
   final _dio = Dio();
   final String token = dotenv.env['HERE_MAPS_API_TOKEN'] ?? '';
 
   @override
-  Future<List<FlowModel>> getTrafficFlow(String coordinatesEncoded) async {
+  Future<List<ResultsModel>> getTrafficResults(String coordinatesEncoded) async {
     try {
       final response = await _dio.get(
         'https://data.traffic.hereapi.com/v7/flow',
@@ -20,15 +20,15 @@ class FlowRepositoryImpl implements FlowRepository {
       );
       if (response.data['results'] != null &&
           response.data['results'].isNotEmpty) {
-        List<FlowModel> flows = (response.data['results'] as List)
-            .map((result) => FlowModel.fromJson(result['currentFlow']))
+        List<ResultsModel> results = (response.data['results'] as List)
+            .map((result) => ResultsModel.fromJson(result))
             .toList();
-        return flows;
+        return results;
       } else {
-        throw ('No se encontraron direcciones para la ubicación proporcionada');
+        throw ('No se encontraron resultados para la ubicación proporcionada');
       }
     } catch (e) {
-      throw ('el error es $e');
+      throw ('El error es: $e');
     }
   }
 }
