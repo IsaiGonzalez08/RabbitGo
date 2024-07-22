@@ -21,11 +21,9 @@ class RouteCard extends StatelessWidget {
       padding: EdgeInsets.only(
           right: MediaQuery.of(context).size.width * 0.07,
           left: MediaQuery.of(context).size.width * 0.07),
-      decoration: BoxDecoration(
-          border: Border.all(
-        color: const Color(0xFFF5F5F5),
-        width: 2,
-      )),
+      decoration: const BoxDecoration(
+          border:
+              Border(bottom: BorderSide(width: 2, color: Color(0xFFF5F5F5)))),
       height: 80,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -43,12 +41,17 @@ class RouteCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                        color: Color(0xFF8D8D8D),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
+                  SizedBox(
+                    width: 128,
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                          color: Color(0xFF8D8D8D),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   Text(
                     '$startTime-$endTime',
@@ -93,7 +96,7 @@ class RouteCard extends StatelessWidget {
                   InkWell(
                       onTap: onEdit,
                       child:
-                          Image.asset('assets/images/Settings.png', width: 25)),
+                          Image.asset('assets/images/settings.png', width: 25)),
                   const SizedBox(
                     width: 10,
                   ),

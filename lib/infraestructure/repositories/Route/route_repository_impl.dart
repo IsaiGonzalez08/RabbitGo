@@ -32,10 +32,10 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<void> deleteRouteById(String token, String busRouteUuid) async {
+  Future<void> deleteRouteById(String busRouteUuid) async {
     String? token = await getToken();
     try {
-      String url = 'https://rabbitgo.sytes.net/bus/route/$busRouteUuid';
+      String url = 'https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$busRouteUuid';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
@@ -48,19 +48,17 @@ class RouteRepositoryImpl implements RouteRepository {
       int routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStopUuid,
-      String token) async {
+      String routeBusStopUuid) async {
     String? token = await getToken();
     try {
       final userData = {
         'name': routeName,
         'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStopUuid
+        'colonies': routeStartTime,
+        'shift': {'startTime': routeStartTime, 'endTime': routeEndTime}
       };
       final response = await http.post(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route'),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle '),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!

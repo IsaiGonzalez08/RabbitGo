@@ -102,7 +102,6 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
   @override
   void initState() {
     user = Provider.of<UserProvider>(context, listen: false).userData;
-    userId = user.id;
     _loadUserData();
     super.initState();
   }

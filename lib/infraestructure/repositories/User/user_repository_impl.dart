@@ -60,7 +60,6 @@ class UserRepositoryImpl implements UserRepository {
           await prefs.setBool('isLoggedIn', true);
           for (var key in [
             'token',
-            'id',
             'name',
             'lastName',
             'email',

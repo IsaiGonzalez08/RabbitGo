@@ -91,7 +91,7 @@ class _MyFavoriteRoutesScreenState extends State<MyFavoriteRoutesScreen> {
               ),
               InkWell(
                 onTap: () {
-
+                  navigateListFavotite();
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -75,7 +75,6 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error fetching bus stops: $e');
       setState(() {
         _isLoading = false;
       });
@@ -101,8 +100,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
           routePrice,
           routeStartTime,
           routeEndTime,
-          routeBusStopUuids,
-          _token);
+          routeBusStopUuids);
       _routeNameController.clear();
       _routePriceController.clear();
       navigateTapBarScreen();

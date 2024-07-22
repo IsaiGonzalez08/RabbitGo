@@ -22,7 +22,6 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
   void initState() {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _userId = _user.id;
     _token = _user.token;
   }
 

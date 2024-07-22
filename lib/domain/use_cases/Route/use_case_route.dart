@@ -15,8 +15,8 @@ class DeleteRouteById {
 
   DeleteRouteById(this._routeRepository);
 
-  Future<void> deleteRouteById(String token, String busRouteUuid) async {
-    return await _routeRepository.deleteRouteById(token, busRouteUuid);
+  Future<void> deleteRouteById(String busRouteUuid) async {
+    return await _routeRepository.deleteRouteById(busRouteUuid);
   }
 }
 
@@ -33,7 +33,7 @@ class CreateBusRouteUseCase {
       String routeBusStopUuid,
       String token) async {
     return await _routeRepository.createBusRoute(routeName, routePrice,
-        routeStartTime, routeEndTime, routeBusStopUuid, token);
+        routeStartTime, routeEndTime, routeBusStopUuid);
   }
 }
 
