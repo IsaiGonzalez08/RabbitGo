@@ -134,14 +134,12 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     final results =
         Provider.of<ResultsProvider>(context, listen: false).results;
     double totalJamFactor = 0.0;
-
     for (var result in results) {
       totalJamFactor += result.flowModel.jamFactor;
       setState(() {
         description = result.locationModel.description;
       });
     }
-
     setState(() {
       jamFactor = totalJamFactor;
     });
