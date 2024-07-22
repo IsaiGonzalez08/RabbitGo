@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:rabbit_go/presentation/screen/add_list_favorite_screen.dart';
 import 'package:rabbit_go/presentation/screen/list_favorite_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MyFavoriteRoutesScreen extends StatelessWidget {
+class MyFavoriteRoutesScreen extends StatefulWidget {
   const MyFavoriteRoutesScreen({super.key});
+
+  @override
+  State<MyFavoriteRoutesScreen> createState() => _MyFavoriteRoutesScreenState();
+}
+
+class _MyFavoriteRoutesScreenState extends State<MyFavoriteRoutesScreen> {
+  late String? id;
+
+  @override
+  void initState() {
+    _loadUserData();
+    super.initState();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id');
+  }
+
+  void getFavoritesById() {
+    
+  }
+
+  Future<void> navigateListFavotite() async {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const MyListFavotiteScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +91,7 @@ class MyFavoriteRoutesScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyListFavotiteScreen()));
+
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

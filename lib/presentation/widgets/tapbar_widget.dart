@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/favorite_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
@@ -21,7 +20,7 @@ class MyTapBarWidget extends StatefulWidget {
 class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   int _currentIndex = 0;
   String? type;
-  late User user;
+  User? user;
   List<Widget> body = [const SizedBox.shrink()];
   bool isInitialized = false;
 
@@ -51,9 +50,10 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   Future<void> _loadUserData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      type = prefs.getString('type') ?? 'unsubscribe';
-      user = Provider.of<UserProvider>(context, listen: false).userData;
-      type = user.type;
+      setState(() {
+        type = prefs.getString('type');
+        print('Type desde shared preferences: $type');
+      });
     } catch (e) {
       throw ("Error en _loadUserData: $e");
     }
@@ -76,11 +76,13 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
-        onTap: (int newIndex) {
+        onTap: (int newIndex) async {
           if (!Provider.of<BusStopProvider>(context, listen: false).loading &&
               !Provider.of<RouteProvider>(context, listen: false).loading) {
+            print('El tipo antes del if es $type');
             if (newIndex == 2 && type != 'subscribe') {
-              Navigator.push(
+              print('El tipo despues del if es $type');
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const MySuscriptionScreen()));

@@ -58,7 +58,15 @@ class UserRepositoryImpl implements UserRepository {
           final userData = jsonResponse['data'];
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          for (var key in ['token', 'id', 'name', 'lastName', 'email', 'role', 'type']) {
+          for (var key in [
+            'token',
+            'id',
+            'name',
+            'lastName',
+            'email',
+            'role',
+            'type'
+          ]) {
             await prefs.setString(key, userData[key]);
           }
           return User.fromJson(jsonResponse['data']);
@@ -115,6 +123,18 @@ class UserRepositoryImpl implements UserRepository {
     try {
       String url = 'https://rabbitgo.sytes.net/user/$id';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+    } catch (error) {
+      throw ('Error al eliminar el usuario, $error');
+    }
+  }
+
+  @override
+  Future<void> getFavoritesById(String id) async {
+    String? token = await getToken();
+    try {
+      String url =
+          'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/from/$id';
+      await http.get(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
     }

@@ -1,9 +1,11 @@
+import 'package:flexible_polyline_dart/flutter_flexible_polyline.dart';
 import 'package:flexible_polyline_dart/latlngz.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/flow_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
@@ -32,6 +34,7 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
   late String district;
   late String street;
   late String postalCode;
+  late List<PathModel> paths;
 
   @override
   void initState() {
@@ -54,7 +57,11 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
 
   Future<void> _showDialogBusRoute(String routeName, String routeId, int price,
       List<dynamic> colonies) async {
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(_token, routeId);
+    await getCoordinates();
     showBottomSheet(
+      // ignore: use_build_context_synchronously
       context: context,
       builder: (BuildContext context) {
         return MyBusRouteAlert(
@@ -73,14 +80,37 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
     );
   }
 
-  Future<void> getRoutePathById(String routeId) async {
-    await Provider.of<PathProvider>(context, listen: false)
-        .getRoutePaths(_token, routeId);
+  Future<void> getCoordinates() async {
+    paths = Provider.of<PathProvider>(context, listen: false).paths;
+    if (paths.isNotEmpty) {
+      List<LatLng> firstPathCoordinates = paths.first.routeCoordinates;
+      List<LatLng> lastPathCoordinates = paths.last.routeCoordinates;
+      for (var coordinate in firstPathCoordinates) {
+        print('Coordendas del primer PathModel: $coordinate');
+      }
+      for (var coordinate in lastPathCoordinates) {
+        print('Coordendas del segundo PathModel: $coordinate');
+      }
+      List<LatLng> combinedList = firstPathCoordinates + lastPathCoordinates;
+      encodeCoordinates(combinedList);
+    } else {
+      print('No se encontraron PathModels.');
+    }
   }
 
-  Future<void> getCoordinates() async {
-    listCordinates =
-        Provider.of<PathProvider>(context, listen: false).paths;
+  Future<void> encodeCoordinates(List<LatLng> coordinates) async {
+    final newCoordinates = convertToLatLngZ(coordinates);
+    String coordinatesEncoded =
+        FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
+    print('Coordenadas encode: $coordinatesEncoded');
+    await getTraficFlow(coordinatesEncoded);
+  }
+
+  Future<void> getTraficFlow(String coordinatesEncoded) async {
+    await Provider.of<FlowProvider>(context, listen: false)
+        .getTrafficFlow(coordinatesEncoded);
+    final listFLows = Provider.of<FlowProvider>(context, listen: false).flows;
+    print(listFLows);
   }
 
   @override
@@ -144,9 +174,8 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
                     itemBuilder: (context, index) {
                       final route = routeProvider.routesAlert[index];
                       return MyCardRouteWidget(
-                          onTap: () {
-                            Navigator.pop(context);
-                            _showDialogBusRoute(route.name, route.id,
+                          onTap: () async {
+                            await _showDialogBusRoute(route.name, route.id,
                                 route.price, route.colonies);
                           },
                           routeName: route.name,

@@ -17,10 +17,12 @@ class MyAlertConfiguration extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
       await prefs.remove('name');
-      await prefs.remove('lastname');
+      await prefs.remove('id');
+      await prefs.remove('lastName');
       await prefs.remove('email');
-      await prefs.remove('rol');
+      await prefs.remove('role');
       await prefs.remove('token');
+      await prefs.remove('type');
     }
     return AlertDialog(
       shape: RoundedRectangleBorder(

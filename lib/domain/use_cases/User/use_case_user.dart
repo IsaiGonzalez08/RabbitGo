@@ -40,3 +40,11 @@ class DeleteAccount {
     _userRepository.deleteAccount(token, id);
   }
 }
+
+class GetFavoritesById {
+  final UserRepository _userRepository;
+  GetFavoritesById(this._userRepository);
+  Future<void> getFavoritesById(String id) async {
+    _userRepository.getFavoritesById(id);
+  }
+}
