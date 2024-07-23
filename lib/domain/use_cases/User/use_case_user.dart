@@ -1,3 +1,4 @@
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/User/repositories/user_repository.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 
@@ -44,7 +45,7 @@ class DeleteAccount {
 class GetFavoritesById {
   final UserRepository _userRepository;
   GetFavoritesById(this._userRepository);
-  Future<void> getFavoritesById(String id) async {
-    _userRepository.getFavoritesById(id);
+  Future<List<FavoriteModel>> getFavoritesById(String id) async {
+    return _userRepository.getFavoritesById(id);
   }
 }

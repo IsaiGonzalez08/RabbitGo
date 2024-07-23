@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/User/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/domain/models/User/user.dart';
@@ -62,6 +63,7 @@ class UserRepositoryImpl implements UserRepository {
             'token',
             'name',
             'lastName',
+            'id',
             'email',
             'role',
             'type'
@@ -128,14 +130,25 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> getFavoritesById(String id) async {
+  Future<List<FavoriteModel>> getFavoritesById(String id) async {
     String? token = await getToken();
     try {
       String url =
           'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/from/$id';
-      await http.get(Uri.parse(url), headers: {'Authorization': token!});
+      final response =
+          await http.get(Uri.parse(url), headers: {'Authorization': token!});
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> decodedResponse = json.decode(response.body);
+        final List<dynamic> favoritesJson = decodedResponse['data'];
+        final List<FavoriteModel> favorites =
+            favoritesJson.map((json) => FavoriteModel.fromJson(json)).toList();
+        print('Lista de favoritos desde impl: $favorites');
+        return favorites;
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
     } catch (error) {
-      throw ('Error al eliminar el usuario, $error');
+      throw ('Error al obtener favoritos, $error');
     }
   }
 }

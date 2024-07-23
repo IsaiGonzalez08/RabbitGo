@@ -1,3 +1,4 @@
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 
 abstract class UserRepository {
@@ -7,5 +8,5 @@ abstract class UserRepository {
   Future<User> updateUser(String userId, String name, String lastname,
       String email, String password, String token);
   Future<void> deleteAccount(String token, String id);
-  Future<void> getFavoritesById(String id);
+  Future<List<FavoriteModel>> getFavoritesById(String id);
 }

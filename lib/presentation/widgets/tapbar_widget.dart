@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
+import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/configuration_screen.dart';
 import 'package:rabbit_go/presentation/screen/favorite_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/home_screen.dart';
@@ -20,6 +21,7 @@ class MyTapBarWidget extends StatefulWidget {
 class _MyTapBarWidgetState extends State<MyTapBarWidget> {
   int _currentIndex = 0;
   String? type;
+  String? userId;
   User? user;
   List<Widget> body = [const SizedBox.shrink()];
   bool isInitialized = false;
@@ -52,7 +54,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
       final prefs = await SharedPreferences.getInstance();
       setState(() {
         type = prefs.getString('type');
-        print('Type desde shared preferences: $type');
+        userId = prefs.getString('id');
       });
     } catch (e) {
       throw ("Error en _loadUserData: $e");
@@ -79,17 +81,21 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
         onTap: (int newIndex) async {
           if (!Provider.of<BusStopProvider>(context, listen: false).loading &&
               !Provider.of<RouteProvider>(context, listen: false).loading) {
-            print('El tipo antes del if es $type');
             if (newIndex == 2 && type != 'subscribe') {
-              print('El tipo despues del if es $type');
               await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const MySuscriptionScreen()));
             } else {
-              setState(() {
-                _currentIndex = newIndex;
-              });
+              if (userId == null) {
+                print('user id null');
+              } else {
+                await Provider.of<UserProvider>(context, listen: false)
+                    .getFavoritesById(userId!);
+                setState(() {
+                  _currentIndex = newIndex;
+                });
+              }
             }
           }
         },
