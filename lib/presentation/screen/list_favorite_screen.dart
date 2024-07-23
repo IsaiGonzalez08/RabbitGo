@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/card_favorite_route.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MyListFavotiteScreen extends StatefulWidget {
   final int favoritesLength;
@@ -16,13 +16,6 @@ class _MyListFavotiteScreenState extends State<MyListFavotiteScreen> {
   final Map<String, bool> _favoriteStatus = {};
   late int favoritesLength;
 
-  Future<void> _toggleFavoriteStatus(String uuid) async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _favoriteStatus[uuid] = !(_favoriteStatus[uuid] ?? false);
-    });
-    await prefs.setBool(uuid, _favoriteStatus[uuid]!);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +82,7 @@ class _MyListFavotiteScreenState extends State<MyListFavotiteScreen> {
                     return CardFavoriteRoute(
                       onTap: () {},
                       onTapLikeButton: () {
-                        _toggleFavoriteStatus(favorite.id);
+
                       },
                       isFavorite: isFavorite,
                       routeName: favorite.routeModel.name,

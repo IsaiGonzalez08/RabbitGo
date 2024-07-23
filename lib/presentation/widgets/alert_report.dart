@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/report_provider.dart';
@@ -31,25 +29,11 @@ class MyAlertReportBusRoute extends StatefulWidget {
 }
 
 class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
-  File? _mediaFile;
   late User user;
   late String userId;
-  final ImagePicker _picker = ImagePicker();
   late bool isFavorite;
   late String description;
   final TextEditingController _textReportController = TextEditingController();
-
-  Future<void> _pickMedia() async {
-    final pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _mediaFile = File(pickedFile.path);
-      });
-    }
-  }
 
   Future<void> _createReport() async {
     final text = _textReportController.text;
@@ -64,7 +48,6 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
     final score = report.score;
     final stars = report.stars;
     await createComplaint(userId, text, score, stars, classifications);
-    await _showConfirmDialog();
   }
 
   Future<void> createComplaint(String userId, String complaint, double score,
@@ -83,7 +66,13 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const MyAlertCreateReport();
+          return MyAlertCreateReport(
+            name: widget.name,
+            routeId: widget.routeId,
+            price: widget.price,
+            colonies: widget.colonies,
+            isFavorite: widget.isFavorite,
+          );
         },
       );
     }
@@ -230,52 +219,6 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                         color: Color(0xFF949494),
                         fontWeight: FontWeight.w400,
                       ),
-                    ),
-                  ),
-                ),
-                if (_mediaFile != null)
-                  _mediaFile!.path.endsWith('.mp4')
-                      ? const SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: Icon(Icons.videocam, size: 200),
-                        )
-                      : Image.file(
-                          _mediaFile!,
-                          height: 200,
-                          width: 200,
-                        ),
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFE8E8E8)),
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: InkWell(
-                    onTap: _pickMedia,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Image.asset(
-                          'assets/images/attach_file_add.png',
-                          width: 24,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        const Text(
-                          'Subir archivo (.jpg,.png,.mp4,.gif)',
-                          style: TextStyle(
-                            color: Color(0xFF707070),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),

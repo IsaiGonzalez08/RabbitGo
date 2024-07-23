@@ -170,4 +170,21 @@ class UserRepositoryImpl implements UserRepository {
       throw ('Error al obtener favoritos, $error');
     }
   }
+
+  @override
+  Future<void> removeFavoriteById(String id) async {
+    String? token = await getToken();
+    try {
+      String url = 'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/$id';
+      final response =
+          await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+      if (response.statusCode == 200) {
+        print('Favorito borrando');
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al obtener favoritos, $error');
+    }
+  }
 }

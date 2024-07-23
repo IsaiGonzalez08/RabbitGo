@@ -10,4 +10,5 @@ abstract class UserRepository {
       String email, String password);
   Future<void> deleteAccount(String id);
   Future<List<FavoriteModel>> getFavoritesById(String id);
+  Future<void> removeFavoriteById(String id);
 }

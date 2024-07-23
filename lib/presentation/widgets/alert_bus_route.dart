@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/presentation/providers/results_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
+import 'package:rabbit_go/presentation/widgets/alert_problems.dart';
 import 'package:rabbit_go/presentation/widgets/alert_report.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
@@ -58,19 +59,18 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     );
   }
 
-  void _showDialogReportBusRoute(
-      String routeName, String routeId, int price, List<dynamic> colonies, bool isFavorite, String description) {
+  void _showDialogReportBusRoute(String routeName, String routeId, int price,
+      List<dynamic> colonies, bool isFavorite, String description) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return MyAlertReportBusRoute(
-          name: routeName,
-          routeId: routeId,
-          price: price,
-          colonies: colonies,
-          isFavorite: isFavorite,
-          description: description
-        );
+            name: routeName,
+            routeId: routeId,
+            price: price,
+            colonies: colonies,
+            isFavorite: isFavorite,
+            description: description);
       },
       constraints: const BoxConstraints(
         minWidth: 0.0,
@@ -135,16 +135,29 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   Future<void> providerResults() async {
     final results =
         Provider.of<ResultsProvider>(context, listen: false).results;
-    double totalJamFactor = 0.0;
-    for (var result in results) {
-      totalJamFactor += result.flowModel.jamFactor;
+    if (results.isEmpty) {
+      showTrafficProblemsAlert();
+    } else {
+      double totalJamFactor = 0.0;
+      for (var result in results) {
+        totalJamFactor += result.flowModel.jamFactor;
+        setState(() {
+          description = result.locationModel.description;
+        });
+      }
       setState(() {
-        description = result.locationModel.description;
+        jamFactor = totalJamFactor;
       });
     }
-    setState(() {
-      jamFactor = totalJamFactor;
-    });
+  }
+
+  void showTrafficProblemsAlert() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MyAlertProblems();
+      },
+    );
   }
 
   List<LatLngZ> convertToLatLngZ(List<LatLng> coordinates) {
@@ -217,13 +230,11 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                       onTap: () {
                         if (isFavorite) {
                           setState(() {
-                            isFavorite =
-                                false;
+                            isFavorite = false;
                           });
                         } else {
                           setState(() {
-                            isFavorite =
-                                true;
+                            isFavorite = true;
                           });
                         }
                       },
@@ -239,7 +250,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
               ),
             ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
             Row(
               children: [
@@ -257,27 +268,27 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            InkWell(
-              onTap: _toggleSizeAndIcon,
-              child: Row(
-                children: [
-                  Image.asset(
-                      _iconToggled
-                          ? 'assets/images/arrow_down.png'
-                          : 'assets/images/arrow_right.png',
-                      width: 26),
-                  const Text(
-                    'Ver más',
-                    style: TextStyle(
-                      color: Color(0xFF01142B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: InkWell(
+                onTap: _toggleSizeAndIcon,
+                child: Row(
+                  children: [
+                    Image.asset(
+                        _iconToggled
+                            ? 'assets/images/arrow_down.png'
+                            : 'assets/images/arrow_right.png',
+                        width: 26),
+                    const Text(
+                      'Ver más',
+                      style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             if (_buttonVisible) ...[
@@ -346,7 +357,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 const SizedBox(
                   width: 4,
                 ),
-                if (jamFactor.isNaN)
+                if (jamFactor.isNaN || jamFactor == 0.0)
                   const Text(
                     'Estado del trafico.',
                     style: TextStyle(
@@ -354,7 +365,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                         fontSize: 14,
                         fontWeight: FontWeight.w600),
                   )
-                else if (jamFactor >= 0.0 && jamFactor <= 3.0)
+                else if (jamFactor >= 0.1 && jamFactor <= 3.0)
                   const Text(
                     'Estado del trafico [Ligero].',
                     style: TextStyle(
@@ -396,8 +407,13 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 ),
                 child: CustomButton(
                   onPressed: () {
-                    _showDialogReportBusRoute(widget.name, widget.routeId,
-                        widget.price, widget.colonies, widget.isFavorite, description);
+                    _showDialogReportBusRoute(
+                        widget.name,
+                        widget.routeId,
+                        widget.price,
+                        widget.colonies,
+                        widget.isFavorite,
+                        description);
                   },
                   textButton: 'Reporte de queja',
                   width: MediaQuery.of(context).size.width * 0.9,
@@ -409,6 +425,9 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 ),
               ),
             ],
+            const SizedBox(
+              height: 5,
+            ),
             CustomButton(
               onPressed: () async {
                 await Provider.of<PathProvider>(context, listen: false)

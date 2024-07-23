@@ -12,12 +12,21 @@ class ResultsProvider extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   Future<void> getTrafficResults(String coordinatesEncoded) async {
     _loading = true;
+    _errorMessage = null;
     notifyListeners();
-    List<ResultsModel> results = await _resultsRepository.getTrafficResults(coordinatesEncoded);
-    _results = results;
-    _loading = false;
-    notifyListeners();
+    try {
+      List<ResultsModel> results = await _resultsRepository.getTrafficResults(coordinatesEncoded);
+      _results = results;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 }

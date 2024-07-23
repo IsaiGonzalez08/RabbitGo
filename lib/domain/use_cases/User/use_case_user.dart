@@ -49,3 +49,11 @@ class GetFavoritesById {
     return _userRepository.getFavoritesById(id);
   }
 }
+
+class RemoveFavoritesById {
+  final UserRepository _userRepository;
+  RemoveFavoritesById(this._userRepository);
+  Future<void> removeFavoriteById(String id) async {
+    return _userRepository.removeFavoriteById(id);
+  }
+}

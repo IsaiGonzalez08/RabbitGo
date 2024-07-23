@@ -50,6 +50,8 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
         Provider.of<UserProvider>(context, listen: false).favorites;
     final shuttleIds =
         listFavorites.map((favorite) => favorite.shuttleId).toList();
+    final favoriteIds = listFavorites.map((favorite) => favorite.id).toList();
+    print('id de los favoritos $favoriteIds');
     await setListFavorites(shuttleIds);
   }
 
@@ -155,7 +157,6 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
                               await _showDialogBusRoute(route.name, route.id,
                                   route.price, route.colonies, isFavorite);
                             } else {
-                              // Aquí puedes manejar el caso cuando no es favorito
                               await _showDialogBusRoute(route.name, route.id,
                                   route.price, route.colonies, isFavorite);
                             }
