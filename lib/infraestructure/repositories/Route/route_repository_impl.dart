@@ -93,21 +93,25 @@ class RouteRepositoryImpl implements RouteRepository {
   Future<void> updateBusRoute(
       String routeUuid,
       String routeName,
-      String routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid) async {
+      int routePrice,
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
     String? token = await getToken();
     try {
       final userData = {
         'name': routeName,
         'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStopUuid
+        'colonies': colonies,
+        'shuttleStopId': shuttleStopId,
+        'shift': {
+          'startTime': routeStartTime,
+          'endTime': routeEndTime,
+        }
       };
       await http.put(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route/$routeUuid'),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$routeUuid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!

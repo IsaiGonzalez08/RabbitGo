@@ -46,15 +46,16 @@ class RouteProvider extends ChangeNotifier {
   }
 
   Future<void> updateBusRoute(
-    routeUuid,
-    routeName,
-    routePrice,
-    routeStartTime,
-    routeEndTime,
-    routeBusStopUuid,
+    String routeUuid,
+    String routeName,
+    int routePrice,
+    String? routeStartTime,
+    String? routeEndTime,
+    List<String> colonies,
+    List<String> shuttleStopId,
   ) async {
     await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
-        routeStartTime, routeEndTime, routeBusStopUuid);
+        routeStartTime, routeEndTime, colonies, shuttleStopId);
   }
 
   void deleteRouteByUuid(String busRouteUuid) async {

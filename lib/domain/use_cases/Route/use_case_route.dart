@@ -32,8 +32,8 @@ class CreateBusRouteUseCase {
       String? routeEndTime,
       List<String> colonies,
       List<String> shushuttleStopId) async {
-    await _routeRepository.createBusRoute(routeName, routePrice,
-        routeStartTime, routeEndTime, colonies, shushuttleStopId);
+    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, colonies, shushuttleStopId);
   }
 }
 
@@ -45,13 +45,13 @@ class UpdateBusRouteUseCase {
   Future<void> updateBusRoute(
       String routeUuid,
       String routeName,
-      String routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid,
-      String token) async {
+      int routePrice,
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
     await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
-        routeStartTime, routeEndTime, routeBusStopUuid);
+        routeStartTime, routeEndTime, colonies, shuttleStopId);
   }
 }
 
