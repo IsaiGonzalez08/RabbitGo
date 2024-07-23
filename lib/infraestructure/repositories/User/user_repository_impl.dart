@@ -13,6 +13,11 @@ class UserRepositoryImpl implements UserRepository {
     return prefs.getString('token');
   }
 
+  Future<String?> getType() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('type');
+  }
+
   @override
   Future<void> createUser(
       String name, String lastname, String email, String password) async {
@@ -89,6 +94,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<UpdateUser> updateUser(String userId, String name, String lastname,
       String email, String password) async {
     String? token = await getToken();
+    String? type = await getType();
     try {
       String url = ('https://rabbit-go.sytes.net/user_mcs/user/$userId');
       final userData = {
@@ -98,7 +104,7 @@ class UserRepositoryImpl implements UserRepository {
           'email': email,
           'password': password,
         },
-        'type': 'unsubscribe'
+        'type': type
       };
       final response = await http.put(Uri.parse(url),
           headers: {
