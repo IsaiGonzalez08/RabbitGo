@@ -66,7 +66,7 @@ class MyButtonRoute extends StatelessWidget {
                 child: Image.asset(
                   isFavorite
                       ? 'assets/images/favorite.png'
-                      : 'assets/images/favorite-border.png',
+                      : 'assets/images/active_favorite.png',
                   width: 25,
                 ),
               ),

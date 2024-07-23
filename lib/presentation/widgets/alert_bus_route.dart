@@ -49,7 +49,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   void navigateMap() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+      MaterialPageRoute(builder: (context) => const MyTapBarWidget(index: 0,)),
     );
   }
 

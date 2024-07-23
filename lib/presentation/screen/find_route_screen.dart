@@ -28,7 +28,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyTapBarWidget(),
+        builder: (context) => const MyTapBarWidget(index: 0,),
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/login_signup_screen.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -14,31 +13,40 @@ class MyAlertStatusProfile extends StatefulWidget {
 }
 
 class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
-  late User _user;
-  late String _userId;
-  late String _token;
+  String? _userId;
 
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
+    _loadUserData();
   }
 
-  void navigateSignUpScreen() {
-    Navigator.pushReplacement(
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getString('id');
+  }
+
+  void _deleteAccount(String id) async {
+    await Provider.of<UserProvider>(context, listen: false).deleteAccount(id);
+    navigateLoginScreen();
+  }
+
+  void navigateLoginScreen() async {
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+      MaterialPageRoute(builder: (context) => const MyLoginSignScreen()),
+      (Route<dynamic> route) => false,
     );
-    Navigator.popUntil(context, (route) => route.isFirst);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isLoggedIn');
+    await prefs.remove('name');
+    await prefs.remove('id');
+    await prefs.remove('lastName');
+    await prefs.remove('email');
+    await prefs.remove('role');
+    await prefs.remove('token');
+    await prefs.remove('type');
   }
-
-  void _deleteAccount(String token, String id) async {
-    await Provider.of<UserProvider>(context, listen: false)
-        .deleteAccount(token, id);
-    navigateSignUpScreen();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +90,7 @@ class _MyAlertStatusProfileState extends State<MyAlertStatusProfile> {
               color: const Color(0xFFAB0000),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () async {
-                _deleteAccount(_token, _userId);
+                _deleteAccount(_userId!);
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.remove('isLoggedIn');
                 await prefs.remove('name');

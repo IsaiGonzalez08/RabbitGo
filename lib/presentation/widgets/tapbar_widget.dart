@@ -12,7 +12,8 @@ import 'package:rabbit_go/presentation/screen/suscription_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyTapBarWidget extends StatefulWidget {
-  const MyTapBarWidget({Key? key}) : super(key: key);
+  final int index;
+  const MyTapBarWidget({Key? key, required this.index}) : super(key: key);
 
   @override
   State<MyTapBarWidget> createState() => _MyTapBarWidgetState();
@@ -28,6 +29,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
 
   @override
   void initState() {
+    _currentIndex = widget.index;
     super.initState();
     _initializeNavigation();
   }

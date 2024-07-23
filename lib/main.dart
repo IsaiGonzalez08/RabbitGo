@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       if (rol == 'admin') {
         homeScreen = const MyTapBarAdminWidget();
       } else if (rol == 'user') {
-        homeScreen = const MyTapBarWidget();
+        homeScreen = const MyTapBarWidget(index: 0,);
       } else {
         homeScreen = const SplashScreen();
       }
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const MyLoginSignPage(),
+          builder: (context) => const MyLoginSignScreen(),
         ),
       );
     });

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/domain/models/User/user_update.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/screen/general_screen.dart';
 import 'package:rabbit_go/presentation/screen/profile_screen.dart';
@@ -18,7 +18,7 @@ class MyConfigurationScreen extends StatefulWidget {
 }
 
 class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
-  late User _user;
+  late UpdateUser _user;
   late String _name;
   late String _lastname;
   late String _email;
@@ -26,10 +26,10 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
+    _user = Provider.of<UserProvider>(context, listen: false).userDataUpdate;
     _name = _user.name;
     _lastname = _user.lastname;
-    _email = _user.email;
+    _email = _user.credentials.email;
     _loadUserData();
   }
 

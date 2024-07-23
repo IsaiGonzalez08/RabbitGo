@@ -86,7 +86,7 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+        MaterialPageRoute(builder: (context) => const MyTapBarWidget(index: 0,)),
       );
     }
   }

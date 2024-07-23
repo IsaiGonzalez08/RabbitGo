@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyConfirmUpdateDataWidget extends StatefulWidget {
   final String name, lastname, email, password;
@@ -20,9 +21,7 @@ class MyConfirmUpdateDataWidget extends StatefulWidget {
 }
 
 class _MyConfirmUpdateDataWidgetState extends State<MyConfirmUpdateDataWidget> {
-  late User _user;
-  late String _userId;
-  late String _token;
+  String? _userId;
   late String name;
   late String lastname;
   late String email;
@@ -30,24 +29,28 @@ class _MyConfirmUpdateDataWidgetState extends State<MyConfirmUpdateDataWidget> {
 
   @override
   void initState() {
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     name = widget.name;
     lastname = widget.lastname;
     email = widget.email;
     password = widget.password;
+    _loadUserData();
     super.initState();
   }
 
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getString('id');
+  }
+
   navigateConfigurationScreen() {
-    Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const MyTapBarWidget(index: 3,)));
   }
 
   void _updateUser(String userId, String name, String lastname, String email,
-      String password, String token) async {
+      String password) async {
     await Provider.of<UserProvider>(context, listen: false)
-        .updateUser(userId, name, lastname, email, password, token);
+        .updateUser(userId, name, lastname, email, password);
     navigateConfigurationScreen();
   }
 
@@ -92,7 +95,7 @@ class _MyConfirmUpdateDataWidgetState extends State<MyConfirmUpdateDataWidget> {
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () {
-                _updateUser(_userId, name, lastname, email, password, _token);
+                _updateUser(_userId!, name, lastname, email, password);
               },
             ),
             CustomButton(
