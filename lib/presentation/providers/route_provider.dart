@@ -34,12 +34,15 @@ class RouteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBusRoute(routeName, routePrice, routeStartTime,
-      routeEndTime, routeBusStopUuid) async {
-    RouteModel newRoute = await _routeRepository.createBusRoute(routeName,
-        routePrice, routeStartTime, routeEndTime, routeBusStopUuid);
-    _routes.add(newRoute);
-    notifyListeners();
+  Future<void> createBusRoute(
+      String routeName,
+      int routePrice,
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
+    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, colonies, shuttleStopId);
   }
 
   Future<void> updateBusRoute(
@@ -48,11 +51,10 @@ class RouteProvider extends ChangeNotifier {
     routePrice,
     routeStartTime,
     routeEndTime,
-    token,
     routeBusStopUuid,
   ) async {
     await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
-        routeStartTime, routeEndTime, routeBusStopUuid, token);
+        routeStartTime, routeEndTime, routeBusStopUuid);
   }
 
   void deleteRouteByUuid(String busRouteUuid) async {

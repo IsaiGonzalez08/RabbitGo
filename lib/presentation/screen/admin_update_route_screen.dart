@@ -102,14 +102,12 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
       final routeEndTime = endTimeValue;
       final routeBusStopUuid = selectedStop?.id ?? '';
       await Provider.of<RouteProvider>(context, listen: false).updateBusRoute(
-        routeUuid,
-        routeName,
-        routePrice,
-        routeStartTime,
-        routeEndTime,
-        routeBusStopUuid,
-        _token,
-      );
+          routeUuid,
+          routeName,
+          routePrice,
+          routeStartTime,
+          routeEndTime,
+          routeBusStopUuid);
       navigateHomeAdmin();
     } catch (e) {
       print('Error updating bus route: $e');

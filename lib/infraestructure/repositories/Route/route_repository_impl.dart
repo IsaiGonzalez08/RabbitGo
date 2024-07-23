@@ -35,7 +35,8 @@ class RouteRepositoryImpl implements RouteRepository {
   Future<void> deleteRouteById(String busRouteUuid) async {
     String? token = await getToken();
     try {
-      String url = 'https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$busRouteUuid';
+      String url =
+          'https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$busRouteUuid';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
@@ -43,31 +44,43 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<RouteModel> createBusRoute(
+  Future<void> createBusRoute(
       String routeName,
       int routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid) async {
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
     String? token = await getToken();
     try {
       final userData = {
         'name': routeName,
         'price': routePrice,
-        'colonies': routeStartTime,
+        'colonies': colonies,
+        'shuttleStopId': shuttleStopId,
         'shift': {'startTime': routeStartTime, 'endTime': routeEndTime}
       };
       final response = await http.post(
-          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle '),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!
           },
           body: jsonEncode(userData));
       if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        final routeData = data['data'];
-        return RouteModel.fromJson(routeData);
+        final Map<String, dynamic> dataMap = jsonDecode(response.body);
+        if (dataMap['status'] == 'success') {
+          if (dataMap['data'].isEmpty) {
+            print(
+                'La creación de la ruta fue exitosa pero no se recibió información adicional.');
+          } else {
+            final routeData = dataMap['data'][0];
+            print('Información adicional de la ruta: $routeData');
+          }
+        } else {
+          throw Exception(
+              'Respuesta del servidor no exitosa: ${dataMap['status']}');
+        }
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');
       }
@@ -83,8 +96,7 @@ class RouteRepositoryImpl implements RouteRepository {
       String routePrice,
       String routeStartTime,
       String routeEndTime,
-      String routeBusStopUuid,
-      String token) async {
+      String routeBusStopUuid) async {
     String? token = await getToken();
     try {
       final userData = {

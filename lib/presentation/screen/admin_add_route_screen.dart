@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
@@ -29,6 +30,9 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   bool _isLoading = true;
   String? startTimeValue;
   String? endTimeValue;
+  List<String> colonies = [];
+  List<String> selectedColonies = [];
+  final TextEditingController _coloniesController = TextEditingController();
 
   List<String> hoursAM = <String>[
     '6:00',
@@ -61,6 +65,14 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
     startTimeValue = hoursAM.first;
     endTimeValue = hoursPM.first;
     _fetchBusStops(_token);
+    _loadColonies();
+  }
+
+  void _loadColonies() {
+    final coloniasString = dotenv.env['COLONIAS'] ?? '';
+    setState(() {
+      colonies = coloniasString.split(',').map((e) => e.trim()).toList();
+    });
   }
 
   Future<void> _fetchBusStops(String token) async {
@@ -94,18 +106,25 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
       final routePrice = int.parse(_routePriceController.text);
       final routeStartTime = startTimeValue;
       final routeEndTime = endTimeValue;
+      final listColonies = _coloniesController.text
+          .split(',')
+          .map((colony) => colony.trim())
+          .toList();
       final routeBusStopUuids = selectedStops.map((stop) => stop.id).toList();
       await Provider.of<RouteProvider>(context, listen: false).createBusRoute(
           routeName,
           routePrice,
           routeStartTime,
           routeEndTime,
+          listColonies,
           routeBusStopUuids);
       _routeNameController.clear();
       _routePriceController.clear();
+      _coloniesController.clear();
+      selectedStops.clear();
       navigateTapBarScreen();
     } catch (e) {
-      print('Error creating bus route: $e');
+      throw('Error creating bus route: $e');
     }
   }
 
@@ -259,6 +278,58 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: selectedColonies.isNotEmpty ? 110 : 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFEDEDED)),
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(top: 5, left: 5, right: 5),
+                        child: MultiSelectDialogField(
+                          buttonIcon: const Icon(
+                            Icons.arrow_drop_down,
+                            size: 20,
+                            color: Color(0xFFB8B8B8),
+                          ),
+                          items: colonies
+                              .map((colony) =>
+                                  MultiSelectItem<String>(colony, colony))
+                              .toList(),
+                          title: const Text("Seleccionar Colonias"),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide.none)),
+                          selectedColor: const Color(0xFF01142B),
+                          buttonText: const Text(
+                            "Seleccionar Colonias",
+                            style: TextStyle(
+                                color: Color(0xFFB8B8B8),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          onConfirm: (results) {
+                            setState(() {
+                              selectedColonies = results.cast<String>();
+                              _coloniesController.text = selectedColonies.join(
+                                  ', '); // Actualiza el TextEditingController
+                            });
+                          },
+                          chipDisplay: MultiSelectChipDisplay(
+                            scroll: true,
+                            scrollBar: HorizontalScrollBar(isAlwaysShown: true),
+                            onTap: (item) {
+                              setState(() {
+                                selectedColonies.remove(item as String);
+                                _coloniesController.text =
+                                    selectedColonies.join(', ');
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Container(

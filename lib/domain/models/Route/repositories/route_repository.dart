@@ -3,12 +3,13 @@ import 'package:rabbit_go/domain/models/Route/route.dart';
 abstract class RouteRepository {
   Future<List<RouteModel>> getAllRoutes(String token);
   Future<void> deleteRouteById(String busRouteUuid);
-  Future<RouteModel> createBusRoute(
+  Future<void> createBusRoute(
       String routeName,
       int routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid);
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId);
   Future<void> updateBusRoute(
       String routeId,
       String routeName,
@@ -16,7 +17,6 @@ abstract class RouteRepository {
       String routeStartTime,
       String routeEndTime,
       String routeBusStopId,
-      String token,
       );
   Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
 }
