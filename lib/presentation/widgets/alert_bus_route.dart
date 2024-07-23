@@ -49,7 +49,10 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   void navigateMap() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MyTapBarWidget(index: 0,)),
+      MaterialPageRoute(
+          builder: (context) => const MyTapBarWidget(
+                index: 0,
+              )),
     );
   }
 
@@ -344,12 +347,42 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 const SizedBox(
                   width: 4,
                 ),
-                if (jamFactor == 0.0)
-                  const Center(child: CircularProgressIndicator())
-                else
-                  Text(
-                    'Estado del trafico $jamFactor.',
-                    style: const TextStyle(
+                if (jamFactor.isNaN)
+                  const Text(
+                    'Estado del trafico.',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  )
+                else if (jamFactor >= 0.0 && jamFactor <= 3.0)
+                  const Text(
+                    'Estado del trafico [Ligero].',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  )
+                else if (jamFactor > 3.0 && jamFactor <= 6.0)
+                  const Text(
+                    'Estado del trafico [Moderado].',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  )
+                else if (jamFactor > 6.0 && jamFactor <= 9.9)
+                  const Text(
+                    'Estado del trafico [Pesado].',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  )
+                else if (jamFactor == 10.0)
+                  const Text(
+                    'Estado del trafico [BLOQUEADO].',
+                    style: TextStyle(
                         color: Color(0xFF01142B),
                         fontSize: 14,
                         fontWeight: FontWeight.w600),
