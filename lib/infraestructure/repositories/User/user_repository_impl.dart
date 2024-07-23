@@ -156,7 +156,6 @@ class UserRepositoryImpl implements UserRepository {
         final List<dynamic> favoritesJson = decodedResponse['data'];
         final List<FavoriteModel> favorites =
             favoritesJson.map((json) => FavoriteModel.fromJson(json)).toList();
-        print('Lista de favoritos desde impl: $favorites');
         return favorites;
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');

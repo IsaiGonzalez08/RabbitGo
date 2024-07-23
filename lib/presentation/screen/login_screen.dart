@@ -59,11 +59,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
+
   void _loginUser() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     if (_formKey.currentState!.validate()) {
-      await Provider.of<UserProvider>(context, listen: false).loginUser(email, password);
+      await Provider.of<UserProvider>(context, listen: false)
+          .loginUser(email, password);
       await providerUserData();
       _role = _user.role;
       navigateUser(_role);
@@ -86,7 +88,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MyTapBarWidget(index: 0,)),
+        MaterialPageRoute(
+            builder: (context) => const MyTapBarWidget(
+                  index: 0,
+                )),
       );
     }
   }

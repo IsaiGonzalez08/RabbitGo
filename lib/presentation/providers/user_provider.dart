@@ -19,7 +19,7 @@ class UserProvider extends ChangeNotifier {
   UpdateUser get userDataUpdate => _userUpdate;
 
   late User _user =
-      User(name: '', lastname: '', email: '', type: '');
+      User(id: '', name: '', lastname: '', email: '', type: '');
   User get userData => _user;    
 
   List<FavoriteModel> _favorites = [];
@@ -55,7 +55,6 @@ class UserProvider extends ChangeNotifier {
     _isLoadingFavorites = true;
     List<FavoriteModel> favorites = await _userRepository.getFavoritesById(id);
     _favorites = favorites;
-    print('lista de favoritos desde el provider: $_favorites');
     _isLoadingFavorites = false;
     notifyListeners();
   }

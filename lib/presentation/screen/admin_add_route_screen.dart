@@ -3,10 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
@@ -23,8 +21,6 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  late User _user;
-  late String _token;
   List<Stop> stops = [];
   List<Stop> selectedStops = [];
   bool _isLoading = true;
@@ -60,11 +56,10 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
+
     startTimeValue = hoursAM.first;
     endTimeValue = hoursPM.first;
-    _fetchBusStops(_token);
+    _fetchBusStops();
     _loadColonies();
   }
 
@@ -75,10 +70,10 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
     });
   }
 
-  Future<void> _fetchBusStops(String token) async {
+  Future<void> _fetchBusStops() async {
     try {
       await Provider.of<BusStopProvider>(context, listen: false)
-          .getAllBusStops(token);
+          .getAllBusStops();
       List<Stop> fetchedStops =
           // ignore: use_build_context_synchronously
           Provider.of<BusStopProvider>(context, listen: false).stops;
@@ -124,7 +119,7 @@ class _MyAdminAddRouteScreenState extends State<MyAdminAddRouteScreen> {
       selectedStops.clear();
       navigateTapBarScreen();
     } catch (e) {
-      throw('Error creating bus route: $e');
+      throw ('Error creating bus route: $e');
     }
   }
 

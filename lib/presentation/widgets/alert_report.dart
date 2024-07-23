@@ -14,12 +14,16 @@ class MyAlertReportBusRoute extends StatefulWidget {
   final String name, routeId;
   final int price;
   final List<dynamic> colonies;
+  final bool isFavorite;
+  final String description;
   const MyAlertReportBusRoute(
       {Key? key,
       required this.name,
       required this.routeId,
       required this.price,
-      required this.colonies})
+      required this.colonies,
+      required this.isFavorite,
+      required this.description})
       : super(key: key);
 
   @override
@@ -31,7 +35,8 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
   late User user;
   late String userId;
   final ImagePicker _picker = ImagePicker();
-  bool isFavorite = false;
+  late bool isFavorite;
+  late String description;
   final TextEditingController _textReportController = TextEditingController();
 
   Future<void> _pickMedia() async {
@@ -94,6 +99,7 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
           routeId: widget.routeId,
           price: widget.price,
           colonies: widget.colonies,
+          isFavorite: widget.isFavorite,
         ),
       );
     });
@@ -102,6 +108,8 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
   @override
   void initState() {
     user = Provider.of<UserProvider>(context, listen: false).userData;
+    isFavorite = widget.isFavorite;
+    description = widget.description;
     _loadUserData();
     super.initState();
   }
@@ -162,7 +170,13 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const Text('[Dirección de la ruta].'),
+                              SizedBox(
+                                  width: 200,
+                                  child: Text(
+                                    description,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  )),
                             ],
                           ),
                         ],
@@ -185,8 +199,8 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
                           },
                           child: Image.asset(
                             isFavorite
-                                ? 'assets/images/favorite.png'
-                                : 'assets/images/favorite-border.png',
+                                ? 'assets/images/active_favorite.png'
+                                : 'assets/images/favorite.png',
                             width: 25,
                           ),
                         ),

@@ -1,4 +1,5 @@
 class User {
+  final String id;
   final String token;
   final String name;
   final String lastname;
@@ -8,6 +9,7 @@ class User {
 
   User(
       {
+      required this.id,
       this.token = '',
       required this.name,
       required this.lastname,
@@ -17,12 +19,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      token: json['token'] ?? '',
-      name: json['name'],
-      lastname: json['lastName'],
-      email: json['email'],
-      role: json['role'] ?? '',
-      type: json['type']
-    );
+        id: json['id'],
+        token: json['token'] ?? '',
+        name: json['name'],
+        lastname: json['lastName'],
+        email: json['email'],
+        role: json['role'] ?? '',
+        type: json['type']);
   }
 }

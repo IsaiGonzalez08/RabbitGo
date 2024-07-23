@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StopRepositoryImpl implements StopRepository {
   @override
-  Future<List<Stop>> getAllBusStops(String token) async {
+  Future<List<Stop>> getAllBusStops() async {
     Future<String?> getToken() async {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('token');

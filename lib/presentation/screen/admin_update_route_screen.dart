@@ -6,7 +6,6 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/horizontal_scrollbar.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -14,7 +13,6 @@ import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 
 import '../../domain/models/Stop/stop.dart';
-import '../providers/user_provider.dart';
 
 class MyAdminUpdateRouteScreen extends StatefulWidget {
   final String id;
@@ -30,8 +28,6 @@ class MyAdminUpdateRouteScreen extends StatefulWidget {
 class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   final TextEditingController _routeNameController = TextEditingController();
   final TextEditingController _routePriceController = TextEditingController();
-  late User _user;
-  late String _token;
   late String id;
   List<Stop> stops = [];
   List<Stop> selectedStops = [];
@@ -69,11 +65,9 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     startTimeValue = hoursAM.first;
     endTimeValue = hoursPM.first;
-    _fetchBusStops(_token);
+    _fetchBusStops();
     _loadColonies();
   }
 
@@ -84,10 +78,10 @@ class _MyAdminUpdateRouteScreenState extends State<MyAdminUpdateRouteScreen> {
     });
   }
 
-  Future<void> _fetchBusStops(String token) async {
+  Future<void> _fetchBusStops() async {
     try {
       await Provider.of<BusStopProvider>(context, listen: false)
-          .getAllBusStops(token);
+          .getAllBusStops();
       List<Stop> fetchedStops =
           // ignore: use_build_context_synchronously
           Provider.of<BusStopProvider>(context, listen: false).stops;

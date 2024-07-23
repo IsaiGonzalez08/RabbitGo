@@ -14,12 +14,14 @@ class MyBusRouteAlert extends StatefulWidget {
   final String name, routeId;
   final int price;
   final List<dynamic> colonies;
+  final bool isFavorite;
   const MyBusRouteAlert(
       {Key? key,
       required this.name,
       required this.routeId,
       required this.price,
-      required this.colonies})
+      required this.colonies,
+      required this.isFavorite})
       : super(key: key);
 
   @override
@@ -30,10 +32,10 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   bool _isExpanded = false;
   bool _iconToggled = false;
   bool _buttonVisible = false;
-  bool isFavorite = false;
   late List<PathModel> paths;
   late List<dynamic> stringList;
   late String routeId;
+  late bool isFavorite;
   String estimatedTripTime = '';
   String description = '';
   double jamFactor = 0.0;
@@ -57,7 +59,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
   }
 
   void _showDialogReportBusRoute(
-      String routeName, String routeId, int price, List<dynamic> colonies) {
+      String routeName, String routeId, int price, List<dynamic> colonies, bool isFavorite, String description) {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -66,6 +68,8 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
           routeId: routeId,
           price: price,
           colonies: colonies,
+          isFavorite: isFavorite,
+          description: description
         );
       },
       constraints: const BoxConstraints(
@@ -82,13 +86,13 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     super.initState();
     routeId = widget.routeId;
     stringList = widget.colonies;
+    isFavorite = widget.isFavorite;
     _getRoutePath(routeId);
   }
 
   Future<void> _getRoutePath(String busRouteId) async {
     await Provider.of<PathProvider>(context, listen: false)
         .getRoutePaths(busRouteId);
-    print('ya hice el la petición para obtener path por id');
     getCoordinates();
   }
 
@@ -96,15 +100,11 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     paths = Provider.of<PathProvider>(context, listen: false).paths;
     for (var path in paths) {
       estimatedTripTime = path.estimatedTripTime;
-      print(path.routeCoordinates);
     }
     if (paths.isNotEmpty) {
       List<LatLng> firstPathCoordinates = paths.first.routeCoordinates;
       List<LatLng> lastPathCoordinates = paths.last.routeCoordinates;
       List<LatLng> allCoordinates = firstPathCoordinates + lastPathCoordinates;
-      for (var coordinate in allCoordinates) {
-        print('cordenadas unidas: $coordinate');
-      }
       const int maxChunkSize = 200;
       for (int i = 0; i < allCoordinates.length; i += maxChunkSize) {
         List<LatLng> chunk = allCoordinates.sublist(
@@ -123,7 +123,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
     final newCoordinates = convertToLatLngZ(coordinates);
     String coordinatesEncoded =
         FlexiblePolyline.encode(newCoordinates, 5, ThirdDimension.ABSENT, 0);
-    print('El script es $coordinatesEncoded');
     await getTraficFlow(coordinatesEncoded);
   }
 
@@ -219,19 +218,19 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                         if (isFavorite) {
                           setState(() {
                             isFavorite =
-                                false; //AQUI SE HARA EL POST PARA MANDARLO A LISTA DE FAVORITOS
+                                false;
                           });
                         } else {
                           setState(() {
                             isFavorite =
-                                true; //AQUI SE HARA EL METODO REMOVE PARA QUITAR DE FAVORITOS
+                                true;
                           });
                         }
                       },
                       child: Image.asset(
                         isFavorite
-                            ? 'assets/images/favorite.png'
-                            : 'assets/images/active_favorite.png',
+                            ? 'assets/images/active_favorite.png'
+                            : 'assets/images/favorite.png',
                         width: 25,
                       ),
                     ),
@@ -398,7 +397,7 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 child: CustomButton(
                   onPressed: () {
                     _showDialogReportBusRoute(widget.name, widget.routeId,
-                        widget.price, widget.colonies);
+                        widget.price, widget.colonies, widget.isFavorite, description);
                   },
                   textButton: 'Reporte de queja',
                   width: MediaQuery.of(context).size.width * 0.9,

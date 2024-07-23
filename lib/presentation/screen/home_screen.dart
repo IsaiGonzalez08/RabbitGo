@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
@@ -32,38 +32,29 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
-  late User _user;
-  late String _token;
   List<PathModel> paths = [];
   late List<Stop> busStopMarkers;
+  late List<FavoriteModel> listFavorites = [];
+  late String userId;
   final TextEditingController _searchPlaceController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _waitProvider = WaitProvider(Permission.location);
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     _initializeData();
   }
 
   Future<void> _initializeData() async {
-    await _loadUserData();
     await _loadBusStops();
     await _showAlertPermissionsLocation();
     _loadRouteCoordinates();
-  }
-
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _token = prefs.getString('token') ?? '';
-    });
+    await _loadUserData();
+    getRouteLikesById(userId);
   }
 
   Future<void> _loadBusStops() async {
-    await Provider.of<BusStopProvider>(context, listen: false)
-        .getAllBusStops(_token);
+    await Provider.of<BusStopProvider>(context, listen: false).getAllBusStops();
     await getBusStops();
     createBusStopMarkers();
   }
@@ -124,6 +115,18 @@ class _MyHomeScreenState extends State<MyHomeScreen>
       _polylines = polylines;
     });
   }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('id') ?? '';
+    });
+  }
+
+  Future<void> getRouteLikesById(String id) async {
+    await Provider.of<UserProvider>(context, listen: false).getFavoritesById(id);
+  }
+
 
   Future<void> _getPlace(String query) async {
     try {

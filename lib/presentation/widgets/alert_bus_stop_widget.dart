@@ -6,6 +6,7 @@ import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
 import 'package:rabbit_go/presentation/widgets/route_card_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyBusStopAlert extends StatefulWidget {
   final String stopId, district, street, postalCode;
@@ -29,7 +30,7 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
   late String district;
   late String street;
   late String postalCode;
-
+  List<String>? listShuttleId;
 
   @override
   void initState() {
@@ -40,11 +41,30 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
     postalCode = widget.postalCode;
     Provider.of<RouteProvider>(context, listen: false)
         .getRouteByBusStopId(_token, widget.stopId);
+    providerLikes();
     super.initState();
   }
 
+  Future<void> providerLikes() async {
+    final listFavorites =
+        Provider.of<UserProvider>(context, listen: false).favorites;
+    final shuttleIds =
+        listFavorites.map((favorite) => favorite.shuttleId).toList();
+    await setListFavorites(shuttleIds);
+  }
+
+  Future<void> setListFavorites(List<String> shuttleIds) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('listShuttleId', shuttleIds);
+  }
+
+  Future<List<String>?> getListFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('listShuttleId');
+  }
+
   Future<void> _showDialogBusRoute(String routeName, String routeId, int price,
-      List<dynamic> colonies) async {
+      List<dynamic> colonies, bool isFavorite) async {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -53,6 +73,7 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
           routeId: routeId,
           price: price,
           colonies: colonies,
+          isFavorite: isFavorite,
         );
       },
       constraints: const BoxConstraints(
@@ -126,8 +147,18 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
                       final route = routeProvider.routesAlert[index];
                       return MyCardRouteWidget(
                           onTap: () async {
-                            await _showDialogBusRoute(route.name, route.id,
-                                route.price, route.colonies);
+                            final List<String>? listFavorites =
+                                await getListFavorites();
+                            final bool isFavorite =
+                                listFavorites?.contains(route.id) ?? false;
+                            if (isFavorite) {
+                              await _showDialogBusRoute(route.name, route.id,
+                                  route.price, route.colonies, isFavorite);
+                            } else {
+                              // Aquí puedes manejar el caso cuando no es favorito
+                              await _showDialogBusRoute(route.name, route.id,
+                                  route.price, route.colonies, isFavorite);
+                            }
                           },
                           routeName: route.name,
                           startTime: route.startTime,
