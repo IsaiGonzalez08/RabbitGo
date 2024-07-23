@@ -28,7 +28,9 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyTapBarWidget(index: 0,),
+        builder: (context) => const MyTapBarWidget(
+          index: 0,
+        ),
       ),
     );
   }
@@ -143,9 +145,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
                 onTap: () {
                   _getRoutePath(route.id);
                 },
-                onTapLikeButton: () {
-                  _toggleFavoriteStatus(route.id);
-                },
+                price: route.price,
                 isFavorite: isFavorite,
                 routeName: route.name,
                 routeStartTime: route.startTime,

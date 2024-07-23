@@ -7,13 +7,13 @@ class MyButtonRoute extends StatelessWidget {
       this.routeName,
       this.routeStartTime,
       this.routeEndTime,
-      this.onTapLikeButton,
+      this.price,
       required this.isFavorite});
   final void Function()? onTap;
   final String? routeName;
   final String? routeStartTime;
   final String? routeEndTime;
-  final void Function()? onTapLikeButton;
+  final int? price;
   final bool isFavorite;
 
   @override
@@ -49,28 +49,34 @@ class MyButtonRoute extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      '$routeStartTime-$routeEndTime',
+                      '$routeStartTime am -$routeEndTime pm',
                       style: const TextStyle(
                           color: Color(0xFF8B8B8B),
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 20, bottom: 15),
-              child: InkWell(
-                onTap: onTapLikeButton,
-                child: Image.asset(
-                  isFavorite
-                      ? 'assets/images/favorite.png'
-                      : 'assets/images/active_favorite.png',
-                  width: 25,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Precio:',
+                    style: TextStyle(
+                        color: Color(0xFF01142B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400)),
+                Text(
+                  '\$$price',
+                  style: const TextStyle(
+                      color: Color(0xFF01142B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
                 ),
-              ),
-            )
+              ],
+            ),
           ],
         ),
       ),
