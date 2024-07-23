@@ -18,15 +18,17 @@ class UserProvider extends ChangeNotifier {
       type: '');
   UpdateUser get userDataUpdate => _userUpdate;
 
-  late User _user =
-      User(id: '', name: '', lastname: '', email: '', type: '');
-  User get userData => _user;    
+  late User _user = User(id: '', name: '', lastname: '', email: '', type: '');
+  User get userData => _user;
 
   List<FavoriteModel> _favorites = [];
   List<FavoriteModel> get favorites => _favorites;
 
   bool _isLoadingFavorites = false;
   bool get isLoadingFavorites => _isLoadingFavorites;
+
+  bool _response = false;
+  bool get response => _response;
 
   Future<void> createUser(
       String name, String lastname, String email, String password) async {
@@ -56,6 +58,12 @@ class UserProvider extends ChangeNotifier {
     List<FavoriteModel> favorites = await _userRepository.getFavoritesById(id);
     _favorites = favorites;
     _isLoadingFavorites = false;
+    notifyListeners();
+  }
+
+  Future<void> addFavoriteById(String id) async {
+    final response = await _userRepository.addFavoriteById(id);
+    _response = response;
     notifyListeners();
   }
 }

@@ -25,14 +25,12 @@ class _MyFavoriteRoutesScreenState extends State<MyFavoriteRoutesScreen> {
     id = prefs.getString('id');
   }
 
-  void getFavoritesById() {}
-
   Future<void> navigateListFavotite(int favoriteLength) async {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                MyListFavotiteScreen(favoritesLength: favoriteLength)));
+                MyListFavoriteScreen(favoritesLength: favoriteLength)));
   }
 
   @override

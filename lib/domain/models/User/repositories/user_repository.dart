@@ -11,4 +11,5 @@ abstract class UserRepository {
   Future<void> deleteAccount(String id);
   Future<List<FavoriteModel>> getFavoritesById(String id);
   Future<void> removeFavoriteById(String id);
+  Future<bool> addFavoriteById(String id);
 }

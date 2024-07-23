@@ -18,6 +18,11 @@ class UserRepositoryImpl implements UserRepository {
     return prefs.getString('type');
   }
 
+  Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('id');
+  }
+
   @override
   Future<void> createUser(
       String name, String lastname, String email, String password) async {
@@ -185,6 +190,32 @@ class UserRepositoryImpl implements UserRepository {
       }
     } catch (error) {
       throw ('Error al obtener favoritos, $error');
+    }
+  }
+
+  @override
+  Future<bool> addFavoriteById(String id) async {
+    String? token = await getToken();
+    String? userId = await getUserId();
+    try {
+      final userData = {'userId': userId, 'shuttleId': id};
+      String url = 'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/';
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Authorization': token!,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(userData),
+      );
+      if (response.statusCode == 210) {
+        print('Favorito añadido');
+        return true;
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al crear favoritos, $error');
     }
   }
 }

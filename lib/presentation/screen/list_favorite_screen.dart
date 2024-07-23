@@ -1,21 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/screen/search_favorite_screen.dart';
 import 'package:rabbit_go/presentation/widgets/card_favorite_route.dart';
+import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 
-
-class MyListFavotiteScreen extends StatefulWidget {
+class MyListFavoriteScreen extends StatefulWidget {
   final int favoritesLength;
-  const MyListFavotiteScreen({super.key, required this.favoritesLength});
+  const MyListFavoriteScreen({super.key, required this.favoritesLength});
 
   @override
-  State<MyListFavotiteScreen> createState() => _MyListFavotiteScreenState();
+  State<MyListFavoriteScreen> createState() => _MyListFavoriteScreenState();
 }
 
-class _MyListFavotiteScreenState extends State<MyListFavotiteScreen> {
+class _MyListFavoriteScreenState extends State<MyListFavoriteScreen> {
   final Map<String, bool> _favoriteStatus = {};
   late int favoritesLength;
 
+  Future<void> _getRoutePath(String busRouteId) async {
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(busRouteId);
+    navigateHome();
+  }
+
+  void navigateHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MyTapBarWidget(
+          index: 0,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +73,19 @@ class _MyListFavotiteScreenState extends State<MyListFavotiteScreen> {
                               fontWeight: FontWeight.w400),
                         ),
                       ],
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const MySearchRouteScreen()));
+                      },
+                      child: Image.asset(
+                        'assets/images/add_blue.png',
+                        width: 20,
+                      ),
                     )
                   ],
                 )
@@ -80,9 +111,8 @@ class _MyListFavotiteScreenState extends State<MyListFavotiteScreen> {
                     final favorite = favorites[index];
                     bool isFavorite = _favoriteStatus[favorite.id] ?? false;
                     return CardFavoriteRoute(
-                      onTap: () {},
-                      onTapLikeButton: () {
-
+                      onTap: () {
+                        _getRoutePath(favorite.shuttleId);
                       },
                       isFavorite: isFavorite,
                       routeName: favorite.routeModel.name,

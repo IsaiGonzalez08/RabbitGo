@@ -7,13 +7,11 @@ class CardFavoriteRoute extends StatelessWidget {
       this.routeName,
       this.routeStartTime,
       this.routeEndTime,
-      this.onTapLikeButton,
       required this.isFavorite});
   final void Function()? onTap;
   final String? routeName;
   final String? routeStartTime;
   final String? routeEndTime;
-  final void Function()? onTapLikeButton;
   final bool isFavorite;
 
   @override
@@ -61,14 +59,11 @@ class CardFavoriteRoute extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 20, bottom: 15),
-              child: InkWell(
-                onTap: onTapLikeButton,
-                child: Image.asset(
-                  isFavorite
-                      ? 'assets/images/favorite.png'
-                      : 'assets/images/active_favorite.png',
-                  width: 25,
-                ),
+              child: Image.asset(
+                isFavorite
+                    ? 'assets/images/favorite.png'
+                    : 'assets/images/active_favorite.png',
+                width: 25,
               ),
             )
           ],
