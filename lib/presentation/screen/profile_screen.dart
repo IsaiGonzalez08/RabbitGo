@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
@@ -24,8 +23,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   late TextEditingController _lastnameController;
   late TextEditingController _emailController;
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _showPassword = true;
   late User _user;
@@ -34,22 +32,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   late String _email;
 
   String? validateEmail(String? value) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
-    }
-    if (!EmailValidator.validate(value)) {
+    } else if (!emailRegex.hasMatch(value)) {
       return 'Por favor ingrese un email correcto';
+    } else {
+      return null;
     }
-    return null;
   }
 
   String? validatePassword(String? value) {
+    final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,16}$');
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 6) {
-      return "La contraseña debe tener al menos 6 caracteres";
-    } else if (value.length > 15) {
-      return "La contraseña no puede ser mayor a 15 caracteres";
+    } else if (!passwordRegex.hasMatch(value)) {
+      return "La contraseña debe tener entre 6 y 16 caracteres, e incluir al menos una letra mayúscula, una letra minúscula y un número.";
     } else {
       return null;
     }
@@ -60,9 +58,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _name = _user.name;
-    _lastname = _user.lastName;
+    _lastname = _user.lastname;
     _email = _user.email;
-    
+
     _usernameController = TextEditingController(text: _name);
     _lastnameController = TextEditingController(text: _lastname);
     _emailController = TextEditingController(text: _email);
@@ -74,7 +72,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? _name;
-      _lastname = prefs.getString('lastname') ?? _lastname;
+      _lastname = prefs.getString('lastName') ?? _lastname;
       _email = prefs.getString('email') ?? _email;
 
       _usernameController.text = _name;
@@ -83,22 +81,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     });
   }
 
-  void _showSuccessDialog(
-      String name, String lastname, String email, String password) {
+  void _showSuccessDialog(String name, String lastname, String email, String password) {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         return;
       } else {
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return MyConfirmUpdateDataWidget(
-                name: name,
-                lastname: lastname,
-                email: email,
-                password: password,
-              );
-            });
+          context: context,
+          builder: (BuildContext context) {
+            return MyConfirmUpdateDataWidget(
+              name: name,
+              lastname: lastname,
+              email: email,
+              password: password,
+            );
+          },
+        );
         _usernameController.clear();
         _lastnameController.clear();
         _emailController.clear();
@@ -118,7 +116,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         leading: IconButton(
           icon: Image.asset(
             'assets/images/ForwardLeft.png',
@@ -153,15 +153,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     child: Consumer<UserProvider>(
                       builder: (context, userData, child) {
                         String initials = getInitials(_name, _lastname);
-                        return Text(initials,
-                            style: const TextStyle(
-                                fontSize: 36, color: Color(0xFFFFFFFF)));
+                        return Text(
+                          initials,
+                          style: const TextStyle(fontSize: 36, color: Color(0xFFFFFFFF)),
+                        );
                       },
                     ),
                   ),
-                  const SizedBox(
-                    height: 35,
-                  ),
+                  const SizedBox(height: 35),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -175,12 +174,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Color(0xFF9A9A9A),
                                 fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          const SizedBox(height: 5),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
-                            controllerTextField: _usernameController = TextEditingController(text: _name),
+                            controllerTextField: _usernameController,
                             text: 'Nombre(s)',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -191,9 +188,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -204,9 +199,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Color(0xFF9A9A9A),
                                 fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          const SizedBox(height: 5),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
                             controllerTextField: _lastnameController,
@@ -225,9 +218,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       const Text(
                         'Correo Electrónico',
                         style: TextStyle(
@@ -235,9 +226,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             color: Color(0xFF9A9A9A),
                             fontWeight: FontWeight.w600),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       MyTextFieldWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _emailController,
@@ -251,9 +240,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       const Text(
                         'Contraseña',
                         style: TextStyle(
@@ -261,9 +248,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             color: Color(0xFF9A9A9A),
                             fontWeight: FontWeight.w600),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       MyPasswordTextFieldWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _passwordController,
@@ -278,9 +263,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       const Text(
                         'Confirmar Contraseña',
                         style: TextStyle(
@@ -288,9 +271,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             color: Color(0xFF9A9A9A),
                             fontWeight: FontWeight.w600),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       MyPasswordTextFieldWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
                         controllerTextField: _confirmPasswordController,
@@ -312,9 +293,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 60,
-              ),
+              const SizedBox(height: 60),
               CustomButton(
                 textButton: 'Actualizar',
                 width: MediaQuery.of(context).size.width * 0.9,

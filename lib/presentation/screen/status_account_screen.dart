@@ -23,7 +23,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _name = _user.name;
-    _lastname = _user.lastName;
+    _lastname = _user.lastname;
     _loadUserData();
   }
 
@@ -31,7 +31,7 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('name') ?? '';
-      _lastname = prefs.getString('lastname') ?? '';
+      _lastname = prefs.getString('lastName') ?? '';
     });
   }
 
@@ -53,7 +53,9 @@ class _MyStatusAccountScreeState extends State<MyStatusAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Image.asset(

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/infraestructure/repositories/Route/route_repository_impl.dart';
@@ -15,12 +14,10 @@ class RouteProvider extends ChangeNotifier {
   List<RouteModel> _routesAlert = [];
   List<RouteModel> get routesAlert => _routesAlert;
 
-  List<LatLng> _routePath = [];
-  List<LatLng> get routePath => _routePath;
   bool _loading = false;
   bool get loading => _loading;
 
-  void getAllRoutes(String token) async {
+  Future<void> getAllRoutes(String token) async {
     _loading = true;
     List<RouteModel> routes = await _routeRepository.getAllRoutes(token);
     _routes = routes;
@@ -28,7 +25,7 @@ class RouteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getRouteByBusStopId(String token, String busStopId) async {
+  Future<void> getRouteByBusStopId(String token, String busStopId) async {
     _loading = true;
     List<RouteModel> routesAlert =
         await _routeRepository.getRouteByBusStopId(token, busStopId);
@@ -37,42 +34,38 @@ class RouteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBusRoute(routeName, routePrice, routeStartTime,
-      routeEndTime, routeBusStopUuid, token) async {
-    RouteModel newRoute = await _routeRepository.createBusRoute(routeName,
-        routePrice, routeStartTime, routeEndTime, routeBusStopUuid, token);
-    _routes.add(newRoute);
-    notifyListeners();
+  Future<void> createBusRoute(
+      String routeName,
+      int routePrice,
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
+    await _routeRepository.createBusRoute(routeName, routePrice, routeStartTime,
+        routeEndTime, colonies, shuttleStopId);
   }
 
   Future<void> updateBusRoute(
-    routeUuid,
-    routeName,
-    routePrice,
-    routeStartTime,
-    routeEndTime,
-    token,
-    routeBusStopUuid,
+    String routeUuid,
+    String routeName,
+    int routePrice,
+    String? routeStartTime,
+    String? routeEndTime,
+    List<String> colonies,
+    List<String> shuttleStopId,
   ) async {
     await _routeRepository.updateBusRoute(routeUuid, routeName, routePrice,
-        routeStartTime, routeEndTime, routeBusStopUuid, token);
+        routeStartTime, routeEndTime, colonies, shuttleStopId);
   }
 
-  Future<void> getRouteBusPath(String token, String busRouteId) async {
-    List<LatLng> routePath =
-        await _routeRepository.getRouteBusPath(token, busRouteId);
-    _routePath = routePath;
-    notifyListeners();
-  }
-
-  void deleteRouteByUuid(String token, String busRouteUuid) async {
-    await _routeRepository.deleteRouteById(token, busRouteUuid);
+  void deleteRouteByUuid(String busRouteUuid) async {
+    await _routeRepository.deleteRouteById(busRouteUuid);
     _removeRouteLocally(busRouteUuid);
     notifyListeners();
   }
 
   void _removeRouteLocally(String busRouteUuid) {
-    routes.removeWhere((route) => route.uuid == busRouteUuid);
+    routes.removeWhere((route) => route.id == busRouteUuid);
     notifyListeners();
   }
 }

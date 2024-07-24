@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
@@ -27,22 +26,22 @@ class _MySignScreenState extends State<MySignUpScreen> {
   bool _showPassword = true;
 
   String? validateEmail(String? value) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
-    }
-    if (!EmailValidator.validate(value)) {
+    } else if (!emailRegex.hasMatch(value)) {
       return 'Por favor ingrese un email correcto';
+    } else {
+      return null;
     }
-    return null;
   }
 
   String? validatePassword(String? value) {
+    final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,16}$');
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 6) {
-      return "La contraseña debe tener al menos 6 caracteres";
-    } else if (value.length > 15) {
-      return "La contraseña no puede ser mayor a 15 caracteres";
+    } else if (!passwordRegex.hasMatch(value)) {
+      return "La contraseña debe tener entre 6 y 16 caracteres, e incluir al menos una letra mayúscula, una letra minúscula y un número.";
     } else {
       return null;
     }
@@ -66,8 +65,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
       if (password != confirmPassword) {
         return;
       } else {
-        await Provider.of<UserProvider>(context, listen: false)
-            .createUser(name, lastname, email, password);
+        await Provider.of<UserProvider>(context, listen: false).createUser(name, lastname, email, password);
       }
       _usernameController.clear();
       _lastnameController.clear();
@@ -85,7 +83,9 @@ class _MySignScreenState extends State<MySignUpScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
+          backgroundColor: const Color(0xFFFFFFFF),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/LeftArrow.png',
@@ -164,7 +164,7 @@ class _MySignScreenState extends State<MySignUpScreen> {
                   MyTextFieldWidget(
                     controllerTextField: _emailController,
                     width: MediaQuery.of(context).size.width * 0.9,
-                    text: 'Correo Eletcrónico',
+                    text: 'Correo Electrónico',
                     validator: (value) {
                       return validateEmail(value?.trim());
                     },

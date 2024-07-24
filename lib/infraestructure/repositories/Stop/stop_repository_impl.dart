@@ -6,22 +6,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StopRepositoryImpl implements StopRepository {
   @override
-  Future<List<Stop>> getAllBusStops(String? token) async {
+  Future<List<Stop>> getAllBusStops() async {
     Future<String?> getToken() async {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('token');
     }
-
     String? token = await getToken();
     try {
       final response = await http.get(
-          Uri.parse('https://rabbitgo.sytes.net/bus/stop/'),
-          headers: {'Authorization': token!});
+        Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttleStop'),
+        headers: {'Authorization': token!},
+      );
       if (response.statusCode == 200) {
-        final Map<String, dynamic> decodedResponse = json.decode(response.body);
-        final List<dynamic> stopsJson = decodedResponse['data'];
-        final List<Stop> stops =
-            stopsJson.map((json) => Stop.fromJson(json)).toList();
+        final decodedResponse =
+            json.decode(response.body) as Map<String, dynamic>;
+        final stopsJson = decodedResponse['data'] as List<dynamic>;
+        final stops = stopsJson.map((json) => Stop.fromJson(json)).toList();
         return stops;
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');

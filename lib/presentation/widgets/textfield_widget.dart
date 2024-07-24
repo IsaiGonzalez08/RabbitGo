@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyTextFieldWidget extends StatelessWidget {
   const MyTextFieldWidget({
@@ -8,6 +9,8 @@ class MyTextFieldWidget extends StatelessWidget {
     required this.width,
     required this.controllerTextField,
     required this.validator,
+    this.inputFormatters,
+    this.keyboardType,
     this.onChanged,
     this.onSaved,
   }) : super(key: key);
@@ -18,12 +21,16 @@ class MyTextFieldWidget extends StatelessWidget {
   final TextEditingController controllerTextField;
   final void Function(String?)? onSaved;
   final void Function(String?)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       child: TextFormField(
+        inputFormatters: inputFormatters,
+        keyboardType: keyboardType,
         onChanged: onChanged,
         textInputAction: textInput,
         autocorrect: false,

@@ -1,5 +1,7 @@
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/User/repositories/user_repository.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/domain/models/User/user_update.dart';
 
 class CreateUserUseCase {
   final UserRepository _userRepository;
@@ -26,17 +28,40 @@ class LoginUserUseCase {
 class UpdateUserUseCase {
   final UserRepository _userRepository;
   UpdateUserUseCase(this._userRepository);
-  Future<User> updateUser(String userId, String name, String lastName,
-      String email, String password, String token) async {
-    return _userRepository.updateUser(
-        userId, name, lastName, email, password, token);
+  Future<UpdateUser> updateUser(String userId, String name, String lastName,
+      String email, String password) async {
+    return _userRepository.updateUser(userId, name, lastName, email, password);
   }
 }
 
 class DeleteAccount {
   final UserRepository _userRepository;
   DeleteAccount(this._userRepository);
-  Future<void> deletAccount(String token, String id) async {
-    _userRepository.deleteAccount(token, id);
+  Future<void> deletAccount(String id) async {
+    _userRepository.deleteAccount(id);
+  }
+}
+
+class GetFavoritesById {
+  final UserRepository _userRepository;
+  GetFavoritesById(this._userRepository);
+  Future<List<FavoriteModel>> getFavoritesById(String id) async {
+    return _userRepository.getFavoritesById(id);
+  }
+}
+
+class RemoveFavoritesById {
+  final UserRepository _userRepository;
+  RemoveFavoritesById(this._userRepository);
+  Future<void> removeFavoriteById(String id) async {
+    return _userRepository.removeFavoriteById(id);
+  }
+}
+
+class AddFavoritesById {
+  final UserRepository _userRepository;
+  AddFavoritesById(this._userRepository);
+  Future<bool> addFavoriteById(String id) async {
+    return _userRepository.addFavoriteById(id);
   }
 }

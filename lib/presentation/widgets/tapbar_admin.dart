@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/screen/admin_add_route_screen.dart';
 import 'package:rabbit_go/presentation/screen/admin_find_route_screen.dart';
@@ -31,6 +30,7 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
         child: body[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _currentIndex,
         onTap: (int newIndex) {
@@ -39,13 +39,19 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
             setState(() {
               _currentIndex = newIndex;
             });
-          } 
+          }
         },
         items: [
           BottomNavigationBarItem(
               label: 'Home',
-              activeIcon: SvgPicture.asset('assets/images/home.svg'),
-              icon: SvgPicture.asset('assets/images/homewhite.svg')),
+              activeIcon: Image.asset(
+                'assets/images/active_home.png',
+                width: 24,
+              ),
+              icon: Image.asset(
+                'assets/images/home.png',
+                width: 24,
+              )),
           BottomNavigationBarItem(
             label: 'Agregar',
             activeIcon: Image.asset('assets/images/Add_active.png', width: 25),
@@ -53,9 +59,14 @@ class _MyTapBarAdminWidgetState extends State<MyTapBarAdminWidget> {
           ),
           BottomNavigationBarItem(
               label: 'Buscar',
-              activeIcon:
-                  Image.asset('assets/images/search_active.png', width: 25),
-              icon: Image.asset('assets/images/Search.png', width: 25)),
+              activeIcon: Image.asset(
+                'assets/images/active_search.png',
+                width: 24,
+              ),
+              icon: Image.asset(
+                'assets/images/search.png',
+                width: 24,
+              )),
         ],
         selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w500,

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
+import 'package:rabbit_go/presentation/widgets/button_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyFindRouteScreen extends StatefulWidget {
   const MyFindRouteScreen({Key? key}) : super(key: key);
@@ -19,27 +22,30 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
   List<RouteModel> _routes = [];
   List<RouteModel> _filteredRoutes = [];
   final TextEditingController _searchController = TextEditingController();
+  final Map<String, bool> _favoriteStatus = {};
 
   void navigateHome() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyTapBarWidget(),
+        builder: (context) => const MyTapBarWidget(
+          index: 0,
+        ),
       ),
     );
   }
 
-  Future<void> _getRoutePath(String token, String busRouteId) async {
-    await Provider.of<RouteProvider>(context, listen: false)
-        .getRouteBusPath(token, busRouteId);
+  Future<void> _getRoutePath(String busRouteId) async {
+    await Provider.of<PathProvider>(context, listen: false)
+        .getRoutePaths(busRouteId);
     navigateHome();
   }
 
   void _filterRoutes(String query) {
     setState(() {
       _filteredRoutes = _routes
-          .where((route) =>
-              route.name.toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (route) => route.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -49,13 +55,37 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     super.initState();
     _user = Provider.of<UserProvider>(context, listen: false).userData;
     _token = _user.token;
-    Provider.of<RouteProvider>(context, listen: false).getAllRoutes(_token);
+    Provider.of<RouteProvider>(context, listen: false)
+        .getAllRoutes(_token)
+        .then((_) {
+      _routes = Provider.of<RouteProvider>(context, listen: false).routes;
+      _loadFavoriteStatus();
+    });
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      for (var route in _routes) {
+        _favoriteStatus[route.id] = prefs.getBool(route.id) ?? false;
+      }
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus(String uuid) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _favoriteStatus[uuid] = !(_favoriteStatus[uuid] ?? false);
+    });
+    await prefs.setBool(uuid, _favoriteStatus[uuid]!);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         centerTitle: true,
         automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Color(0xFF979797)),
@@ -92,7 +122,7 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
               filled: true,
               fillColor: const Color(0xFFFFFFFF),
               prefixIcon: Image.asset(
-                'assets/images/Search.png',
+                'assets/images/search2.png',
                 width: 20,
               ),
             ),
@@ -104,87 +134,22 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
           return const Center(child: CircularProgressIndicator());
         } else {
           _routes = controller.routes;
-          _filteredRoutes = _searchController.text.isEmpty
-              ? _routes
-              : _filteredRoutes;
-
+          _filteredRoutes =
+              _searchController.text.isEmpty ? _routes : _filteredRoutes;
           return ListView.builder(
             itemCount: _filteredRoutes.length,
             itemBuilder: (_, index) {
               final route = _filteredRoutes[index];
-              return InkWell(
+              bool isFavorite = _favoriteStatus[route.id] ?? false;
+              return MyButtonRoute(
                 onTap: () {
-                  final busRouteId = route.uuid;
-                  _getRoutePath(_token, busRouteId);
+                  _getRoutePath(route.id);
                 },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFFF5F5F5),
-                      width: 2,
-                    ),
-                  ),
-                  height: 80,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/Bus.png',
-                            width: 50,
-                          ),
-                          const SizedBox(width: 5),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                route.name,
-                                style: const TextStyle(
-                                    color: Color(0xFF8D8D8D),
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                '${route.startTime}-${route.endTime}',
-                                style: const TextStyle(
-                                    color: Color(0xFFE0E0E0),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                'Costo ',
-                                style: TextStyle(
-                                    color: Color(0xFFAEAEAE),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              Text(
-                                '\$${route.price}',
-                                style: const TextStyle(
-                                    color: Color(0xFFAEAEAE),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                price: route.price,
+                isFavorite: isFavorite,
+                routeName: route.name,
+                routeStartTime: route.startTime,
+                routeEndTime: route.endTime,
               );
             },
           );

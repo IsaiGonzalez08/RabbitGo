@@ -9,14 +9,12 @@ import 'package:rabbit_go/presentation/widgets/password_textfield_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MyLoginScreenState createState() => _MyLoginScreenState();
 }
 
@@ -31,10 +29,11 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   bool _showPassword = true;
 
   String? validateEmail(String? value) {
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
     }
-    if (!EmailValidator.validate(value)) {
+    if (!emailRegex.hasMatch(value)) {
       return 'Por favor ingrese un email correcto';
     }
     if (_isEmailInValid) {
@@ -44,12 +43,11 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   }
 
   String? validatePassword(String? value) {
+    final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,16}$');
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 6) {
-      return "La contraseña debe tener al menos 6 caracteres";
-    } else if (value.length > 16) {
-      return "La contraseña no puede ser mayor a 16 caracteres";
+    } else if (!passwordRegex.hasMatch(value)) {
+      return "La contraseña debe tener entre 6 y 16 caracteres, una letra mayúscula, una letra minúscula y un número.";
     } else if (_isPasswordInValid) {
       return "La contraseña no existe";
     } else {
@@ -57,18 +55,18 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  void providerUserData() {
+  Future<void> providerUserData() async {
     _user = Provider.of<UserProvider>(context, listen: false).userData;
   }
 
-  void _loginUser() async {
-    final String email = _emailController.text.trim();
-    final String password = _passwordController.text.trim();
 
+  void _loginUser() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
     if (_formKey.currentState!.validate()) {
       await Provider.of<UserProvider>(context, listen: false)
           .loginUser(email, password);
-      providerUserData();
+      await providerUserData();
       _role = _user.role;
       navigateUser(_role);
     } else {
@@ -90,7 +88,10 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MyTapBarWidget()),
+        MaterialPageRoute(
+            builder: (context) => const MyTapBarWidget(
+                  index: 0,
+                )),
       );
     }
   }
@@ -102,7 +103,9 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
+          backgroundColor: const Color(0xFFFFFFFF),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/LeftArrow.png',

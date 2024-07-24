@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
+import 'package:rabbit_go/domain/models/Path/path.dart';
 import 'package:rabbit_go/domain/models/Stop/stop.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
+import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/place_provider.dart';
-import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/providers/wait_provider.dart';
 import 'package:rabbit_go/infraestructure/helpers/asset_to_bytes.dart';
 import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
-import 'package:rabbit_go/presentation/widgets/marker_alert_widget.dart';
+import 'package:rabbit_go/presentation/widgets/alert_bus_stop_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rabbit_go/presentation/widgets/clear_button_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomeScreen extends StatefulWidget {
@@ -24,62 +27,53 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
-  late Polyline polyline;
+  Set<Polyline> _polylines = {};
   late WaitProvider _waitProvider;
-  List<Stop> _busStopMarkers = [];
+  List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
   LatLng? userLocation;
-  late User _user;
-  late String? _token;
+  List<PathModel> paths = [];
+  late List<Stop> busStopMarkers;
+  late List<FavoriteModel> listFavorites = [];
+  late String userId;
+  final TextEditingController _searchPlaceController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _waitProvider = WaitProvider(Permission.location);
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
-    polyline = const Polyline(
-      polylineId: PolylineId('route'),
-      points: [],
-      width: 3,
-    );
     _initializeData();
   }
 
   Future<void> _initializeData() async {
-    await _loadUserData();
     await _loadBusStops();
     await _showAlertPermissionsLocation();
     _loadRouteCoordinates();
-  }
-
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _token = prefs.getString('token') ?? '';
-    });
+    await _loadUserData();
+    getRouteLikesById(userId);
   }
 
   Future<void> _loadBusStops() async {
-    await Provider.of<BusStopProvider>(context, listen: false)
-        .getAllBusStops(_token);
-    getBusStops();
+    await Provider.of<BusStopProvider>(context, listen: false).getAllBusStops();
+    await getBusStops();
+    createBusStopMarkers();
   }
 
   Future<void> getBusStops() async {
-    _busStopMarkers =
-        Provider.of<BusStopProvider>(context, listen: false).stops;
+    busStopMarkers = Provider.of<BusStopProvider>(context, listen: false).stops;
+  }
+
+  Future<void> createBusStopMarkers() async {
     final icon = BitmapDescriptor.fromBytes(
         await assetToBytes('assets/images/MapMarker.png'));
-    Set<Marker> newMarkers = _busStopMarkers.map((stop) {
-      final markerId = stop.id;
-      final latLngMarker = LatLng(stop.latitude, stop.longitude);
+    Set<Marker> newMarkers = busStopMarkers.map((stop) {
       return Marker(
         onTap: () {
-          _showDialogBusStops(markerId);
+          _showDialogBusStop(
+              stop.id, stop.latitude.toString(), stop.longitude.toString());
         },
-        markerId: MarkerId(markerId),
-        position: latLngMarker,
+        markerId: MarkerId(stop.id),
+        position: LatLng(stop.latitude, stop.longitude),
         icon: icon,
       );
     }).toSet();
@@ -103,19 +97,46 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   void _loadRouteCoordinates() {
-    setState(() {
-      polyline = Polyline(
-        polylineId: const PolylineId('route'),
-        points: Provider.of<RouteProvider>(context, listen: false).routePath,
-        width: 3,
+    paths = Provider.of<PathProvider>(context, listen: false).paths;
+    Set<Polyline> polylines = {};
+    List<Color> colors = [const Color(0xFF01142B), Colors.red];
+    for (var i = 0; i < paths.length; i++) {
+      var path = paths[i];
+      List<LatLng> routeCoordinates = path.routeCoordinates;
+      Polyline polyline = Polyline(
+        polylineId: PolylineId(path.pathId),
+        points: routeCoordinates,
+        width: 2,
+        color: colors[i % colors.length],
       );
+      polylines.add(polyline);
+    }
+    setState(() {
+      _polylines = polylines;
     });
   }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('id') ?? '';
+    });
+  }
+
+  Future<void> getRouteLikesById(String id) async {
+    await Provider.of<UserProvider>(context, listen: false).getFavoritesById(id);
+  }
+
 
   Future<void> _getPlace(String query) async {
     try {
       await Provider.of<PlaceProvider>(context, listen: false)
           .handleSubmitted(query);
+      setState(() {
+        _hereMarkers =
+            Provider.of<PlaceProvider>(context, listen: false).hereMarkers;
+        _searchPlaceController.clear();
+      });
     } catch (e) {
       throw ('el error es $e');
     }
@@ -133,10 +154,17 @@ class _MyHomeScreenState extends State<MyHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    bool hasBluePolyline =
+        _polylines.any((polyline) => polyline.color == const Color(0xFF01142B));
+    bool hasRedPolyline =
+        _polylines.any((polyline) => polyline.color == Colors.red);
+
     return Stack(
       children: [
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {
+          _hereMarkers = placeProvider.hereMarkers;
           return GoogleMap(
+            zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) async {
               LatLng? location = await getUserLocation();
               if (location != null) {
@@ -151,18 +179,16 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                     .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
               }
             },
-            polylines: {polyline},
-            markers: Set.from({..._markers, ...placeProvider.hereMarkers}),
+            polylines: _polylines,
+            markers: Set.from({..._markers, ..._hereMarkers}),
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),
-              zoom: 14,
+              zoom: 13,
             ),
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
-            padding: const EdgeInsets.only(
-              top: 100.0,
-            ),
+            padding: const EdgeInsets.only(top: 100.0, right: 6),
           );
         }),
         Padding(
@@ -171,23 +197,23 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             vertical: MediaQuery.of(context).size.height * 0.08,
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: 40,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Builder(builder: (context) {
-              return TextField(
-                onSubmitted: (value) => _getPlace(value),
-                textAlignVertical: TextAlignVertical.center,
-                cursorHeight: 25.0,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 40,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: TextField(
+                onSubmitted: (value) {
+                  _getPlace(value);
+                },
+                controller: _searchPlaceController,
                 cursorColor: const Color(0xFF01142B),
                 style: const TextStyle(
                   color: Color(0xFF01142B),
@@ -207,23 +233,76 @@ class _MyHomeScreenState extends State<MyHomeScreen>
                   filled: true,
                   fillColor: const Color(0xFFFFFFFF),
                   prefixIcon: Image.asset(
-                    'assets/images/Search.png',
+                    'assets/images/search2.png',
                     width: 10,
                   ),
                 ),
-              );
-            }),
-          ),
+              )),
         ),
+        _hereMarkers.isEmpty
+            ? Container()
+            : ClearButton(
+                onTap: () {
+                  setState(() {
+                    _hereMarkers.clear();
+                  });
+                },
+                buttonColor: const Color(0xFFAB0000),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 140)),
+        if (hasBluePolyline)
+          ClearButton(
+              onTap: () {
+                setState(() {
+                  _polylines.removeWhere(
+                      (polyline) => polyline.color == const Color(0xFF01142B));
+                });
+              },
+              buttonColor: const Color(0xFF01142B),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 80)),
+        if (hasRedPolyline)
+          ClearButton(
+              onTap: () {
+                setState(() {
+                  _polylines
+                      .removeWhere((polyline) => polyline.color == Colors.red);
+                });
+              },
+              buttonColor: Colors.red,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 20)),
       ],
     );
   }
 
-  void _showDialogBusStops(String markerId) {
+  Future<void> _showDialogBusStop(
+      String stopId, String latitude, String longitude) async {
+    await Provider.of<AddressProvider>(context, listen: false)
+        .getAddress(latitude, longitude);
+    providerAddress(stopId);
+  }
+
+  Future<void> providerAddress(String stopId) async {
+    final address =
+        Provider.of<AddressProvider>(context, listen: false).address;
+    final district = address.district;
+    final street = address.street;
+    final postalCode = address.postalCode;
+    dialogBusStops(stopId, district, street, postalCode);
+  }
+
+  Future<void> dialogBusStops(
+      String stopId, String district, String street, String postalCode) async {
     showBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return MyAlertMarker(markerId: markerId);
+        return MyBusStopAlert(
+          stopId: stopId,
+          district: district,
+          street: street,
+          postalCode: postalCode,
+        );
       },
       constraints: const BoxConstraints(
         minWidth: 0.0,

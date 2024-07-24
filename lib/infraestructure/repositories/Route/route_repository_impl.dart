@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rabbit_go/domain/models/Route/repositories/route_repository.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +15,7 @@ class RouteRepositoryImpl implements RouteRepository {
     String? token = await getToken();
     try {
       final response = await http.get(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route/time/18:00'),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle'),
           headers: {'Authorization': token!});
       if (response.statusCode == 200) {
         final Map<String, dynamic> decodedResponse = json.decode(response.body);
@@ -33,11 +32,11 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<void> deleteRouteById(String token, String busRouteUuid) async {
+  Future<void> deleteRouteById(String busRouteUuid) async {
     String? token = await getToken();
-    print('El token es : $token');
     try {
-      String url = 'https://rabbitgo.sytes.net/bus/route/$busRouteUuid';
+      String url =
+          'https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$busRouteUuid';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
@@ -45,36 +44,43 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<RouteModel> createBusRoute(
+  Future<void> createBusRoute(
       String routeName,
       int routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid,
-      String token) async {
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
     String? token = await getToken();
-    print('El token es : $token');
     try {
       final userData = {
         'name': routeName,
         'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStopUuid
+        'colonies': colonies,
+        'shuttleStopId': shuttleStopId,
+        'shift': {'startTime': routeStartTime, 'endTime': routeEndTime}
       };
       final response = await http.post(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route'),
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!
           },
           body: jsonEncode(userData));
       if (response.statusCode == 201) {
-        print('Ruta Creada Correctamente');
-        final data = jsonDecode(response.body);
-        final routeData = data['data'];
-        print('La data de la ruta es: $routeData');
-        return RouteModel.fromJson(routeData);
+        final Map<String, dynamic> dataMap = jsonDecode(response.body);
+        if (dataMap['status'] == 'success') {
+          if (dataMap['data'].isEmpty) {
+            print(
+                'La creación de la ruta fue exitosa pero no se recibió información adicional.');
+          } else {
+            final routeData = dataMap['data'][0];
+            print('Información adicional de la ruta: $routeData');
+          }
+        } else {
+          throw Exception(
+              'Respuesta del servidor no exitosa: ${dataMap['status']}');
+        }
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');
       }
@@ -87,33 +93,30 @@ class RouteRepositoryImpl implements RouteRepository {
   Future<void> updateBusRoute(
       String routeUuid,
       String routeName,
-      String routePrice,
-      String routeStartTime,
-      String routeEndTime,
-      String routeBusStopUuid,
-      String token) async {
+      int routePrice,
+      String? routeStartTime,
+      String? routeEndTime,
+      List<String> colonies,
+      List<String> shuttleStopId) async {
     String? token = await getToken();
-    print('El token desde impl es: $token');
     try {
       final userData = {
         'name': routeName,
         'price': routePrice,
-        'startTime': routeStartTime,
-        'endTime': routeEndTime,
-        'busStopId': routeBusStopUuid
+        'colonies': colonies,
+        'shuttleStopId': shuttleStopId,
+        'shift': {
+          'startTime': routeStartTime,
+          'endTime': routeEndTime,
+        }
       };
-      final response = await http.put(
-          Uri.parse('https://rabbitgo.sytes.net/bus/route/$routeUuid'),
+      await http.put(
+          Uri.parse('https://rabbit-go.sytes.net/shuttle_mcs/shuttle/$routeUuid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': token!
           },
           body: jsonEncode(userData));
-      if (response.statusCode == 200) {
-        print('Ruta Actualizada Correctamente');
-      } else {
-        throw Exception('Error con el servidor: ${response.statusCode}');
-      }
     } catch (error) {
       throw Exception('Error con el servidor: $error');
     }
@@ -124,16 +127,14 @@ class RouteRepositoryImpl implements RouteRepository {
       String token, String busStopId) async {
     String? token = await getToken();
     try {
-      String url = ('https://rabbitgo.sytes.net/bus/route/at/$busStopId');
-
+      String url =
+          ('https://rabbit-go.sytes.net/shuttle_mcs/shuttle/from/$busStopId');
       final response = await http.get(
         Uri.parse(url),
         headers: {'Authorization': token!, 'Content-Type': 'application/json'},
       );
-
       if (response.statusCode == 200) {
         final dynamic jsonResponse = json.decode(response.body);
-
         if (jsonResponse.containsKey('data')) {
           List<dynamic> routeJson = jsonResponse['data'];
           List<RouteModel> routes =
@@ -144,38 +145,6 @@ class RouteRepositoryImpl implements RouteRepository {
         }
       } else {
         throw ('error en la petición: ${response.statusCode}');
-      }
-    } catch (error) {
-      throw ('Error al conectar con el servidor: $error');
-    }
-  }
-
-  @override
-  Future<List<LatLng>> getRouteBusPath(String token, String busRouteId) async {
-    String? token = await getToken();
-    try {
-      List<LatLng> listCordinates = [];
-      listCordinates.clear();
-      String url = ('https://rabbitgo.sytes.net/path/route/$busRouteId');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': token!, 'Content-Type': 'application/json'},
-      );
-      if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
-        if (responseData != null && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          listCordinates = data.expand((element) {
-            final path = element['path'] as List<dynamic>;
-            return path.map((coord) => LatLng(coord[0], coord[1]));
-          }).toList();
-          return listCordinates;
-        } else {
-          throw ('Los datos recibidos de la API no son válidos.');
-        }
-      } else {
-        throw ('Error en la respuesta del servidor: ${response.statusCode}');
       }
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');

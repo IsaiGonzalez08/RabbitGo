@@ -12,9 +12,9 @@ class BusStopProvider extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
-  Future<void> getAllBusStops(String? token) async {
+  Future<void> getAllBusStops() async {
     _loading = true;
-    List<Stop> stops = await _stopRepository.getAllBusStops(token);
+    List<Stop> stops = await _stopRepository.getAllBusStops();
     _stops = stops;
     _loading = false;
     notifyListeners();

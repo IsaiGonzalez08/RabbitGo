@@ -16,7 +16,7 @@ class PlaceProvider extends ChangeNotifier {
   Future<void> handleSubmitted(String query) async {
     try {
       if (query.isNotEmpty) {
-        _hereMarkers = await _placeRepository.onResults(query);
+        _hereMarkers = await _placeRepository.getPlaceByName(query);
         notifyListeners();
       }
     } catch (e) {

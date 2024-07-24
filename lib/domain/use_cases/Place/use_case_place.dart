@@ -5,8 +5,8 @@ class GetPlaceUseCase {
   final PlaceRepository _placeRepository;
   GetPlaceUseCase(this._placeRepository);
 
-  Future<List<Marker>?> onResults(String query) async {
-     return await _placeRepository.onResults(query);
+  Future<List<Marker>?> getPlaceByName(String query) async {
+     return await _placeRepository.getPlaceByName(query);
   } 
   
 }

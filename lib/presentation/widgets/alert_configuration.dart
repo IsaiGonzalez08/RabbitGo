@@ -8,13 +8,22 @@ class MyAlertConfiguration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    void navigateLogin() {
-      Navigator.pushReplacement(
+    void navigateLogin() async {
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MyLoginSignPage()),
+        MaterialPageRoute(builder: (context) => const MyLoginSignScreen()),
+        (Route<dynamic> route) => false,
       );
-      Navigator.popUntil(context, (route) => route.isFirst);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('isLoggedIn');
+      await prefs.remove('name');
+      await prefs.remove('id');
+      await prefs.remove('lastName');
+      await prefs.remove('email');
+      await prefs.remove('role');
+      await prefs.remove('token');
+      await prefs.remove('type');
+      await prefs.remove('listShuttleId');
     }
 
     return AlertDialog(
@@ -24,7 +33,7 @@ class MyAlertConfiguration extends StatelessWidget {
       title: const Center(
         child: Text(
           textAlign: TextAlign.center,
-          "¿Estas seguro que desear cerrar\n sesión?",
+          "¿Estas seguro que deseas cerrar\n sesión?",
           style: TextStyle(
               color: Color(0xFF777777),
               fontSize: 16,
@@ -57,13 +66,6 @@ class MyAlertConfiguration extends StatelessWidget {
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.remove('isLoggedIn');
-                await prefs.remove('name');
-                await prefs.remove('lastname');
-                await prefs.remove('email');
-                await prefs.remove('rol');
-                await prefs.remove('token');
                 navigateLogin();
               },
             ),

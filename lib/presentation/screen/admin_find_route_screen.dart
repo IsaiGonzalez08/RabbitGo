@@ -64,97 +64,106 @@ class _MyAdminFindRouteScreenState extends State<MyAdminFindRouteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Buscar Ruta',
-          style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFFB5B5B5),
-              fontWeight: FontWeight.w600),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: const Color(0xFFFFFFFF),
+          centerTitle: true,
+          title: const Text(
+            'Buscar Ruta',
+            style: TextStyle(
+                fontSize: 14,
+                color: Color(0xFFB5B5B5),
+                fontWeight: FontWeight.w600),
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 40,
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 1),
-                  )
-                ]),
-                child: TextField(
-                  onChanged: _filterRoutes,
-                  controller: _searchController,
-                  textAlignVertical: TextAlignVertical.center,
-                  cursorHeight: 25.0,
-                  cursorColor: const Color(0xFF01142B),
-                  style: const TextStyle(
-                      color: Color(0xFF01142B), fontWeight: FontWeight.w500),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: 'Buscar ruta',
-                    hintStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFE0E0E0),
-                        fontWeight: FontWeight.w500),
-                    filled: true,
-                    fillColor: const Color(0xFFFFFFFF),
-                    prefixIcon: Image.asset(
-                      'assets/images/Search.png',
-                      width: 20,
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 40,
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 1),
+                    )
+                  ]),
+                  child: TextField(
+                    onChanged: _filterRoutes,
+                    controller: _searchController,
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorHeight: 25.0,
+                    cursorColor: const Color(0xFF01142B),
+                    style: const TextStyle(
+                        color: Color(0xFF01142B), fontWeight: FontWeight.w500),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: 'Buscar ruta',
+                      hintStyle: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFE0E0E0),
+                          fontWeight: FontWeight.w500),
+                      filled: true,
+                      fillColor: const Color(0xFFFFFFFF),
+                      prefixIcon: Image.asset(
+                        'assets/images/search2.png',
+                        width: 20,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Expanded(
-            child: Consumer<RouteProvider>(builder: (_, controller, __) {
-              if (controller.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                _routes = controller.routes;
-                _filteredRoutes =
-                    _searchController.text.isEmpty ? _routes : _filteredRoutes;
-                return ListView.builder(
-                  itemCount: _filteredRoutes.length,
-                  itemBuilder: (_, index) {
-                    final route = _filteredRoutes[index];
-                    return RouteCard(
-                      name: route.name,
-                      startTime: route.startTime,
-                      endTime: route.endTime,
-                      price: route.price.toString(),
-                      onEdit: () {
-                        final idRoute = route.uuid;
-                        navigateUpdateScreen(idRoute);
-                      },
-                      onDelete: () {
-                        final idRoute = route.uuid;
-                        openDeleteAlert(idRoute);
-                      },
-                    );
-                  },
-                );
-              }
-            }),
-          )
-        ],
+              ],
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: Consumer<RouteProvider>(builder: (_, controller, __) {
+                if (controller.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  _routes = controller.routes;
+                  _filteredRoutes = _searchController.text.isEmpty
+                      ? _routes
+                      : _filteredRoutes;
+                  return ListView.builder(
+                    itemCount: _filteredRoutes.length,
+                    itemBuilder: (_, index) {
+                      final route = _filteredRoutes[index];
+                      return RouteCard(
+                        name: route.name,
+                        startTime: route.startTime,
+                        endTime: route.endTime,
+                        price: route.price.toString(),
+                        onEdit: () {
+                          final idRoute = route.id;
+                          navigateUpdateScreen(idRoute);
+                        },
+                        onDelete: () {
+                          final idRoute = route.id;
+                          openDeleteAlert(idRoute);
+                        },
+                      );
+                    },
+                  );
+                }
+              }),
+            )
+          ],
+        ),
       ),
     );
   }

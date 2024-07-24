@@ -3,16 +3,16 @@ import 'package:rabbit_go/presentation/screen/login_screen.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
 
-class MyLoginSignPage extends StatefulWidget {
-  const MyLoginSignPage({
+class MyLoginSignScreen extends StatefulWidget {
+  const MyLoginSignScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MyLoginSignPage> createState() => _MyLoginPage();
+  State<MyLoginSignScreen> createState() => _MyLoginPage();
 }
 
-class _MyLoginPage extends State<MyLoginSignPage> {
+class _MyLoginPage extends State<MyLoginSignScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

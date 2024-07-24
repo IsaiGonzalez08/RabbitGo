@@ -1,21 +1,41 @@
 import 'dart:convert';
 
+import 'package:rabbit_go/domain/models/Favorites/favorite.dart';
 import 'package:rabbit_go/domain/models/User/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:rabbit_go/domain/models/User/user.dart';
+import 'package:rabbit_go/domain/models/User/user_update.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepositoryImpl implements UserRepository {
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  Future<String?> getType() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('type');
+  }
+
+  Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('id');
+  }
+
   @override
   Future<void> createUser(
       String name, String lastname, String email, String password) async {
     try {
-      String url = ('https://rabbitgo.sytes.net/user');
+      String url = ('https://rabbit-go.sytes.net/user_mcs/user/sign-up');
       final userData = {
         'name': name,
         'lastname': lastname,
-        'email': email,
-        'password': password,
+        'credentials': {
+          'email': email,
+          'password': password,
+        },
+        'type': 'unsubscribe'
       };
       await http.post(
         Uri.parse(url),
@@ -27,14 +47,13 @@ class UserRepositoryImpl implements UserRepository {
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
     }
-
     return;
   }
 
   @override
   Future<User> userLogin(String email, String password) async {
     try {
-      String url = 'https://rabbitgo.sytes.net/user/login';
+      String url = 'https://rabbit-go.sytes.net/user_mcs/user/sign-in';
       final userData = {
         'email': email,
         'password': password,
@@ -48,20 +67,21 @@ class UserRepositoryImpl implements UserRepository {
       );
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status'] == 'success' &&
-            jsonResponse['data'] != null) {
-          final token = jsonResponse['data']['token'];
-          final name = jsonResponse['data']['name'];
-          final lastname = jsonResponse['data']['lastname'];
-          final email = jsonResponse['data']['email'];
-          final rol = jsonResponse['data']['rol'];
+        if (jsonResponse['status'] == 'Success') {
+          final userData = jsonResponse['data'];
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('token', token);
-          await prefs.setString('name', name);
-          await prefs.setString('lastname', lastname);
-          await prefs.setString('email', email);
-          await prefs.setString('rol', rol);
+          for (var key in [
+            'token',
+            'name',
+            'lastName',
+            'id',
+            'email',
+            'role',
+            'type'
+          ]) {
+            await prefs.setString(key, userData[key]);
+          }
           return User.fromJson(jsonResponse['data']);
         } else {
           throw Exception('Failed to login: ${jsonResponse['message']}');
@@ -76,24 +96,21 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<User> updateUser(String userId, String name, String lastname,
-      String email, String password, String token) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
+  Future<UpdateUser> updateUser(String userId, String name, String lastname,
+      String email, String password) async {
     String? token = await getToken();
+    String? type = await getType();
     try {
-      String url = ('https://rabbitgo.sytes.net/user/$userId');
-
+      String url = ('https://rabbit-go.sytes.net/user_mcs/user/$userId');
       final userData = {
         'name': name,
         'lastname': lastname,
-        'email': email,
-        'password': password,
+        'credentials': {
+          'email': email,
+          'password': password,
+        },
+        'type': type
       };
-
       final response = await http.put(Uri.parse(url),
           headers: {
             'Authorization': token!,
@@ -102,15 +119,24 @@ class UserRepositoryImpl implements UserRepository {
           body: jsonEncode(userData));
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status'] == 'success' &&
+        if (jsonResponse['status'] == 'Success' &&
             jsonResponse['data'] != null) {
-          return User.fromJson(jsonResponse['data']);
+          final userData = UpdateUser.fromJson(jsonResponse['data']);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('id', userData.id);
+          await prefs.setString('name', userData.name);
+          await prefs.setString('lastName', userData.lastname);
+          await prefs.setString('email', userData.credentials.email);
+          await prefs.setString('password', userData.credentials.password);
+          await prefs.setString('type', userData.type);
+          return userData;
         } else {
-          throw Exception('Failed to login: ${jsonResponse['message']}');
+          throw Exception('Failed to update user: ${jsonResponse['message']}');
         }
       } else {
         throw Exception(
-            'Failed to login with status code: ${response.statusCode}');
+            'Failed to update user with status code: ${response.statusCode}');
       }
     } catch (error) {
       throw ('Error al conectar con el servidor: $error');
@@ -118,18 +144,78 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> deleteAccount(String token, String id) async {
-    Future<String?> getToken() async {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString('token');
-    }
-
+  Future<void> deleteAccount(String id) async {
     String? token = await getToken();
     try {
-      String url = 'https://rabbitgo.sytes.net/user/$id';
+      String url = 'https://rabbit-go.sytes.net/user_mcs/user/$id';
       await http.delete(Uri.parse(url), headers: {'Authorization': token!});
     } catch (error) {
       throw ('Error al eliminar el usuario, $error');
+    }
+  }
+
+  @override
+  Future<List<FavoriteModel>> getFavoritesById(String id) async {
+    String? token = await getToken();
+    try {
+      String url =
+          'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/from/$id';
+      final response =
+          await http.get(Uri.parse(url), headers: {'Authorization': token!});
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> decodedResponse = json.decode(response.body);
+        final List<dynamic> favoritesJson = decodedResponse['data'];
+        final List<FavoriteModel> favorites =
+            favoritesJson.map((json) => FavoriteModel.fromJson(json)).toList();
+        return favorites;
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al obtener favoritos, $error');
+    }
+  }
+
+  @override
+  Future<void> removeFavoriteById(String id) async {
+    String? token = await getToken();
+    try {
+      String url = 'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/$id';
+      final response =
+          await http.delete(Uri.parse(url), headers: {'Authorization': token!});
+      if (response.statusCode == 200) {
+        print('Favorito borrando');
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al obtener favoritos, $error');
+    }
+  }
+
+  @override
+  Future<bool> addFavoriteById(String id) async {
+    String? token = await getToken();
+    String? userId = await getUserId();
+    try {
+      final userData = {'userId': userId, 'shuttleId': id};
+      String url = 'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/';
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Authorization': token!,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(userData),
+      );
+      if (response.statusCode == 210) {
+        print('Favorito añadido');
+        return true;
+      } else {
+        throw Exception('Error con el servidor: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ('Error al crear favoritos, $error');
     }
   }
 }

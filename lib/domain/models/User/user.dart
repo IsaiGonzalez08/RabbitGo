@@ -1,28 +1,30 @@
 class User {
-  final String uuid;
+  final String id;
+  final String token;
   final String name;
-  final String lastName;
+  final String lastname;
   final String email;
   final String role;
-  final String token;
+  final String type;
 
-  User({
-    required this.uuid,
-    required this.name,
-    required this.lastName,
-    required this.email,
-    this.role = '',
-    this.token = ''
-  });
+  User(
+      {
+      required this.id,
+      this.token = '',
+      required this.name,
+      required this.lastname,
+      required this.email,
+      this.role = '',
+      required this.type});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      uuid: json['uuid'],
-      name: json['name'],
-      lastName: json['lastname'],
-      email: json['email'],
-      role: json['rol'] ?? '',
-      token: json['token'] ?? '',
-    );
+        id: json['id'],
+        token: json['token'] ?? '',
+        name: json['name'],
+        lastname: json['lastName'],
+        email: json['email'],
+        role: json['role'] ?? '',
+        type: json['type']);
   }
 }
