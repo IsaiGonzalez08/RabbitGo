@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Path/path.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
@@ -23,10 +22,8 @@ class MyBusStopAlert extends StatefulWidget {
 }
 
 class _MyBusStopAlertState extends State<MyBusStopAlert> {
-  String? selectedBusRouteId;
+  late String stopId;
   late List<PathModel> listCordinates = [];
-  late User _user;
-  late String _token;
   late String district;
   late String street;
   late String postalCode;
@@ -34,35 +31,36 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
 
   @override
   void initState() {
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
     district = widget.district;
     street = widget.street;
     postalCode = widget.postalCode;
-    Provider.of<RouteProvider>(context, listen: false)
-        .getRouteByBusStopId(_token, widget.stopId);
-    providerLikes();
+    stopId = widget.stopId;
+    _loadStopAlertData();
     super.initState();
+  }
+
+  Future<void> _loadStopAlertData() async {
+    await Provider.of<RouteProvider>(context, listen: false)
+        .getRouteByBusStopId(stopId);
+    providerLikes();
   }
 
   Future<void> providerLikes() async {
     final listFavorites =
         Provider.of<UserProvider>(context, listen: false).favorites;
-    final shuttleIds =
+    final shuttleFavoritesIds =
         listFavorites.map((favorite) => favorite.shuttleId).toList();
-    final favoriteIds = listFavorites.map((favorite) => favorite.id).toList();
-    print('id de los favoritos $favoriteIds');
-    await setListFavorites(shuttleIds);
+    setListFavorites(shuttleFavoritesIds);
   }
 
-  Future<void> setListFavorites(List<String> shuttleIds) async {
+  Future<void> setListFavorites(List<String> shuttleFavoritesIds) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('listShuttleId', shuttleIds);
+    await prefs.setStringList('listShuttleFavIds', shuttleFavoritesIds);
   }
 
   Future<List<String>?> getListFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList('listShuttleId');
+    return prefs.getStringList('listShuttleFavIds');
   }
 
   Future<void> _showDialogBusRoute(String routeName, String routeId, int price,
@@ -153,13 +151,8 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
                                 await getListFavorites();
                             final bool isFavorite =
                                 listFavorites?.contains(route.id) ?? false;
-                            if (isFavorite) {
-                              await _showDialogBusRoute(route.name, route.id,
-                                  route.price, route.colonies, isFavorite);
-                            } else {
-                              await _showDialogBusRoute(route.name, route.id,
-                                  route.price, route.colonies, isFavorite);
-                            }
+                            await _showDialogBusRoute(route.name, route.id,
+                                route.price, route.colonies, isFavorite);
                           },
                           routeName: route.name,
                           startTime: route.startTime,

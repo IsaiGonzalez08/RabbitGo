@@ -19,5 +19,5 @@ abstract class RouteRepository {
       List<String> colonies,
       List<String> shuttleStopId
       );
-  Future<List<RouteModel>> getRouteByBusStopId(String token, String busStopId);
+  Future<List<RouteModel>> getRouteByBusStopId(String busStopId);
 }

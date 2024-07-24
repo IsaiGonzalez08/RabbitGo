@@ -123,8 +123,7 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<List<RouteModel>> getRouteByBusStopId(
-      String token, String busStopId) async {
+  Future<List<RouteModel>> getRouteByBusStopId(String busStopId) async {
     String? token = await getToken();
     try {
       String url =

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
@@ -18,21 +17,20 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-
-  late TextEditingController _usernameController;
-  late TextEditingController _lastnameController;
-  late TextEditingController _emailController;
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _showPassword = true;
-  late User _user;
-  late String _name;
-  late String _lastname;
-  late String _email;
+  String _name = '';
+  String _lastname = '';
+  String _email = '';
 
   String? validateEmail(String? value) {
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
       return 'Por favor ingrese un email';
     } else if (!emailRegex.hasMatch(value)) {
@@ -56,15 +54,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _name = _user.name;
-    _lastname = _user.lastname;
-    _email = _user.email;
-
-    _usernameController = TextEditingController(text: _name);
-    _lastnameController = TextEditingController(text: _lastname);
-    _emailController = TextEditingController(text: _email);
-
     _loadUserData();
   }
 
@@ -74,14 +63,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _name = prefs.getString('name') ?? _name;
       _lastname = prefs.getString('lastName') ?? _lastname;
       _email = prefs.getString('email') ?? _email;
-
-      _usernameController.text = _name;
-      _lastnameController.text = _lastname;
-      _emailController.text = _email;
+      usernameController.text = _name;
+      lastnameController.text = _lastname;
+      emailController.text = _email;
     });
   }
 
-  void _showSuccessDialog(String name, String lastname, String email, String password) {
+  void _showSuccessDialog() {
+    final name = usernameController.text;
+    final lastname = lastnameController.text;
+    final email = emailController.text;
+    final password = _passwordController.text;
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         return;
@@ -97,9 +89,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             );
           },
         );
-        _usernameController.clear();
-        _lastnameController.clear();
-        _emailController.clear();
+        usernameController.clear();
+        lastnameController.clear();
+        emailController.clear();
         _passwordController.clear();
         _confirmPasswordController.clear();
       }
@@ -155,7 +147,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         String initials = getInitials(_name, _lastname);
                         return Text(
                           initials,
-                          style: const TextStyle(fontSize: 36, color: Color(0xFFFFFFFF)),
+                          style: const TextStyle(
+                              fontSize: 36, color: Color(0xFFFFFFFF)),
                         );
                       },
                     ),
@@ -177,7 +170,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           const SizedBox(height: 5),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
-                            controllerTextField: _usernameController,
+                            controllerTextField: usernameController,
                             text: 'Nombre(s)',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -202,7 +195,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           const SizedBox(height: 5),
                           MyTextFieldWidget(
                             width: MediaQuery.of(context).size.width * 0.438,
-                            controllerTextField: _lastnameController,
+                            controllerTextField: lastnameController,
                             text: 'Apellidos',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -229,7 +222,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       const SizedBox(height: 5),
                       MyTextFieldWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        controllerTextField: _emailController,
+                        controllerTextField: emailController,
                         text: 'Correo Electrónico',
                         validator: (value) {
                           return validateEmail(value);
@@ -304,11 +297,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 colorText: const Color(0xFFFFFFFF),
                 onPressed: () {
                   _formKey.currentState!.save();
-                  final name = _usernameController.text;
-                  final lastname = _lastnameController.text;
-                  final email = _emailController.text;
-                  final password = _passwordController.text;
-                  _showSuccessDialog(name, lastname, email, password);
+                  _showSuccessDialog();
                 },
               ),
             ],

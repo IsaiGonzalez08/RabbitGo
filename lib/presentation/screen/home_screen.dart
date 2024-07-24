@@ -46,8 +46,8 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> _initializeData() async {
-    await _loadBusStops();
     await _showAlertPermissionsLocation();
+    await _loadBusStops();
     _loadRouteCoordinates();
     await _loadUserData();
     getRouteLikesById(userId);
@@ -96,7 +96,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     }
   }
 
-  void _loadRouteCoordinates() {
+  Future<void> _loadRouteCoordinates() async {
     paths = Provider.of<PathProvider>(context, listen: false).paths;
     Set<Polyline> polylines = {};
     List<Color> colors = [const Color(0xFF01142B), Colors.red];
@@ -158,7 +158,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
         _polylines.any((polyline) => polyline.color == const Color(0xFF01142B));
     bool hasRedPolyline =
         _polylines.any((polyline) => polyline.color == Colors.red);
-
     return Stack(
       children: [
         Consumer<PlaceProvider>(builder: (context, placeProvider, child) {

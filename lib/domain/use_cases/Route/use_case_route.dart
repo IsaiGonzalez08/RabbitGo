@@ -60,7 +60,7 @@ class GetRouteByBusStopIdUseCase {
 
   GetRouteByBusStopIdUseCase(this._routeRepository);
 
-  Future<void> getRouteByBusStopId(String token, String busStopId) async {
-    await _routeRepository.getRouteByBusStopId(token, busStopId);
+  Future<void> getRouteByBusStopId(String busStopId) async {
+    await _routeRepository.getRouteByBusStopId(busStopId);
   }
 }
