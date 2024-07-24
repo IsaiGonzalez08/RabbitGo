@@ -8,12 +8,15 @@ class MyAlertConfiguration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void navigateLogin() async {
+    void navigateLoginScreen() {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const MyLoginSignScreen()),
         (Route<dynamic> route) => false,
       );
+    }
+
+    Future<void> logout() async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
       await prefs.remove('name');
@@ -23,7 +26,8 @@ class MyAlertConfiguration extends StatelessWidget {
       await prefs.remove('role');
       await prefs.remove('token');
       await prefs.remove('type');
-      await prefs.remove('listShuttleId');
+      await prefs.remove('listShuttleFavIds');
+      navigateLoginScreen();
     }
 
     return AlertDialog(
@@ -66,7 +70,7 @@ class MyAlertConfiguration extends StatelessWidget {
               color: const Color(0xFF01142B),
               colorText: const Color(0xFFFFFFFF),
               onPressed: () async {
-                navigateLogin();
+                logout();
               },
             ),
             const SizedBox(

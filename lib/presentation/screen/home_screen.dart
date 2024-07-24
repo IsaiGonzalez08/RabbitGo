@@ -124,9 +124,9 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   }
 
   Future<void> getRouteLikesById(String id) async {
-    await Provider.of<UserProvider>(context, listen: false).getFavoritesById(id);
+    await Provider.of<UserProvider>(context, listen: false)
+        .getFavoritesById(id);
   }
-
 
   Future<void> _getPlace(String query) async {
     try {
@@ -294,6 +294,10 @@ class _MyHomeScreenState extends State<MyHomeScreen>
   Future<void> dialogBusStops(
       String stopId, String district, String street, String postalCode) async {
     showBottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      elevation: 300,
+      showDragHandle: true,
+      backgroundColor: const Color(0xFFFFFFFF),
       context: context,
       builder: (BuildContext context) {
         return MyBusStopAlert(

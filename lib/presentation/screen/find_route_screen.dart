@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/Route/route.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/path_provider.dart';
 import 'package:rabbit_go/presentation/providers/route_provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/button_route_widget.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,28 +15,41 @@ class MyFindRouteScreen extends StatefulWidget {
 }
 
 class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
-  late User _user;
-  late String _token;
+  String _token = '';
   List<RouteModel> _routes = [];
   List<RouteModel> _filteredRoutes = [];
   final TextEditingController _searchController = TextEditingController();
   final Map<String, bool> _favoriteStatus = {};
 
-  void navigateHome() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MyTapBarWidget(
-          index: 0,
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _loadUserData();
+    getAllRoutes();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('token') ?? '';
+    });
+  }
+
+  Future<void> getAllRoutes() async {
+    Provider.of<RouteProvider>(context, listen: false)
+        .getAllRoutes(_token)
+        .then((_) {
+      _routes = Provider.of<RouteProvider>(context, listen: false).routes;
+    });
   }
 
   Future<void> _getRoutePath(String busRouteId) async {
     await Provider.of<PathProvider>(context, listen: false)
         .getRoutePaths(busRouteId);
-    navigateHome();
   }
 
   void _filterRoutes(String query) {
@@ -50,34 +61,15 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-    _token = _user.token;
-    Provider.of<RouteProvider>(context, listen: false)
-        .getAllRoutes(_token)
-        .then((_) {
-      _routes = Provider.of<RouteProvider>(context, listen: false).routes;
-      _loadFavoriteStatus();
-    });
-  }
-
-  Future<void> _loadFavoriteStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      for (var route in _routes) {
-        _favoriteStatus[route.id] = prefs.getBool(route.id) ?? false;
-      }
-    });
-  }
-
-  Future<void> _toggleFavoriteStatus(String uuid) async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _favoriteStatus[uuid] = !(_favoriteStatus[uuid] ?? false);
-    });
-    await prefs.setBool(uuid, _favoriteStatus[uuid]!);
+  void navigateHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MyTapBarWidget(
+          index: 0,
+        ),
+      ),
+    );
   }
 
   @override
@@ -142,8 +134,9 @@ class _MyFindRouteScreenState extends State<MyFindRouteScreen> {
               final route = _filteredRoutes[index];
               bool isFavorite = _favoriteStatus[route.id] ?? false;
               return MyButtonRoute(
-                onTap: () {
-                  _getRoutePath(route.id);
+                onTap: () async {
+                  await _getRoutePath(route.id);
+                  navigateHome();
                 },
                 price: route.price,
                 isFavorite: isFavorite,

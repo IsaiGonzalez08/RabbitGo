@@ -183,9 +183,7 @@ class UserRepositoryImpl implements UserRepository {
       String url = 'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/$id';
       final response =
           await http.delete(Uri.parse(url), headers: {'Authorization': token!});
-      if (response.statusCode == 200) {
-        print('Favorito borrando');
-      } else {
+      if (response.statusCode != 200) {
         throw Exception('Error con el servidor: ${response.statusCode}');
       }
     } catch (error) {
@@ -209,7 +207,6 @@ class UserRepositoryImpl implements UserRepository {
         body: jsonEncode(userData),
       );
       if (response.statusCode == 210) {
-        print('Favorito añadido');
         return true;
       } else {
         throw Exception('Error con el servidor: ${response.statusCode}');

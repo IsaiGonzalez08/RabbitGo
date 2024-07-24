@@ -47,128 +47,123 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: 50,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        centerTitle: true,
+        title: const Text(
+          'Configuración',
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFB5B5B5),
+              fontSize: 14),
+        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.07,
+                    left: MediaQuery.of(context).size.width * 0.07),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$_name $_lastname',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF737373),
+                              fontSize: 18),
+                        ),
+                        Text(
+                          _email,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF737373),
+                              fontSize: 14),
+                        )
+                      ],
+                    ),
+                    CustomButton(
+                        textButton: 'Gratis',
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: 30,
+                        fontSize: 12,
+                        color: const Color(0xFF01142B),
+                        colorText: const Color(0xFFFFFFFF),
+                        fontWeight: FontWeight.w800)
+                  ],
                 ),
-                const Text(
-                  'Configuración',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFFB5B5B5),
-                      fontSize: 14),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MyButtonConfigurationWidget(
+                text: 'Perfil',
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyProfileScreen()));
+                },
+              ),
+              MyButtonConfigurationWidget(
+                text: 'Subscripción',
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MySuscriptionScreen()));
+                },
+              ),
+              MyButtonConfigurationWidget(
+                text: 'General',
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyGeneralScreen()));
+                },
+              ),
+            ],
+          ),
+          InkWell(
+              onTap: () {
+                _showDialogLogout();
+              },
+              child: SizedBox(
+                height: 80,
+                child: Padding(
                   padding: EdgeInsets.only(
                       right: MediaQuery.of(context).size.width * 0.07,
                       left: MediaQuery.of(context).size.width * 0.07),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$_name $_lastname',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF737373),
-                                fontSize: 18),
-                          ),
-                          Text(
-                            _email,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF737373),
-                                fontSize: 14),
-                          )
-                        ],
+                      const Text(
+                        'Cerrar sesión',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFFF7878),
+                            fontWeight: FontWeight.w500),
                       ),
-                      CustomButton(
-                          textButton: 'Gratis',
-                          width: MediaQuery.of(context).size.width * 0.2,
-                          height: 30,
-                          fontSize: 12,
-                          color: const Color(0xFF01142B),
-                          colorText: const Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.w800)
+                      Image.asset(
+                        'assets/images/Logout.png',
+                        width: 20,
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                MyButtonConfigurationWidget(
-                  text: 'Perfil',
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyProfileScreen()));
-                  },
-                ),
-                MyButtonConfigurationWidget(
-                  text: 'Subscripción',
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MySuscriptionScreen()));
-                  },
-                ),
-                MyButtonConfigurationWidget(
-                  text: 'General',
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyGeneralScreen()));
-                  },
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.3,
-            ),
-            InkWell(
-                onTap: () {
-                  _showDialogLogout();
-                },
-                child: SizedBox(
-                  height: 80,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.07,
-                        left: MediaQuery.of(context).size.width * 0.07),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Cerrar sesión',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFFFF7878),
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image.asset(
-                          'assets/images/Logout.png',
-                          width: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-          ],
-        ),
+              )),
+        ],
       ),
     );
   }

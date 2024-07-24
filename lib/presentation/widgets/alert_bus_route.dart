@@ -114,8 +114,6 @@ class _MyBusRouteAlertState extends State<MyBusRouteAlert> {
                 : i + maxChunkSize);
         encodeCoordinates(chunk);
       }
-    } else {
-      print('La lista de paths esta vacia');
     }
   }
 

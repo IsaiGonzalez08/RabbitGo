@@ -87,85 +87,80 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.07),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Parada de ascenso y descenso.',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Color(0xFF3B3B3B),
-                    fontWeight: FontWeight.w600,
+    return BottomSheet(
+      
+      backgroundColor: const Color(0xFFFFFFFF),
+      onClosing: () {},
+      builder: (BuildContext context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Parada de ascenso y descenso.',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Color(0xFF3B3B3B),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  '$district, $street, $postalCode.',
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    color: Color(0xFF3B3B3B),
-                    fontWeight: FontWeight.w400,
+                  Text(
+                    '$district, $street, $postalCode.',
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      color: Color(0xFF3B3B3B),
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Rutas que puedes abordar aquí.',
-                  style: TextStyle(
-                    color: Color(0xFF01142B),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Rutas que puedes abordar aquí.',
+                    style: TextStyle(
+                      color: Color(0xFF01142B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Consumer<RouteProvider>(
-              builder: (_, routeProvider, __) {
-                if (routeProvider.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return ListView.builder(
-                    itemCount: routeProvider.routesAlert.length,
-                    itemBuilder: (context, index) {
-                      final route = routeProvider.routesAlert[index];
-                      return MyCardRouteWidget(
-                          onTap: () async {
-                            final List<String>? listFavorites =
-                                await getListFavorites();
-                            final bool isFavorite =
-                                listFavorites?.contains(route.id) ?? false;
-                            await _showDialogBusRoute(route.name, route.id,
-                                route.price, route.colonies, isFavorite);
-                          },
-                          routeName: route.name,
-                          startTime: route.startTime,
-                          endTime: route.endTime,
-                          price: route.price);
-                    },
-                  );
-                }
-              },
+            Expanded(
+              child: Consumer<RouteProvider>(
+                builder: (_, routeProvider, __) {
+                  if (routeProvider.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView.builder(
+                      itemCount: routeProvider.routesAlert.length,
+                      itemBuilder: (context, index) {
+                        final route = routeProvider.routesAlert[index];
+                        return MyCardRouteWidget(
+                            onTap: () async {
+                              final List<String>? listFavorites =
+                                  await getListFavorites();
+                              final bool isFavorite =
+                                  listFavorites?.contains(route.id) ?? false;
+                              await _showDialogBusRoute(route.name, route.id,
+                                  route.price, route.colonies, isFavorite);
+                            },
+                            routeName: route.name,
+                            startTime: route.startTime,
+                            endTime: route.endTime,
+                            price: route.price);
+                      },
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }
