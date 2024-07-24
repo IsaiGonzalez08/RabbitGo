@@ -23,6 +23,7 @@ class MyAlertConfiguration extends StatelessWidget {
       await prefs.remove('role');
       await prefs.remove('token');
       await prefs.remove('type');
+      await prefs.remove('listShuttleId');
     }
 
     return AlertDialog(

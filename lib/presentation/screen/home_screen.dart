@@ -184,7 +184,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
             compassEnabled: false,
             initialCameraPosition: const CameraPosition(
               target: LatLng(16.75973, -93.11308),
-              zoom: 14,
+              zoom: 13,
             ),
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
