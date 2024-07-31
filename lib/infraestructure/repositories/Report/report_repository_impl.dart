@@ -29,7 +29,8 @@ class ReportRepositoryImpl implements ReportRepository {
         final data = jsonDecode(response.body);
         return ReportModel.fromJson(data);
       } else {
-        throw Exception('Error con el servidor: ${response.statusCode}');
+        final data = jsonDecode(response.body);
+        return ReportModel(error: data['error']);
       }
     } catch (error) {
       throw ('El error es: $error');
@@ -57,7 +58,6 @@ class ReportRepositoryImpl implements ReportRepository {
           },
           body: jsonEncode(reportData));
       if (response.statusCode == 201) {
-        print('Reporte creado correctamente');
         return true;
       } else {
         return false;

@@ -9,7 +9,7 @@ class MyGeneralScreen extends StatelessWidget {
   const MyGeneralScreen({super.key});
 
   final String _url =
-      'https://rabbitgopoliticasprivacidad.blogspot.com/p/rabbitgo-politicas-de-privacidad.html';
+      'https://rabbitgopoliticasprivacidad.blogspot.com/2024/07/aviso-de-privacidad.html';
 
   Future<void> _launchURL() async {
     final url = Uri.parse(_url);

@@ -297,6 +297,7 @@ class _MyHomeScreenState extends State<MyHomeScreen>
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 300,
       showDragHandle: true,
+      enableDrag: true,
       backgroundColor: const Color(0xFFFFFFFF),
       context: context,
       builder: (BuildContext context) {

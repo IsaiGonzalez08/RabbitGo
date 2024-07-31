@@ -65,7 +65,13 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
 
   Future<void> _showDialogBusRoute(String routeName, String routeId, int price,
       List<dynamic> colonies, bool isFavorite) async {
+    Navigator.pop(context);
     showBottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      elevation: 100,
+      showDragHandle: true,
+      enableDrag: true,
+      backgroundColor: const Color(0xFFFFFFFF),
       context: context,
       builder: (BuildContext context) {
         return MyBusRouteAlert(
@@ -88,7 +94,6 @@ class _MyBusStopAlertState extends State<MyBusStopAlert> {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
-      
       backgroundColor: const Color(0xFFFFFFFF),
       onClosing: () {},
       builder: (BuildContext context) {

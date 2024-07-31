@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/checkbox_widget.dart';
 import 'package:rabbit_go/presentation/widgets/create_account_widget.dart';
@@ -10,11 +9,13 @@ import 'package:rabbit_go/presentation/widgets/tapbar_admin.dart';
 import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:rabbit_go/presentation/widgets/textfield_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLoginScreen extends StatefulWidget {
   const MyLoginScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyLoginScreenState createState() => _MyLoginScreenState();
 }
 
@@ -22,7 +23,6 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late User _user;
   late String _role;
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
@@ -55,19 +55,13 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     }
   }
 
-  Future<void> providerUserData() async {
-    _user = Provider.of<UserProvider>(context, listen: false).userData;
-  }
-
-
   void _loginUser() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     if (_formKey.currentState!.validate()) {
       await Provider.of<UserProvider>(context, listen: false)
           .loginUser(email, password);
-      await providerUserData();
-      _role = _user.role;
+      await loadUserRole();
       navigateUser(_role);
     } else {
       setState(() {
@@ -79,7 +73,14 @@ class _MyLoginScreenState extends State<MyLoginScreen> {
     _passwordController.clear();
   }
 
-  void navigateUser(String role) async {
+  Future<void> loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _role = prefs.getString('role') ?? '';
+    });
+  }
+
+  Future<void> navigateUser(String role) async {
     if (role == 'admin') {
       Navigator.push(
         context,

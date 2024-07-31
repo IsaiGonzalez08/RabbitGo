@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rabbit_go/domain/models/User/user.dart';
 import 'package:rabbit_go/presentation/providers/report_provider.dart';
-import 'package:rabbit_go/presentation/providers/user_provider.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_route.dart';
 import 'package:rabbit_go/presentation/widgets/alert_create_report.dart';
 import 'package:rabbit_go/presentation/widgets/custom_button_widget.dart';
+import 'package:rabbit_go/presentation/widgets/rejected_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAlertReportBusRoute extends StatefulWidget {
@@ -47,7 +47,11 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
     final classifications = report.classifications;
     final score = report.score;
     final stars = report.stars;
-    await createComplaint(userId, text, score, stars, classifications);
+    if (report.error!.isNotEmpty) {
+      _showRejectedAlert();
+    } else {
+      createComplaint(userId, text, score!, stars!, classifications!);
+    }
   }
 
   Future<void> createComplaint(String userId, String complaint, double score,
@@ -59,23 +63,30 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
     }
   }
 
+  Future<void> _showRejectedAlert() async {
+    _textReportController.clear();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MyRejectedAlert();
+      },
+    );
+  }
+
   Future<void> _showConfirmDialog() async {
-    final status = Provider.of<ReportProvider>(context, listen: false).status;
-    if (status == true) {
-      _textReportController.clear();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return MyAlertCreateReport(
-            name: widget.name,
-            routeId: widget.routeId,
-            price: widget.price,
-            colonies: widget.colonies,
-            isFavorite: widget.isFavorite,
-          );
-        },
-      );
-    }
+    _textReportController.clear();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MyAlertCreateReport(
+          name: widget.name,
+          routeId: widget.routeId,
+          price: widget.price,
+          colonies: widget.colonies,
+          isFavorite: widget.isFavorite,
+        );
+      },
+    );
   }
 
   Future<void> navigateAlertRoute() async {
@@ -96,7 +107,6 @@ class _MyAlertReportBusRouteState extends State<MyAlertReportBusRoute> {
 
   @override
   void initState() {
-    user = Provider.of<UserProvider>(context, listen: false).userData;
     isFavorite = widget.isFavorite;
     description = widget.description;
     _loadUserData();
