@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rabbit_go/firebase_options.dart';
 import 'package:rabbit_go/presentation/providers/address_provider.dart';
 import 'package:rabbit_go/presentation/providers/bus_stops_provider.dart';
 import 'package:rabbit_go/presentation/providers/results_provider.dart';
@@ -17,8 +19,11 @@ import 'package:rabbit_go/presentation/widgets/tapbar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
-  await dotenv.load(fileName: "assets/.env");
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await dotenv.load(fileName: "assets/.env");
   final prefs = await SharedPreferences.getInstance();
   final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   final String? token = prefs.getString('token');
@@ -48,7 +53,6 @@ Future<void> main() async {
     ),
   );
 }
-
 
 Future<void> checkDataExpiration(SharedPreferences prefs) async {
   final int? storedTimestamp = prefs.getInt('storedTimestamp');
@@ -85,7 +89,6 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key, this.isLoggedIn, this.token, this.rol})
       : super(key: key);
 
-      
   @override
   Widget build(BuildContext context) {
     Widget homeScreen;
@@ -93,7 +96,9 @@ class MyApp extends StatelessWidget {
       if (rol == 'admin') {
         homeScreen = const MyTapBarAdminWidget();
       } else if (rol == 'user') {
-        homeScreen = const MyTapBarWidget(index: 0,);
+        homeScreen = const MyTapBarWidget(
+          index: 0,
+        );
       } else {
         homeScreen = const SplashScreen();
       }
