@@ -45,8 +45,8 @@ class DeleteAccount {
 class GetFavoritesById {
   final UserRepository _userRepository;
   GetFavoritesById(this._userRepository);
-  Future<List<FavoriteModel>> getFavoritesById(String id) async {
-    return _userRepository.getFavoritesById(id);
+  Future<List<FavoriteModel>> getFavoritesById() async {
+    return _userRepository.getFavoritesById();
   }
 }
 

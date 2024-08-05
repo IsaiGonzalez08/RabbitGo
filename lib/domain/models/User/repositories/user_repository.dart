@@ -9,7 +9,7 @@ abstract class UserRepository {
   Future<UpdateUser> updateUser(String userId, String name, String lastname,
       String email, String password);
   Future<void> deleteAccount(String id);
-  Future<List<FavoriteModel>> getFavoritesById(String id);
+  Future<List<FavoriteModel>> getFavoritesById();
   Future<void> removeFavoriteById(String id);
   Future<bool> addFavoriteById(String id);
 }

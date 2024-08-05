@@ -16,7 +16,6 @@ import 'package:rabbit_go/presentation/widgets/alert_widget.dart';
 import 'package:rabbit_go/presentation/widgets/alert_bus_stop_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rabbit_go/presentation/widgets/clear_button_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomeScreen extends StatefulWidget {
   const MyHomeScreen({Key? key}) : super(key: key);
@@ -27,40 +26,50 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen>
     with TickerProviderStateMixin {
-  Set<Polyline> _polylines = {};
-  late WaitProvider _waitProvider;
+  List<PathModel> paths = [];
   List<Marker> _hereMarkers = [];
   Set<Marker> _markers = {};
-  LatLng? userLocation;
-  List<PathModel> paths = [];
+  Set<Polyline> _polylines = {};
   late List<Stop> busStopMarkers;
-  late List<FavoriteModel> listFavorites = [];
-  late String userId;
+  late List<FavoriteModel> listFavorites;
   final TextEditingController _searchPlaceController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _waitProvider = WaitProvider(Permission.location);
     _initializeData();
   }
 
   Future<void> _initializeData() async {
     await _showAlertPermissionsLocation();
-    await _loadBusStops();
+    await _loadBusStopsMarkers();
     _loadRouteCoordinates();
-    await _loadUserData();
-    getRouteLikesById(userId);
+    getRouteLikesById();
   }
 
-  Future<void> _loadBusStops() async {
-    await Provider.of<BusStopProvider>(context, listen: false).getAllBusStops();
-    await getBusStops();
+  Future<void> _showAlertPermissionsLocation() async {
+    WaitProvider waitProvider = WaitProvider(Permission.location);
+    bool isLocationPermissionGranted = await waitProvider.checkPermission();
+    if (!isLocationPermissionGranted) {
+      Future.delayed(const Duration(seconds: 3), () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return const MyAlertWidget();
+          },
+        );
+      });
+    }
+  }
+
+  Future<void> _loadBusStopsMarkers() async {
+    await Provider.of<BusStopProvider>(context, listen: false)
+        .getAllBusStops()
+        .then((_) {
+      busStopMarkers =
+          Provider.of<BusStopProvider>(context, listen: false).stops;
+    });
     createBusStopMarkers();
-  }
-
-  Future<void> getBusStops() async {
-    busStopMarkers = Provider.of<BusStopProvider>(context, listen: false).stops;
   }
 
   Future<void> createBusStopMarkers() async {
@@ -80,20 +89,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     setState(() {
       _markers = newMarkers;
     });
-  }
-
-  Future<void> _showAlertPermissionsLocation() async {
-    bool isLocationPermissionGranted = await _waitProvider.checkPermission();
-    if (!isLocationPermissionGranted) {
-      Future.delayed(const Duration(seconds: 3), () {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return const MyAlertWidget();
-          },
-        );
-      });
-    }
   }
 
   Future<void> _loadRouteCoordinates() async {
@@ -116,16 +111,8 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     });
   }
 
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('id') ?? '';
-    });
-  }
-
-  Future<void> getRouteLikesById(String id) async {
-    await Provider.of<UserProvider>(context, listen: false)
-        .getFavoritesById(id);
+  Future<void> getRouteLikesById() async {
+    await Provider.of<UserProvider>(context, listen: false).getFavoritesById();
   }
 
   Future<void> _getPlace(String query) async {
@@ -168,9 +155,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
               LatLng? location = await getUserLocation();
               if (location != null) {
                 if (mounted) {
-                  setState(() {
-                    userLocation = location;
-                  });
                   controller
                       .animateCamera(CameraUpdate.newLatLngZoom(location, 14));
                 }

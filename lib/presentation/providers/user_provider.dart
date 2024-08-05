@@ -53,9 +53,9 @@ class UserProvider extends ChangeNotifier {
     await _userRepository.deleteAccount(id);
   }
 
-  Future<void> getFavoritesById(String id) async {
+  Future<void> getFavoritesById() async {
     _isLoadingFavorites = true;
-    List<FavoriteModel> favorites = await _userRepository.getFavoritesById(id);
+    List<FavoriteModel> favorites = await _userRepository.getFavoritesById();
     _favorites = favorites;
     _isLoadingFavorites = false;
     notifyListeners();

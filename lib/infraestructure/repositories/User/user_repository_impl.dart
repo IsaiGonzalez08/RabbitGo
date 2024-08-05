@@ -155,11 +155,12 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<FavoriteModel>> getFavoritesById(String id) async {
+  Future<List<FavoriteModel>> getFavoritesById() async {
     String? token = await getToken();
+    String? userId = await getUserId();
     try {
       String url =
-          'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/from/$id';
+          'https://rabbit-go.sytes.net/user_mcs/favoriteShuttle/from/$userId';
       final response =
           await http.get(Uri.parse(url), headers: {'Authorization': token!});
       if (response.statusCode == 200) {

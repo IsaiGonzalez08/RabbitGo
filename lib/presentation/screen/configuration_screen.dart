@@ -48,6 +48,7 @@ class _MyConfigurationScreenState extends State<MyConfigurationScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFFFFFFFF),
         centerTitle: true,
         title: const Text(

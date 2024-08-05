@@ -93,7 +93,7 @@ class _MyTapBarWidgetState extends State<MyTapBarWidget> {
                 print('user id null');
               } else {
                 await Provider.of<UserProvider>(context, listen: false)
-                    .getFavoritesById(userId!);
+                    .getFavoritesById();
                 setState(() {
                   _currentIndex = newIndex;
                 });
